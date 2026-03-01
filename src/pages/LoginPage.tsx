@@ -27,6 +27,8 @@ function LoginContent() {
   const redirectTo = searchParams.get('redirect') || '/app/dashboard';
 
   const handleGoogle = useGoogleLogin({
+    flow: 'implicit',
+    ux_mode: 'popup',
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       setErrorMsg('');
