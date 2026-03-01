@@ -41,7 +41,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="w-full max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
         <p className="text-gray-400 text-sm mt-1">Manage your account and preferences</p>
@@ -152,13 +152,13 @@ export default function SettingsPage() {
         <p className="text-sm text-gray-400 mb-4">
           Unlock unlimited subscriptions, AI features, PDF reports, and priority support.
         </p>
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4">
           <div className="bg-white/5 rounded-xl p-3 text-center">
-            <p className="text-2xl font-bold gradient-text">$2.99</p>
+            <p className="text-xl sm:text-2xl font-bold gradient-text">$2.99</p>
             <p className="text-xs text-gray-400">per month</p>
           </div>
           <div className="bg-white/5 rounded-xl p-3 text-center">
-            <p className="text-2xl font-bold gradient-text">$24.99</p>
+            <p className="text-xl sm:text-2xl font-bold gradient-text">$24.99</p>
             <p className="text-xs text-gray-400">per year <span className="text-green-400">30% off</span></p>
           </div>
         </div>

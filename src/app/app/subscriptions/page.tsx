@@ -55,7 +55,7 @@ export default function SubscriptionsPage() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500 transition-all"
+          className="min-w-0 flex-1 sm:flex-none px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500 transition-all"
         >
           <option value="">{t('subscriptions.all_categories')}</option>
           {allCategories.map((c) => (
@@ -67,7 +67,7 @@ export default function SubscriptionsPage() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500 transition-all"
+          className="min-w-0 flex-1 sm:flex-none px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500 transition-all"
         >
           <option value="">{t('subscriptions.all_statuses')}</option>
           {statuses.map((s) => (

@@ -23,7 +23,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {[
           { label: 'Monthly', value: formatCurrency(analytics.totalMonthly) },
           { label: 'Yearly', value: formatCurrency(analytics.totalYearly) },
@@ -31,7 +31,7 @@ export default function AnalyticsPage() {
         ].map(({ label, value }) => (
           <div key={label} className="glass-card rounded-2xl p-4 text-center">
             <p className="text-xs text-gray-400 mb-1">{label}</p>
-            <p className="text-lg font-bold text-purple-400">{value}</p>
+            <p className="text-base sm:text-lg font-bold text-purple-400 truncate">{value}</p>
           </div>
         ))}
       </div>

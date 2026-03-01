@@ -149,7 +149,7 @@ export default function CardsPage() {
           <div key={card.id} className="glass-card rounded-2xl p-5">
             {/* Visual card */}
             <div
-              className="w-full h-32 rounded-xl mb-4 p-4 flex flex-col justify-between relative overflow-hidden"
+              className="w-full h-28 sm:h-32 rounded-xl mb-4 p-4 flex flex-col justify-between relative overflow-hidden"
               style={{ backgroundColor: card.color }}
             >
               <div className="absolute inset-0 opacity-10">
@@ -161,7 +161,7 @@ export default function CardsPage() {
                 <CardBrandBadge brand={card.brand} />
               </div>
               <div>
-                <p className="text-white font-mono tracking-widest">•••• •••• •••• {card.last4}</p>
+                <p className="text-sm sm:text-base text-white font-mono tracking-widest">•••• •••• •••• {card.last4}</p>
                 <p className="text-white/60 text-xs mt-1">
                   {String(card.expiryMonth).padStart(2, '0')}/{card.expiryYear}
                 </p>

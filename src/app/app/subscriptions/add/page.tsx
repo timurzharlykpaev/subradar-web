@@ -7,12 +7,14 @@ export default function AddSubscriptionPage() {
   const router = useRouter();
 
   return (
-    <AddSubscriptionModal
-      onClose={() => router.push('/app/subscriptions')}
-      onSubmit={(data) => {
-        console.log('New subscription:', data);
-        router.push('/app/subscriptions');
-      }}
-    />
+    <div className="w-full max-w-xl mx-auto">
+      <AddSubscriptionModal
+        onClose={() => router.push('/app/subscriptions')}
+        onSubmit={(data) => {
+          console.log('New subscription:', data);
+          router.push('/app/subscriptions');
+        }}
+      />
+    </div>
   );
 }

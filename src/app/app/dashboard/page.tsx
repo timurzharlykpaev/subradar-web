@@ -68,7 +68,7 @@ export default function DashboardPage() {
         {statCards.map(({ label, value, sub, icon: Icon, color }) => (
           <div key={label} className="glass-card rounded-2xl p-5">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs text-gray-400">{label}</p>
+              <p className="text-xs text-gray-400 truncate">{label}</p>
               <div
                 className="w-9 h-9 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: `${color}20` }}
@@ -76,7 +76,7 @@ export default function DashboardPage() {
                 <Icon className="w-5 h-5" style={{ color }} />
               </div>
             </div>
-            <p className="text-2xl font-bold">{value}</p>
+            <p className="text-xl font-bold truncate">{value}</p>
             <p className="text-xs text-gray-500 mt-1">{sub}</p>
           </div>
         ))}

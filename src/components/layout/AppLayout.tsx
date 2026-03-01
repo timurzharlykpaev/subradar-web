@@ -96,7 +96,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col" style={{ minHeight: "100dvh" }}>
-        <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6">
+        <main className="flex-1 px-4 pt-4 sm:px-6 sm:pt-6 pb-24 md:pb-6">
           {children}
         </main>
       </div>
