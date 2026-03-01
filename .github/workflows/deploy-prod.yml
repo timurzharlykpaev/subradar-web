@@ -1,9 +1,7 @@
 name: Deploy Production
-
 on:
   push:
     branches: [main]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,35 +10,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install & Build
-        run: npm install && npm run build
+      - run: npm install && npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://api.subradar.ai
-
-      - name: Copy static into standalone
-        run: |
-          cp -r .next/static .next/standalone/.next/static
-          cp -r public .next/standalone/public
-
-      - name: Deploy to server
-        uses: appleboy/scp-action@v0.1.7
+          VITE_API_URL: https://api.subradar.ai
+      - uses: appleboy/scp-action@v0.1.7
         with:
           host: 46.101.197.19
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".next/standalone/"
-          target: /opt/subradar/web-prod/Desktop/repositories/subradar-web/
-          strip_components: 2
-
-      - name: Restart PM2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 46.101.197.19
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /opt/subradar/web-prod/Desktop/repositories/subradar-web
-            PORT=3200 pm2 restart subradar-web-prod 2>/dev/null || PORT=3200 pm2 start server.js --name subradar-web-prod
-            pm2 save
-            echo "✅ https://app.subradar.ai deployed"
+          source: "dist/"
+          target: /var/www/app.subradar.ai/
+          strip_components: 1

@@ -1,0 +1,243 @@
+import { useState, useEffect } from 'react';
+import { User, Bell, Globe, Zap, Shield, Loader2 } from 'lucide-react';
+import { useAppStore } from '@/store/useAppStore';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/lib/i18n';
+import { useToast } from '@/providers/ToastProvider';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
+import { useBillingMe, useCheckout, useCancelBilling } from '@/hooks/useBilling';
+import { User as UserType } from '@/types';
+
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'es', label: 'Español' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'fr', label: 'Français' },
+  { code: 'pt', label: 'Português' },
+  { code: 'zh', label: '中文' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+];
+
+export default function SettingsPage() {
+  const { t } = useTranslation();
+  const { success, error } = useToast();
+  const { theme, toggleTheme, currency, setCurrency, language, setLanguage, user, setUser } = useAppStore();
+
+  const [profile, setProfile] = useState({ name: user?.name ?? '', email: user?.email ?? '' });
+  const [notifications, setNotifications] = useState({
+    email: true, push: true, reminders: true, renewals: true,
+  });
+
+  const currencies = ['USD', 'EUR', 'GBP', 'KZT', 'RUB', 'AED'];
+
+  useQuery<UserType>({
+    queryKey: ['auth', 'me'],
+    queryFn: async () => {
+      const { data } = await api.get<UserType>('/auth/me');
+      setUser(data);
+      setProfile({ name: data.name, email: data.email });
+      return data;
+    },
+    enabled: !!localStorage.getItem('auth_token'),
+    staleTime: 60000,
+  });
+
+  useEffect(() => {
+    if (user) setProfile({ name: user.name, email: user.email });
+  }, [user]);
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (payload: { name: string; email: string; currency?: string; locale?: string }) => {
+      const { data } = await api.patch<UserType>('/auth/me', payload);
+      return data;
+    },
+    onSuccess: (data) => {
+      setUser(data);
+      success('Profile updated!');
+    },
+    onError: () => error('Failed to update profile.'),
+  });
+
+  const { data: billing } = useBillingMe();
+  const checkoutMutation = useCheckout();
+  const cancelBillingMutation = useCancelBilling();
+
+  const handleLanguageChange = (lang: string) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem('subradar-language', lang);
+    setLanguage(lang);
+  };
+
+  const handleSaveProfile = () => {
+    updateProfileMutation.mutate({ name: profile.name, email: profile.email, currency, locale: language });
+  };
+
+  const handleUpgrade = async () => {
+    try {
+      const result = await checkoutMutation.mutateAsync('pro-monthly');
+      window.location.href = result.url;
+    } catch {
+      error('Failed to start checkout. Please try again.');
+    }
+  };
+
+  const handleCancelBilling = async () => {
+    if (!confirm('Cancel your subscription? You will lose access to Pro features at the end of the billing period.')) return;
+    try {
+      await cancelBillingMutation.mutateAsync();
+      success('Subscription cancelled. You\'ll retain access until end of period.');
+    } catch {
+      error('Failed to cancel subscription.');
+    }
+  };
+
+  return (
+    <div className="w-full max-w-2xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
+        <p className="text-gray-400 text-sm mt-1">Manage your account and preferences</p>
+      </div>
+
+      <div className="glass-card rounded-2xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <User className="w-4 h-4 text-purple-400" />
+          <h3 className="font-semibold">{t('settings.account')}</h3>
+        </div>
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">Name</label>
+            <input value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+          </div>
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">Email</label>
+            <input type="email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+          </div>
+          <button onClick={handleSaveProfile} disabled={updateProfileMutation.isPending}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all disabled:opacity-60">
+            {updateProfileMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+            {t('common.save')}
+          </button>
+        </div>
+      </div>
+
+      <div className="glass-card rounded-2xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Globe className="w-4 h-4 text-purple-400" />
+          <h3 className="font-semibold">Preferences</h3>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">{t('settings.theme')}</p>
+              <p className="text-xs text-gray-400">{theme === 'dark' ? t('settings.dark_mode') : t('settings.light_mode')}</p>
+            </div>
+            <button onClick={toggleTheme}
+              className={`relative w-12 h-6 rounded-full transition-all ${theme === 'dark' ? 'bg-purple-600' : 'bg-gray-600'}`}>
+              <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${theme === 'dark' ? 'left-7' : 'left-1'}`} />
+            </button>
+          </div>
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">{t('settings.language')}</label>
+            <select value={language} onChange={(e) => handleLanguageChange(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
+              {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">{t('settings.currency')}</label>
+            <select value={currency} onChange={(e) => setCurrency(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
+              {currencies.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-card rounded-2xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Bell className="w-4 h-4 text-purple-400" />
+          <h3 className="font-semibold">{t('settings.notifications')}</h3>
+        </div>
+        <div className="space-y-4">
+          {Object.entries(notifications).map(([key, val]) => (
+            <div key={key} className="flex items-center justify-between">
+              <p className="text-sm capitalize">{key.replace(/([A-Z])/g, ' $1')} notifications</p>
+              <button
+                onClick={() => setNotifications({ ...notifications, [key]: !val })}
+                className={`relative w-10 h-5 rounded-full transition-all ${val ? 'bg-purple-600' : 'bg-gray-600'}`}>
+                <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${val ? 'left-5' : 'left-0.5'}`} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="glass-card rounded-2xl p-5 border border-purple-500/30">
+        <div className="flex items-center gap-2 mb-3">
+          <Zap className="w-4 h-4 text-yellow-400" />
+          <h3 className="font-semibold">SubRadar Pro</h3>
+          {billing?.plan === 'pro' ? (
+            <span className="ml-auto text-xs bg-green-400/20 text-green-400 px-2 py-0.5 rounded-full">ACTIVE</span>
+          ) : (
+            <span className="ml-auto text-xs bg-yellow-400/20 text-yellow-400 px-2 py-0.5 rounded-full">UPGRADE</span>
+          )}
+        </div>
+        {billing?.plan === 'pro' ? (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-400">
+              You&apos;re on Pro. Renews {billing.currentPeriodEnd ? new Date(billing.currentPeriodEnd).toLocaleDateString() : '—'}.
+              {billing.cancelAtPeriodEnd && ' (Cancels at period end)'}
+            </p>
+            {!billing.cancelAtPeriodEnd && (
+              <button onClick={handleCancelBilling} disabled={cancelBillingMutation.isPending}
+                className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all disabled:opacity-60">
+                {cancelBillingMutation.isPending ? 'Cancelling...' : 'Cancel Pro Subscription'}
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-gray-400 mb-4">
+              Unlock unlimited subscriptions, AI features, PDF reports, and priority support.
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4">
+              <div className="bg-white/5 rounded-xl p-3 text-center">
+                <p className="text-xl sm:text-2xl font-bold gradient-text">$2.99</p>
+                <p className="text-xs text-gray-400">per month</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-3 text-center">
+                <p className="text-xl sm:text-2xl font-bold gradient-text">$24.99</p>
+                <p className="text-xs text-gray-400">per year <span className="text-green-400">30% off</span></p>
+              </div>
+            </div>
+            <button onClick={handleUpgrade} disabled={checkoutMutation.isPending}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white text-sm font-bold transition-all disabled:opacity-60">
+              {checkoutMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              Upgrade to Pro
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="glass-card rounded-2xl p-5 border border-red-500/20">
+        <div className="flex items-center gap-2 mb-4">
+          <Shield className="w-4 h-4 text-red-400" />
+          <h3 className="font-semibold text-red-400">Danger Zone</h3>
+        </div>
+        <div className="space-y-3">
+          <button className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all">
+            Export My Data
+          </button>
+          <button className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all">
+            Delete Account
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

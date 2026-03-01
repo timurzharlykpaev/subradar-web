@@ -1,4 +1,3 @@
-'use client';
 
 import { Subscription } from '@/types';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';

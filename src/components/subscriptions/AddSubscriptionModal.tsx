@@ -1,4 +1,3 @@
-'use client';
 
 import { useState } from 'react';
 import { Mic, FileImage, PenLine, Send, X } from 'lucide-react';

@@ -1,7 +1,5 @@
-'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   CreditCard,
@@ -19,7 +17,6 @@ import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 interface AppLayoutProps {
@@ -27,22 +24,23 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const pathname = usePathname();
+  const location = useLocation()
+  const pathname = location.pathname;
   const { theme, toggleTheme } = useAppStore();
   const { t } = useTranslation();
   const { isAuthenticated, logout } = useAuthStore();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthenticated && typeof window !== 'undefined' && !localStorage.getItem('auth_token')) {
-      router.push('/login');
+      navigate('/login');
     }
   }, [isAuthenticated, router]);
 
   const handleLogout = () => {
     logout();
     document.cookie = 'auth_token=; path=/; max-age=0';
-    router.push('/login');
+    navigate('/login');
   };
 
   const navItems = [

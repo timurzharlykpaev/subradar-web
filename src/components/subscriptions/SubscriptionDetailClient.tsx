@@ -1,7 +1,6 @@
-'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit3, Trash2 } from 'lucide-react';
 import { useSubscription, useDeleteSubscription } from '@/hooks/useSubscriptions';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
@@ -11,7 +10,7 @@ import { ReceiptUploader } from '@/components/subscriptions/ReceiptUploader';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
 export function SubscriptionDetailClient({ id }: { id: string }) {
-  const router = useRouter();
+  const router = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const { data: sub, isLoading } = useSubscription(id);
   const deleteSub = useDeleteSubscription();
@@ -26,14 +25,14 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
     return (
       <div className="text-center py-20">
         <p className="text-gray-400">Subscription not found</p>
-        <button onClick={() => router.back()} className="text-purple-400 mt-2">Go back</button>
+        <button onClick={() => router(-1)} className="text-purple-400 mt-2">Go back</button>
       </div>
     );
   }
 
   const handleDelete = async () => {
     await deleteSub.mutateAsync(id);
-    router.push('/app/subscriptions');
+    router('/app/subscriptions');
   };
 
   return (
@@ -41,7 +40,7 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.back()}
+          onClick={() => router(-1)}
           className="p-2 rounded-xl hover:bg-white/5 transition-all"
         >
           <ArrowLeft className="w-5 h-5" />

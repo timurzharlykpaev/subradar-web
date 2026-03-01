@@ -1,6 +1,5 @@
-'use client';
 
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Subscription } from '@/types';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
 import { StatusBadge } from '@/components/shared/StatusBadge';

@@ -1,4 +1,3 @@
-'use client';
 
 import { PaymentCard } from '@/types';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
