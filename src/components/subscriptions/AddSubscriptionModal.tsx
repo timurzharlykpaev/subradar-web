@@ -170,7 +170,7 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all"
+                className="w-full py-4 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-all shadow-lg"
               >
                 Add Subscription
               </button>
@@ -204,7 +204,7 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
                 </button>
                 <button
                   disabled={!aiText.trim()}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all flex-1 justify-center disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all flex-1 justify-center disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                   Parse with AI
@@ -221,7 +221,7 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
               </p>
               <ReceiptUploader />
               <button
-                className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all"
+                className="w-full py-4 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-all shadow-lg"
               >
                 Analyze Screenshot
               </button>

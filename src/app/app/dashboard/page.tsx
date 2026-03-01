@@ -1,6 +1,7 @@
 'use client';
 
-import { TrendingUp, CreditCard, AlertCircle, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { TrendingUp, CreditCard, AlertCircle, Zap, Plus } from 'lucide-react';
 import { mockSubscriptions, mockAnalytics, mockCards } from '@/lib/mockData';
 import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart';
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
@@ -46,25 +47,34 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-gray-400 text-sm mt-1">Your subscription overview</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <p className="text-gray-400 text-sm mt-1">Your subscription overview</p>
+        </div>
+        <Link
+          href="/app/subscriptions/add"
+          className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-all shadow-lg shadow-purple-500/20"
+        >
+          <Plus className="w-5 h-5" />
+          Add Subscription
+        </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map(({ label, value, sub, icon: Icon, color }) => (
-          <div key={label} className="glass-card rounded-2xl p-4">
+          <div key={label} className="glass-card rounded-2xl p-5">
             <div className="flex items-center justify-between mb-3">
               <p className="text-xs text-gray-400">{label}</p>
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: `${color}20` }}
               >
-                <Icon className="w-4 h-4" style={{ color }} />
+                <Icon className="w-5 h-5" style={{ color }} />
               </div>
             </div>
-            <p className="text-xl font-bold">{value}</p>
+            <p className="text-2xl font-bold">{value}</p>
             <p className="text-xs text-gray-500 mt-1">{sub}</p>
           </div>
         ))}
