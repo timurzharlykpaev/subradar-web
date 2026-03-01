@@ -15,24 +15,24 @@ interface CardBreakdownChartProps {
   data: { cardId: string; card: PaymentCard; amount: number }[];
 }
 
+function CustomTooltip({ active, payload, label }: any) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="glass-card rounded-lg p-3 border border-purple-500/30">
+        <p className="text-xs text-gray-400">{label}</p>
+        <p className="text-sm font-bold text-purple-400">${payload[0].value.toFixed(2)}/mo</p>
+      </div>
+    );
+  }
+  return null;
+}
+
 export function CardBreakdownChart({ data }: CardBreakdownChartProps) {
   const chartData = data.map((d) => ({
     name: d.card.nickname || `••••${d.card.last4}`,
     amount: d.amount,
     fill: d.card.color || '#8B5CF6',
   }));
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="glass-card rounded-lg p-3 border border-purple-500/30">
-          <p className="text-xs text-gray-400">{label}</p>
-          <p className="text-sm font-bold text-purple-400">${payload[0].value.toFixed(2)}/mo</p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <ResponsiveContainer width="100%" height={200}>

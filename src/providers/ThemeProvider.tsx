@@ -14,7 +14,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } else {
       setTheme(stored as 'dark' | 'light');
     }
-  }, []);
+  }, [setTheme]);
 
   useEffect(() => {
     localStorage.setItem('subradar-theme', theme);

@@ -18,6 +18,81 @@ const emptyForm = {
   expiryYear: '',
 };
 
+interface CardFormProps {
+  form: typeof emptyForm;
+  setForm: (f: typeof emptyForm) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  submitLabel: string;
+  isPending: boolean;
+  onCancel: () => void;
+}
+
+function CardForm({ form, setForm, onSubmit, submitLabel, isPending, onCancel }: CardFormProps) {
+  return (
+    <form onSubmit={onSubmit} className="glass-card rounded-2xl p-5 space-y-4">
+      <h3 className="font-semibold">{submitLabel === 'Add Card' ? 'New Card' : 'Edit Card'}</h3>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="col-span-2">
+          <label className="text-xs text-gray-400 mb-1 block">Nickname</label>
+          <input required value={form.nickname} onChange={(e) => setForm({ ...form, nickname: e.target.value })}
+            placeholder="e.g. Main Card"
+            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+        </div>
+        <div>
+          <label className="text-xs text-gray-400 mb-1 block">Last 4 digits</label>
+          <input required maxLength={4} value={form.last4}
+            onChange={(e) => setForm({ ...form, last4: e.target.value.replace(/\D/g, '') })}
+            placeholder="4242"
+            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+        </div>
+        <div>
+          <label className="text-xs text-gray-400 mb-1 block">Brand</label>
+          <select value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value as CardBrand })}
+            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
+            {CARD_BRANDS.map((b) => <option key={b} value={b}>{b.toUpperCase()}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-gray-400 mb-1 block">Expiry Month</label>
+          <input type="number" min="1" max="12" value={form.expiryMonth}
+            onChange={(e) => setForm({ ...form, expiryMonth: e.target.value })}
+            placeholder="12"
+            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+        </div>
+        <div>
+          <label className="text-xs text-gray-400 mb-1 block">Expiry Year</label>
+          <input type="number" min="2024" value={form.expiryYear}
+            onChange={(e) => setForm({ ...form, expiryYear: e.target.value })}
+            placeholder="2027"
+            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+        </div>
+        <div className="col-span-2">
+          <label className="text-xs text-gray-400 mb-2 block">Card Color</label>
+          <div className="flex gap-2">
+            {CARD_COLORS.map((c) => (
+              <button key={c} type="button" onClick={() => setForm({ ...form, color: c })}
+                className={`w-8 h-8 rounded-full transition-all ${form.color === c ? 'ring-2 ring-offset-2 ring-offset-black ring-white' : ''}`}
+                style={{ backgroundColor: c }} />
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <button type="submit" disabled={isPending}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all disabled:opacity-60">
+          {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+          {submitLabel}
+        </button>
+        <button type="button"
+          onClick={onCancel}
+          className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition-all">
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function CardsPage() {
   const { success, error } = useToast();
   const { data: cards, isLoading } = usePaymentCards();
@@ -91,69 +166,7 @@ export default function CardsPage() {
     }
   };
 
-  const CardForm = ({ onSubmit, submitLabel }: { onSubmit: (e: React.FormEvent) => void; submitLabel: string }) => (
-    <form onSubmit={onSubmit} className="glass-card rounded-2xl p-5 space-y-4">
-      <h3 className="font-semibold">{submitLabel === 'Add Card' ? 'New Card' : 'Edit Card'}</h3>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="col-span-2">
-          <label className="text-xs text-gray-400 mb-1 block">Nickname</label>
-          <input required value={form.nickname} onChange={(e) => setForm({ ...form, nickname: e.target.value })}
-            placeholder="e.g. Main Card"
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
-        </div>
-        <div>
-          <label className="text-xs text-gray-400 mb-1 block">Last 4 digits</label>
-          <input required maxLength={4} value={form.last4}
-            onChange={(e) => setForm({ ...form, last4: e.target.value.replace(/\D/g, '') })}
-            placeholder="4242"
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
-        </div>
-        <div>
-          <label className="text-xs text-gray-400 mb-1 block">Brand</label>
-          <select value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value as CardBrand })}
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
-            {CARD_BRANDS.map((b) => <option key={b} value={b}>{b.toUpperCase()}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="text-xs text-gray-400 mb-1 block">Expiry Month</label>
-          <input type="number" min="1" max="12" value={form.expiryMonth}
-            onChange={(e) => setForm({ ...form, expiryMonth: e.target.value })}
-            placeholder="12"
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
-        </div>
-        <div>
-          <label className="text-xs text-gray-400 mb-1 block">Expiry Year</label>
-          <input type="number" min="2024" value={form.expiryYear}
-            onChange={(e) => setForm({ ...form, expiryYear: e.target.value })}
-            placeholder="2027"
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
-        </div>
-        <div className="col-span-2">
-          <label className="text-xs text-gray-400 mb-2 block">Card Color</label>
-          <div className="flex gap-2">
-            {CARD_COLORS.map((c) => (
-              <button key={c} type="button" onClick={() => setForm({ ...form, color: c })}
-                className={`w-8 h-8 rounded-full transition-all ${form.color === c ? 'ring-2 ring-offset-2 ring-offset-black ring-white' : ''}`}
-                style={{ backgroundColor: c }} />
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-3">
-        <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all disabled:opacity-60">
-          {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 animate-spin" />}
-          {submitLabel}
-        </button>
-        <button type="button"
-          onClick={() => { setShowForm(false); setEditingId(null); setForm(emptyForm); }}
-          className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition-all">
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
+  const handleCancel = () => { setShowForm(false); setEditingId(null); setForm(emptyForm); };
 
   return (
     <div className="space-y-6">
@@ -171,8 +184,8 @@ export default function CardsPage() {
         </button>
       </div>
 
-      {showForm && <CardForm onSubmit={handleAdd} submitLabel="Add Card" />}
-      {editingId && <CardForm onSubmit={handleUpdate} submitLabel="Update Card" />}
+      {showForm && <CardForm form={form} setForm={setForm} onSubmit={handleAdd} submitLabel="Add Card" isPending={createMutation.isPending} onCancel={handleCancel} />}
+      {editingId && <CardForm form={form} setForm={setForm} onSubmit={handleUpdate} submitLabel="Update Card" isPending={updateMutation.isPending} onCancel={handleCancel} />}
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

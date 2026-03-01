@@ -16,6 +16,12 @@ export default function DashboardPage() {
   const { data: byCategory, isLoading: loadingCategory } = useAnalyticsByCategory();
   const { data: upcoming, isLoading: loadingUpcoming } = useUpcoming(7);
 
+  const renewalCount = upcoming ? upcoming.filter((s) => {
+    const diff = new Date(s.nextPaymentDate).getTime() - new Date().setHours(0, 0, 0, 0);
+    const days = Math.ceil(diff / 86400000);
+    return days <= 7 && days >= 0;
+  }).length : null;
+
   const statCards = [
     {
       label: t('dashboard.monthly_spend'),
@@ -33,10 +39,7 @@ export default function DashboardPage() {
     },
     {
       label: t('dashboard.renewals_soon'),
-      value: upcoming ? upcoming.filter((s) => {
-        const days = Math.ceil((new Date(s.nextPaymentDate).getTime() - Date.now()) / 86400000);
-        return days <= 7 && days >= 0;
-      }).length.toString() : '—',
+      value: renewalCount !== null ? renewalCount.toString() : '—',
       sub: t('dashboard.within_7_days'),
       icon: AlertCircle,
       color: '#F59E0B',

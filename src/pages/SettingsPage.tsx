@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { User, Bell, Globe, Zap, Shield, Loader2 } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { useTranslation } from 'react-i18next';
@@ -44,10 +44,6 @@ export default function SettingsPage() {
     enabled: !!localStorage.getItem('auth_token'),
     staleTime: 60000,
   });
-
-  useEffect(() => {
-    if (user) setProfile({ name: user.name, email: user.email });
-  }, [user]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (payload: { name: string; email: string; currency?: string; locale?: string }) => {
