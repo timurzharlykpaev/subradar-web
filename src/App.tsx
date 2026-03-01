@@ -10,6 +10,10 @@ import ReportsPage from '@/pages/ReportsPage'
 import SettingsPage from '@/pages/SettingsPage'
 import LoginPage from '@/pages/LoginPage'
 import AuthCallbackPage from '@/pages/AuthCallbackPage'
+import PrivacyPage from '@/pages/legal/PrivacyPage'
+import RefundPage from '@/pages/legal/RefundPage'
+import TermsPage from '@/pages/legal/TermsPage'
+import CookiesPage from '@/pages/legal/CookiesPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('access_token') || localStorage.getItem('auth_token')
@@ -23,6 +27,10 @@ export default function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
+      <Route path="/legal/privacy" element={<PrivacyPage />} />
+      <Route path="/legal/refund" element={<RefundPage />} />
+      <Route path="/legal/terms" element={<TermsPage />} />
+      <Route path="/legal/cookies" element={<CookiesPage />} />
       <Route
         path="/app/*"
         element={
