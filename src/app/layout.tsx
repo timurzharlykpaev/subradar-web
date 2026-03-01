@@ -3,6 +3,7 @@ import './globals.css';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { I18nProvider } from '@/providers/I18nProvider';
+import { ToastProvider } from '@/providers/ToastProvider';
 
 export const metadata: Metadata = {
   title: 'SubRadar AI — Know exactly where your money goes',
@@ -25,7 +26,9 @@ export default function RootLayout({
         <QueryProvider>
           <I18nProvider>
             <ThemeProvider>
-              {children}
+              <ToastProvider>
+                {children}
+              </ToastProvider>
             </ThemeProvider>
           </I18nProvider>
         </QueryProvider>

@@ -7,50 +7,45 @@ import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { UpcomingPayments } from '@/components/subscriptions/UpcomingPayments';
 import { formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useSubscriptions } from '@/hooks/useSubscriptions';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsSummary, useAnalyticsMonthly, useAnalyticsByCategory, useUpcoming } from '@/hooks/useAnalytics';
+import { SkeletonCard, SkeletonList, Skeleton } from '@/components/ui/Skeleton';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const { data: subscriptions = [], isLoading: subsLoading } = useSubscriptions();
-  const { data: analytics, isLoading: analyticsLoading } = useAnalytics();
 
-  const isLoading = subsLoading || analyticsLoading;
-
-  if (isLoading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  const { data: summary, isLoading: loadingSummary } = useAnalyticsSummary();
+  const { data: monthly, isLoading: loadingMonthly } = useAnalyticsMonthly();
+  const { data: byCategory, isLoading: loadingCategory } = useAnalyticsByCategory();
+  const { data: upcoming, isLoading: loadingUpcoming } = useUpcoming(7);
 
   const statCards = [
     {
       label: t('dashboard.monthly_spend'),
-      value: formatCurrency(analytics?.totalMonthly ?? 0),
-      sub: `${analytics?.activeCount ?? 0} ${t('dashboard.active_subscriptions')}`,
+      value: summary ? formatCurrency(summary.totalMonthly) : '—',
+      sub: summary ? `${summary.activeCount} ${t('dashboard.active_subscriptions')}` : '—',
       icon: TrendingUp,
       color: '#8B5CF6',
     },
     {
       label: t('dashboard.yearly_total'),
-      value: formatCurrency(analytics?.totalYearly ?? 0),
+      value: summary ? formatCurrency(summary.totalYearly) : '—',
       sub: t('dashboard.projected_annual'),
       icon: CreditCard,
       color: '#10B981',
     },
     {
       label: t('dashboard.renewals_soon'),
-      value: subscriptions.filter((s) => {
+      value: upcoming ? upcoming.filter((s) => {
         const days = Math.ceil((new Date(s.nextPaymentDate).getTime() - Date.now()) / 86400000);
         return days <= 7 && days >= 0;
-      }).length.toString(),
+      }).length.toString() : '—',
       sub: t('dashboard.within_7_days'),
       icon: AlertCircle,
       color: '#F59E0B',
     },
     {
       label: t('dashboard.savings_possible'),
-      value: '$12.99',
+      value: summary?.savingsPossible ? formatCurrency(summary.savingsPossible) : '$0.00',
       sub: t('dashboard.unused_subscriptions'),
       icon: Zap,
       color: '#EF4444',
@@ -74,38 +69,59 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map(({ label, value, sub, icon: Icon, color }) => (
-          <div key={label} className="glass-card rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-xs text-gray-400 truncate">{label}</p>
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: `${color}20` }}
-              >
-                <Icon className="w-5 h-5" style={{ color }} />
+      {loadingSummary ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[0, 1, 2, 3].map((i) => <SkeletonCard key={i} />)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {statCards.map(({ label, value, sub, icon: Icon, color }) => (
+            <div key={label} className="glass-card rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs text-gray-400 truncate">{label}</p>
+                <div
+                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: `${color}20` }}
+                >
+                  <Icon className="w-5 h-5" style={{ color }} />
+                </div>
               </div>
+              <p className="text-xl font-bold truncate">{value}</p>
+              <p className="text-xs text-gray-500 mt-1">{sub}</p>
             </div>
-            <p className="text-xl font-bold truncate">{value}</p>
-            <p className="text-xs text-gray-500 mt-1">{sub}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card rounded-2xl p-5">
           <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('dashboard.monthly_trend')}</h3>
-          <MonthlyBarChart data={analytics?.monthlyTrend ?? []} />
+          {loadingMonthly ? (
+            <Skeleton className="h-48 w-full rounded-xl" />
+          ) : (
+            <MonthlyBarChart data={(monthly ?? []).map((m) => ({ month: m.month, amount: m.amount }))} />
+          )}
         </div>
         <div className="glass-card rounded-2xl p-5">
           <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('dashboard.by_category')}</h3>
-          <CategoryDonutChart data={analytics?.byCategory ?? []} />
+          {loadingCategory ? (
+            <Skeleton className="h-48 w-full rounded-xl" />
+          ) : (
+            <CategoryDonutChart data={(byCategory ?? []).map((c) => ({ category: c.category as never, amount: c.amount, count: c.count }))} />
+          )}
         </div>
       </div>
 
       {/* Upcoming */}
-      <UpcomingPayments subscriptions={subscriptions} />
+      {loadingUpcoming ? (
+        <div className="glass-card rounded-2xl p-5">
+          <Skeleton className="h-5 w-40 mb-4" />
+          <SkeletonList count={3} />
+        </div>
+      ) : (
+        <UpcomingPayments subscriptions={(upcoming ?? []) as never} />
+      )}
     </div>
   );
 }

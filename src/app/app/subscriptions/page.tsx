@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Plus, Search } from 'lucide-react';
-import { useSubscriptions } from '@/hooks/useSubscriptions';
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { SubscriptionStatus } from '@/types';
 import { useTranslation } from 'react-i18next';
-
+import { useSubscriptions } from '@/hooks/useSubscriptions';
+import { SkeletonList } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 const statuses: SubscriptionStatus[] = ['active', 'paused', 'trial', 'cancelled'];
 
 export default function SubscriptionsPage() {
@@ -17,17 +18,11 @@ export default function SubscriptionsPage() {
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
 
-  const { data: subscriptions = [], isLoading } = useSubscriptions(
+  const { data: subscriptions, isLoading } = useSubscriptions(
     category || status ? { category: category || undefined, status: status || undefined } : undefined
   );
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
-
-  const filtered = subscriptions.filter((s) => {
+  const filtered = (subscriptions ?? []).filter((s) => {
     return !search || s.name.toLowerCase().includes(search.toLowerCase());
   });
 
@@ -36,7 +31,7 @@ export default function SubscriptionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t('subscriptions.title')}</h1>
-          <p className="text-gray-400 text-sm mt-1">{subscriptions.length} total</p>
+          <p className="text-gray-400 text-sm mt-1">{filtered.length} total</p>
         </div>
         <Link
           href="/app/subscriptions/add"
@@ -86,19 +81,24 @@ export default function SubscriptionsPage() {
       </div>
 
       {/* Subscription list */}
-      <div className="space-y-3">
-        {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <p>{t('subscriptions.empty')}</p>
-            <Link href="/app/subscriptions/add" className="text-purple-400 text-sm mt-2 inline-block hover:underline">
-              + {t('subscriptions.empty_sub')}
-            </Link>
-          </div>
-        )}
-        {filtered.map((sub) => (
-          <SubscriptionCard key={sub.id} subscription={sub} />
-        ))}
-      </div>
+      {isLoading ? (
+        <SkeletonList count={4} />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          title={t('subscriptions.empty')}
+          description={t('subscriptions.empty_sub')}
+          action={{ label: `+ ${t('subscriptions.empty_sub')}`, href: '/app/subscriptions/add' }}
+        />
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((sub) => (
+            <SubscriptionCard
+              key={sub.id}
+              subscription={sub}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

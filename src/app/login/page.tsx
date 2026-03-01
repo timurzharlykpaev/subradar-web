@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Radar, Mail, ArrowRight, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
+import { useAppStore } from '@/store/useAppStore';
+import { User } from '@/types';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -15,28 +19,39 @@ const GoogleIcon = () => (
   </svg>
 );
 
-export default function LoginPage() {
+function LoginContent() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [tab, setTab] = useState<'google' | 'email'>('google');
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const setUser = useAppStore((s) => s.setUser);
+
+  const redirectTo = searchParams.get('redirect') || '/app/dashboard';
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg('');
     try {
       await api.post('/auth/magic-link', { email });
       setSent(true);
     } catch {
-      // handle error silently for now
+      setErrorMsg('Failed to send magic link. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogle = () => {
-    window.location.href = 'https://api.subradar.ai/api/v1/auth/google';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.subradar.ai';
+    const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
+    window.location.href = `${apiUrl}/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
   };
 
   return (
@@ -49,7 +64,6 @@ export default function LoginPage() {
     >
       {/* Top hero section */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-12 pb-6">
-        {/* Logo */}
         <Link href="/" className="mb-6">
           <div
             className="w-20 h-20 rounded-3xl flex items-center justify-center"
@@ -62,60 +76,32 @@ export default function LoginPage() {
           </div>
         </Link>
 
-        <h1 className="text-3xl font-bold text-white text-center mb-2">
-          {t('auth.welcome')}
-        </h1>
-        <p className="text-gray-400 text-base text-center max-w-xs">
-          {t('auth.sign_in')}
-        </p>
+        <h1 className="text-3xl font-bold text-white text-center mb-2">{t('auth.welcome')}</h1>
+        <p className="text-gray-400 text-base text-center max-w-xs">{t('auth.sign_in')}</p>
 
-        {/* Feature pills */}
         <div className="flex flex-wrap gap-2 justify-center mt-6">
           {['AI-powered', 'Smart alerts', 'Tax reports'].map((f) => (
-            <span
-              key={f}
-              className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
-              style={{ background: 'rgba(124,58,237,0.18)', color: '#c4b5fd', border: '1px solid rgba(124,58,237,0.25)' }}
-            >
-              <Sparkles className="w-3 h-3" />
-              {f}
+            <span key={f} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
+              style={{ background: 'rgba(124,58,237,0.18)', color: '#c4b5fd', border: '1px solid rgba(124,58,237,0.25)' }}>
+              <Sparkles className="w-3 h-3" />{f}
             </span>
           ))}
         </div>
       </div>
 
       {/* Bottom card */}
-      <div
-        className="w-full px-4 pb-8"
-        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 1.5rem))' }}
-      >
-        <div
-          className="rounded-3xl p-6 w-full max-w-sm mx-auto"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(20px)',
-          }}
-        >
+      <div className="w-full px-4 pb-8" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 1.5rem))' }}>
+        <div className="rounded-3xl p-6 w-full max-w-sm mx-auto"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(20px)' }}>
+
           {/* Tabs */}
-          <div
-            className="flex rounded-xl mb-5 p-1"
-            style={{ background: 'rgba(255,255,255,0.05)' }}
-          >
-            {[
-              { id: 'google', label: 'Google' },
-              { id: 'email', label: 'Magic Link' },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setTab(item.id as 'google' | 'email')}
+          <div className="flex rounded-xl mb-5 p-1" style={{ background: 'rgba(255,255,255,0.05)' }}>
+            {[{ id: 'google', label: 'Google' }, { id: 'email', label: 'Magic Link' }].map((item) => (
+              <button key={item.id} onClick={() => setTab(item.id as 'google' | 'email')}
                 className="flex-1 py-2 text-sm font-medium rounded-lg transition-all"
-                style={
-                  tab === item.id
-                    ? { background: 'rgba(124,58,237,0.7)', color: '#fff' }
-                    : { color: 'rgba(255,255,255,0.45)' }
-                }
-              >
+                style={tab === item.id
+                  ? { background: 'rgba(124,58,237,0.7)', color: '#fff' }
+                  : { color: 'rgba(255,255,255,0.45)' }}>
                 {item.label}
               </button>
             ))}
@@ -123,11 +109,9 @@ export default function LoginPage() {
 
           {/* Google tab */}
           {tab === 'google' && (
-            <button
-              onClick={handleGoogle}
+            <button onClick={handleGoogle}
               className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl bg-white text-gray-900 text-sm font-semibold transition-all active:scale-95"
-              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}
-            >
+              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
               <GoogleIcon />
               {t('auth.google')}
             </button>
@@ -138,33 +122,19 @@ export default function LoginPage() {
             <form onSubmit={handleMagicLink} className="space-y-3">
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('auth.email_placeholder')}
                   className="w-full pl-10 pr-4 py-3.5 rounded-2xl text-sm focus:outline-none"
-                  style={{
-                    background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    color: '#fff',
-                  }}
-                />
+                  style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }} />
               </div>
-              <button
-                type="submit"
-                disabled={loading}
+              {errorMsg && <p className="text-xs text-red-400">{errorMsg}</p>}
+              <button type="submit" disabled={loading}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-white text-sm font-semibold transition-all active:scale-95 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}
-              >
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
-                  <>
-                    {t('auth.send_link')}
-                    <ArrowRight className="w-4 h-4" />
-                  </>
+                  <><ArrowRight className="w-4 h-4" />{t('auth.send_link')}</>
                 )}
               </button>
             </form>
@@ -172,10 +142,8 @@ export default function LoginPage() {
 
           {tab === 'email' && sent && (
             <div className="text-center py-2">
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-                style={{ background: 'rgba(34,197,94,0.15)' }}
-              >
+              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
+                style={{ background: 'rgba(34,197,94,0.15)' }}>
                 <Mail className="w-7 h-7 text-green-400" />
               </div>
               <p className="font-semibold text-white">{t('auth.sent')}</p>
@@ -185,7 +153,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Legal */}
           <p className="text-center text-xs mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
             By signing in, you agree to our{' '}
             <a href="/legal/terms" className="text-purple-400 hover:underline">Terms</a>{' '}
@@ -195,5 +162,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" style={{ background: "#0f0f13" }} />}>
+      <LoginContent />
+    </Suspense>
   );
 }

@@ -1,12 +1,106 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
-import { AnalyticsData } from '@/types';
 
+export interface AnalyticsSummary {
+  totalMonthly: number;
+  totalYearly: number;
+  activeCount: number;
+  pausedCount: number;
+  trialCount: number;
+  savingsPossible?: number;
+}
+
+export interface MonthlyData {
+  month: string;
+  amount: number;
+}
+
+export interface CategoryData {
+  category: string;
+  amount: number;
+  count: number;
+}
+
+export interface CardAnalyticsData {
+  cardId: string;
+  card: {
+    id: string;
+    nickname: string;
+    last4: string;
+    brand: string;
+    color: string;
+  };
+  amount: number;
+  count: number;
+}
+
+export interface UpcomingPayment {
+  id: string;
+  name: string;
+  amount: number;
+  currency: string;
+  nextPaymentDate: string;
+  billingCycle: string;
+  category: string;
+  logoUrl?: string;
+}
+
+export function useAnalyticsSummary() {
+  return useQuery<AnalyticsSummary>({
+    queryKey: ['analytics', 'summary'],
+    queryFn: async () => {
+      const { data } = await api.get<AnalyticsSummary>('/analytics/summary');
+      return data;
+    },
+  });
+}
+
+export function useAnalyticsMonthly(months = 12) {
+  return useQuery<MonthlyData[]>({
+    queryKey: ['analytics', 'monthly', months],
+    queryFn: async () => {
+      const { data } = await api.get<MonthlyData[]>('/analytics/monthly', { params: { months } });
+      return data;
+    },
+  });
+}
+
+export function useAnalyticsByCategory() {
+  return useQuery<CategoryData[]>({
+    queryKey: ['analytics', 'by-category'],
+    queryFn: async () => {
+      const { data } = await api.get<CategoryData[]>('/analytics/by-category');
+      return data;
+    },
+  });
+}
+
+export function useAnalyticsByCard() {
+  return useQuery<CardAnalyticsData[]>({
+    queryKey: ['analytics', 'by-card'],
+    queryFn: async () => {
+      const { data } = await api.get<CardAnalyticsData[]>('/analytics/by-card');
+      return data;
+    },
+  });
+}
+
+export function useUpcoming(days = 7) {
+  return useQuery<UpcomingPayment[]>({
+    queryKey: ['analytics', 'upcoming', days],
+    queryFn: async () => {
+      const { data } = await api.get<UpcomingPayment[]>('/analytics/upcoming', { params: { days } });
+      return data;
+    },
+  });
+}
+
+// Legacy hook for backward compat
 export function useAnalytics() {
   return useQuery({
     queryKey: ['analytics'],
     queryFn: async () => {
-      const { data } = await api.get<AnalyticsData>('/analytics');
+      const { data } = await api.get('/analytics');
       return data;
     },
   });
