@@ -312,9 +312,9 @@ export default function LandingPage() {
           </div>
           <p className="text-xs text-gray-500">© 2025 SubRadar. All rights reserved.</p>
           <div className="flex gap-4 text-xs text-gray-500">
-            <a href="#" className="hover:text-white transition-all">Privacy</a>
-            <a href="#" className="hover:text-white transition-all">Terms</a>
-            <a href="#" className="hover:text-white transition-all">Contact</a>
+            <Link href="/legal/privacy" className="hover:text-white transition-all">Privacy</Link>
+            <Link href="/legal/terms" className="hover:text-white transition-all">Terms</Link>
+            <a href="mailto:support@subradar.ai" className="hover:text-white transition-all">Contact</a>
           </div>
         </div>
       </footer>
