@@ -1,0 +1,133 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  CreditCard,
+  BarChart3,
+  FileText,
+  Settings,
+  Plus,
+  Radar,
+  Moon,
+  Sun,
+  LogOut,
+  Layers,
+} from 'lucide-react';
+import { useAppStore } from '@/store/useAppStore';
+import { cn } from '@/lib/utils';
+
+const navItems = [
+  { href: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/app/subscriptions', icon: Layers, label: 'Subscriptions' },
+  { href: '/app/cards', icon: CreditCard, label: 'Cards' },
+  { href: '/app/analytics', icon: BarChart3, label: 'Analytics' },
+  { href: '/app/reports', icon: FileText, label: 'Reports' },
+  { href: '/app/settings', icon: Settings, label: 'Settings' },
+];
+
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+export function AppLayout({ children }: AppLayoutProps) {
+  const pathname = usePathname();
+  const { theme, toggleTheme } = useAppStore();
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Sidebar (desktop) */}
+      <aside className="hidden md:flex flex-col w-64 border-r border-white/10 bg-black/20 fixed h-full z-10">
+        <div className="p-6 border-b border-white/10">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+              <Radar className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-lg gradient-text">SubRadar</span>
+          </Link>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-1">
+          {navItems.map(({ href, icon: Icon, label }) => {
+            const isActive = pathname === href || pathname.startsWith(href + '/');
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all',
+                  isActive
+                    ? 'bg-purple-600/20 text-purple-400 font-medium'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                )}
+              >
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-white/10 space-y-2">
+          <Link
+            href="/app/subscriptions/add"
+            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            Add Subscription
+          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="flex-1 flex items-center gap-2 px-3 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm transition-all"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? 'Light' : 'Dark'}
+            </button>
+            <button className="p-2 rounded-xl text-gray-400 hover:text-red-400 hover:bg-white/5 transition-all">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+        <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
+          {children}
+        </main>
+      </div>
+
+      {/* Bottom nav (mobile) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-10 border-t border-white/10 bg-black/80 backdrop-blur-xl">
+        <div className="flex items-center justify-around px-2 py-2">
+          {navItems.slice(0, 5).map(({ href, icon: Icon, label }) => {
+            const isActive = pathname === href || pathname.startsWith(href + '/');
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  'flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all',
+                  isActive ? 'text-purple-400' : 'text-gray-500'
+                )}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="text-[10px]">{label}</span>
+              </Link>
+            );
+          })}
+          <Link
+            href="/app/subscriptions/add"
+            className="flex flex-col items-center gap-1 px-3 py-1.5"
+          >
+            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center -mt-5 shadow-lg">
+              <Plus className="w-5 h-5 text-white" />
+            </div>
+          </Link>
+        </div>
+      </nav>
+    </div>
+  );
+}
