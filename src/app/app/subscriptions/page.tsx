@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Plus, Search, Filter } from 'lucide-react';
-import { mockSubscriptions } from '@/lib/mockData';
+import { Plus, Search } from 'lucide-react';
+import { useSubscriptions } from '@/hooks/useSubscriptions';
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { SubscriptionStatus } from '@/types';
@@ -17,11 +17,18 @@ export default function SubscriptionsPage() {
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
 
-  const filtered = mockSubscriptions.filter((s) => {
-    const matchSearch = s.name.toLowerCase().includes(search.toLowerCase());
-    const matchCat = !category || s.category === category;
-    const matchStatus = !status || s.status === status;
-    return matchSearch && matchCat && matchStatus;
+  const { data: subscriptions = [], isLoading } = useSubscriptions(
+    category || status ? { category: category || undefined, status: status || undefined } : undefined
+  );
+
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const filtered = subscriptions.filter((s) => {
+    return !search || s.name.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
@@ -29,7 +36,7 @@ export default function SubscriptionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t('subscriptions.title')}</h1>
-          <p className="text-gray-400 text-sm mt-1">{mockSubscriptions.length} total</p>
+          <p className="text-gray-400 text-sm mt-1">{subscriptions.length} total</p>
         </div>
         <Link
           href="/app/subscriptions/add"

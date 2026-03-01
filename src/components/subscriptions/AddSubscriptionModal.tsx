@@ -5,7 +5,8 @@ import { Mic, FileImage, PenLine, Send, X } from 'lucide-react';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { ReceiptUploader } from './ReceiptUploader';
 import { Category, BillingCycle } from '@/types';
-import { mockCards } from '@/lib/mockData';
+import { usePaymentCards } from '@/hooks/usePaymentCards';
+import { useCreateSubscription } from '@/hooks/useSubscriptions';
 import { PaymentCardPicker } from '@/components/cards/PaymentCardPicker';
 
 type Tab = 'manual' | 'ai-text' | 'ai-screenshot';
@@ -18,6 +19,8 @@ interface AddSubscriptionModalProps {
 const billingCycles: BillingCycle[] = ['monthly', 'yearly', 'weekly', 'quarterly'];
 
 export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModalProps) {
+  const { data: cards = [] } = usePaymentCards();
+  const createSubscription = useCreateSubscription();
   const [tab, setTab] = useState<Tab>('manual');
   const [aiText, setAiText] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -38,9 +41,14 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
     { id: 'ai-screenshot', label: 'Screenshot', icon: <FileImage className="w-4 h-4" /> },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.(form);
+    const payload = {
+      ...form,
+      amount: parseFloat(form.amount),
+    };
+    await createSubscription.mutateAsync(payload);
+    onSubmit?.(payload);
     onClose?.();
   };
 
@@ -163,7 +171,7 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
               </div>
 
               <PaymentCardPicker
-                cards={mockCards}
+                cards={cards}
                 selectedId={form.cardId}
                 onSelect={(id) => setForm({ ...form, cardId: id })}
               />

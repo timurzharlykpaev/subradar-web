@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   LayoutDashboard,
   CreditCard,
@@ -18,6 +19,8 @@ import {
 import { useAppStore } from '@/store/useAppStore';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import api from '@/lib/api';
+import { User } from '@/types';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -25,8 +28,22 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, toggleTheme } = useAppStore();
   const { t } = useTranslation();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      router.replace('/login');
+      return;
+    }
+    api.get<User>('/auth/me').then(({ data }) => setCurrentUser(data)).catch(() => {
+      localStorage.removeItem('auth_token');
+      router.replace('/login');
+    });
+  }, [router]);
 
   const navItems = [
     { href: '/app/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
@@ -87,7 +104,14 @@ export function AppLayout({ children }: AppLayoutProps) {
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               {theme === 'dark' ? 'Light' : 'Dark'}
             </button>
-            <button className="p-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-white/5 transition-all">
+            <button
+              onClick={() => {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('refresh_token');
+                router.replace('/login');
+              }}
+              className="p-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-white/5 transition-all"
+            >
               <LogOut className="w-5 h-5" />
             </button>
           </div>

@@ -2,35 +2,45 @@
 
 import Link from 'next/link';
 import { TrendingUp, CreditCard, AlertCircle, Zap, Plus } from 'lucide-react';
-import { mockSubscriptions, mockAnalytics, mockCards } from '@/lib/mockData';
 import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart';
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { UpcomingPayments } from '@/components/subscriptions/UpcomingPayments';
 import { formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useSubscriptions } from '@/hooks/useSubscriptions';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const analytics = mockAnalytics;
+  const { data: subscriptions = [], isLoading: subsLoading } = useSubscriptions();
+  const { data: analytics, isLoading: analyticsLoading } = useAnalytics();
+
+  const isLoading = subsLoading || analyticsLoading;
+
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   const statCards = [
     {
       label: t('dashboard.monthly_spend'),
-      value: formatCurrency(analytics.totalMonthly),
-      sub: `${analytics.activeCount} ${t('dashboard.active_subscriptions')}`,
+      value: formatCurrency(analytics?.totalMonthly ?? 0),
+      sub: `${analytics?.activeCount ?? 0} ${t('dashboard.active_subscriptions')}`,
       icon: TrendingUp,
       color: '#8B5CF6',
     },
     {
       label: t('dashboard.yearly_total'),
-      value: formatCurrency(analytics.totalYearly),
+      value: formatCurrency(analytics?.totalYearly ?? 0),
       sub: t('dashboard.projected_annual'),
       icon: CreditCard,
       color: '#10B981',
     },
     {
       label: t('dashboard.renewals_soon'),
-      value: mockSubscriptions.filter((s) => {
+      value: subscriptions.filter((s) => {
         const days = Math.ceil((new Date(s.nextPaymentDate).getTime() - Date.now()) / 86400000);
         return days <= 7 && days >= 0;
       }).length.toString(),
@@ -86,16 +96,16 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card rounded-2xl p-5">
           <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('dashboard.monthly_trend')}</h3>
-          <MonthlyBarChart data={analytics.monthlyTrend} />
+          <MonthlyBarChart data={analytics?.monthlyTrend ?? []} />
         </div>
         <div className="glass-card rounded-2xl p-5">
           <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('dashboard.by_category')}</h3>
-          <CategoryDonutChart data={analytics.byCategory} />
+          <CategoryDonutChart data={analytics?.byCategory ?? []} />
         </div>
       </div>
 
       {/* Upcoming */}
-      <UpcomingPayments subscriptions={mockSubscriptions} />
+      <UpcomingPayments subscriptions={subscriptions} />
     </div>
   );
 }

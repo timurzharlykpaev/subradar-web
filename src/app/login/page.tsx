@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Radar, Mail, ArrowRight, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import api from '@/lib/api';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -24,13 +25,18 @@ export default function LoginPage() {
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    setSent(true);
+    try {
+      await api.post('/auth/magic-link', { email });
+      setSent(true);
+    } catch {
+      // handle error silently for now
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogle = () => {
-    window.location.href = '/app/dashboard';
+    window.location.href = 'https://api.subradar.ai/api/v1/auth/google';
   };
 
   return (

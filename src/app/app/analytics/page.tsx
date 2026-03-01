@@ -1,6 +1,7 @@
 'use client';
 
-import { mockAnalytics, mockSubscriptions } from '@/lib/mockData';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useSubscriptions } from '@/hooks/useSubscriptions';
 import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart';
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { CardBreakdownChart } from '@/components/charts/CardBreakdownChart';
@@ -8,9 +9,18 @@ import { CategoryIcon } from '@/components/shared/CategoryIcon';
 import { formatCurrency } from '@/lib/utils';
 
 export default function AnalyticsPage() {
-  const analytics = mockAnalytics;
+  const { data: analytics, isLoading: analyticsLoading } = useAnalytics();
+  const { data: subscriptions = [], isLoading: subsLoading } = useSubscriptions();
 
-  const topExpensive = [...mockSubscriptions]
+  const isLoading = analyticsLoading || subsLoading;
+
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const topExpensive = [...subscriptions]
     .filter((s) => s.status === 'active')
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 5);
@@ -25,9 +35,9 @@ export default function AnalyticsPage() {
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {[
-          { label: 'Monthly', value: formatCurrency(analytics.totalMonthly) },
-          { label: 'Yearly', value: formatCurrency(analytics.totalYearly) },
-          { label: 'Active', value: analytics.activeCount.toString() },
+          { label: 'Monthly', value: formatCurrency(analytics?.totalMonthly ?? 0) },
+          { label: 'Yearly', value: formatCurrency(analytics?.totalYearly ?? 0) },
+          { label: 'Active', value: (analytics?.activeCount ?? 0).toString() },
         ].map(({ label, value }) => (
           <div key={label} className="glass-card rounded-2xl p-4 text-center">
             <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -39,18 +49,18 @@ export default function AnalyticsPage() {
       {/* Monthly trend */}
       <div className="glass-card rounded-2xl p-5">
         <h3 className="font-semibold text-sm text-gray-300 mb-4">Monthly Spend Trend</h3>
-        <MonthlyBarChart data={analytics.monthlyTrend} />
+        <MonthlyBarChart data={analytics?.monthlyTrend ?? []} />
       </div>
 
       {/* Category & Card breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card rounded-2xl p-5">
           <h3 className="font-semibold text-sm text-gray-300 mb-4">By Category</h3>
-          <CategoryDonutChart data={analytics.byCategory} />
+          <CategoryDonutChart data={analytics?.byCategory ?? []} />
         </div>
         <div className="glass-card rounded-2xl p-5">
           <h3 className="font-semibold text-sm text-gray-300 mb-4">By Card</h3>
-          <CardBreakdownChart data={analytics.byCard} />
+          <CardBreakdownChart data={analytics?.byCard ?? []} />
         </div>
       </div>
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit3, Trash2 } from 'lucide-react';
-import { mockSubscriptions } from '@/lib/mockData';
+import { useSubscription, useDeleteSubscription } from '@/hooks/useSubscriptions';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
@@ -13,8 +13,14 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 export function SubscriptionDetailClient({ id }: { id: string }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const { data: sub, isLoading } = useSubscription(id);
+  const deleteSub = useDeleteSubscription();
 
-  const sub = mockSubscriptions.find((s) => s.id === id);
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   if (!sub) {
     return (
@@ -24,6 +30,11 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
       </div>
     );
   }
+
+  const handleDelete = async () => {
+    await deleteSub.mutateAsync(id);
+    router.push('/app/subscriptions');
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -85,9 +96,13 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
             <Edit3 className="w-4 h-4" />
             Edit
           </button>
-          <button className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-semibold transition-all flex-1 justify-center">
+          <button
+            onClick={handleDelete}
+            disabled={deleteSub.isPending}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-semibold transition-all flex-1 justify-center disabled:opacity-60"
+          >
             <Trash2 className="w-4 h-4" />
-            Delete
+            {deleteSub.isPending ? 'Deleting...' : 'Delete'}
           </button>
         </div>
       </div>

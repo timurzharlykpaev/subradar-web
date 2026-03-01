@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import { Plus, Trash2, Edit3 } from 'lucide-react';
-import { mockCards } from '@/lib/mockData';
+import { usePaymentCards, useCreateCard, useDeleteCard } from '@/hooks/usePaymentCards';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
-import { PaymentCard, CardBrand } from '@/types';
+import { CardBrand } from '@/types';
 
 const CARD_COLORS = ['#7C3AED', '#0EA5E9', '#10B981', '#EF4444', '#F59E0B', '#EC4899'];
 const CARD_BRANDS: CardBrand[] = ['visa', 'mastercard', 'amex', 'mir', 'other'];
 
 export default function CardsPage() {
-  const [cards, setCards] = useState<PaymentCard[]>(mockCards);
+  const { data: cards = [], isLoading } = usePaymentCards();
+  const createCard = useCreateCard();
+  const deleteCard = useDeleteCard();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     nickname: '',
@@ -21,24 +23,28 @@ export default function CardsPage() {
     expiryYear: '',
   });
 
-  const handleAdd = (e: React.FormEvent) => {
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newCard: PaymentCard = {
-      id: Date.now().toString(),
+    await createCard.mutateAsync({
       nickname: form.nickname,
       last4: form.last4,
       brand: form.brand,
       color: form.color,
       expiryMonth: parseInt(form.expiryMonth),
       expiryYear: parseInt(form.expiryYear),
-    };
-    setCards([...cards, newCard]);
+    });
     setShowForm(false);
     setForm({ nickname: '', last4: '', brand: 'visa', color: CARD_COLORS[0], expiryMonth: '', expiryYear: '' });
   };
 
-  const handleDelete = (id: string) => {
-    setCards(cards.filter((c) => c.id !== id));
+  const handleDelete = async (id: string) => {
+    await deleteCard.mutateAsync(id);
   };
 
   return (
@@ -133,8 +139,8 @@ export default function CardsPage() {
             </div>
           </div>
           <div className="flex gap-3">
-            <button type="submit" className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all">
-              Add Card
+            <button type="submit" disabled={createCard.isPending} className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all disabled:opacity-60">
+              {createCard.isPending ? 'Adding...' : 'Add Card'}
             </button>
             <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition-all">
               Cancel
