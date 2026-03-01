@@ -1,0 +1,42 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install & Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.subradar.io
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: out/*
+          target: /var/www/app.subradar.io/
+          strip_components: 1
+
+      - name: Reload nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: systemctl reload nginx
