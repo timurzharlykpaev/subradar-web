@@ -24,7 +24,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at top, #1a0533 0%, #0f0f13 60%)' }}>
+    <div className="min-h-dvh flex items-center justify-center p-4 py-8" style={{ background: 'radial-gradient(ellipse at top, #1a0533 0%, #0f0f13 60%)' }}>
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
