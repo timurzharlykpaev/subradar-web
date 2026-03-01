@@ -1,10 +1,8 @@
 import { useState, Suspense } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Radar, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Radar, Mail, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
-import { useAppStore } from '@/store/useAppStore';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -17,7 +15,6 @@ const GoogleIcon = () => (
 
 function LoginContent() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
@@ -25,10 +22,13 @@ function LoginContent() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const setAuth = useAuthStore((s) => s.setAuth);
-  const setUser = useAppStore((s) => s.setUser);
-
   const redirectTo = searchParams.get('redirect') || '/app/dashboard';
+
+  const handleGoogle = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://api.subradar.ai';
+    const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
+    window.location.href = `${apiUrl}/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+  };
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,121 +44,222 @@ function LoginContent() {
     }
   };
 
-  const handleGoogle = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://api.subradar.ai';
-    const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
-    window.location.href = `${apiUrl}/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-  };
-
   return (
     <div
-      className="flex flex-col"
       style={{
         minHeight: '100dvh',
-        background: 'radial-gradient(ellipse 120% 60% at 50% 0%, #2d0a5e 0%, #0f0f13 55%)',
+        background: 'radial-gradient(ellipse 80% 50% at 50% -10%, #3b0764 0%, #0f0f13 60%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px 16px',
       }}
     >
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-12 pb-6">
-        <Link to="/" className="mb-6">
+      <div style={{ width: '100%', maxWidth: '400px' }}>
+
+        {/* Logo + title */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <Link to="/">
+            <div
+              style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '20px',
+                background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
+                boxShadow: '0 8px 32px rgba(124,58,237,0.45)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px',
+              }}
+            >
+              <Radar size={36} color="white" />
+            </div>
+          </Link>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
+            {t('auth.welcome')}
+          </h1>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+            {t('auth.sign_in')}
+          </p>
+        </div>
+
+        {/* Card */}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '24px',
+            padding: '24px',
+            backdropFilter: 'blur(20px)',
+          }}
+        >
+          {/* Tabs */}
           <div
-            className="w-20 h-20 rounded-3xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
-              boxShadow: '0 8px 32px rgba(124, 58, 237, 0.45)',
+              display: 'flex',
+              background: 'rgba(255,255,255,0.05)',
+              borderRadius: '12px',
+              padding: '4px',
+              marginBottom: '20px',
             }}
           >
-            <Radar className="w-10 h-10 text-white" />
-          </div>
-        </Link>
-
-        <h1 className="text-3xl font-bold text-white text-center mb-2">{t('auth.welcome')}</h1>
-        <p className="text-gray-400 text-base text-center max-w-xs">{t('auth.sign_in')}</p>
-
-        <div className="flex flex-wrap gap-2 justify-center mt-6">
-          {['AI-powered', 'Smart alerts', 'Tax reports'].map((f) => (
-            <span key={f} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
-              style={{ background: 'rgba(124,58,237,0.18)', color: '#c4b5fd', border: '1px solid rgba(124,58,237,0.25)' }}>
-              <Sparkles className="w-3 h-3" />{f}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full px-4 pb-8" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 1.5rem))' }}>
-        <div className="rounded-3xl p-6 w-full max-w-sm mx-auto"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(20px)' }}>
-
-          <div className="flex rounded-xl mb-5 p-1" style={{ background: 'rgba(255,255,255,0.05)' }}>
-            {[{ id: 'google', label: 'Google' }, { id: 'email', label: 'Magic Link' }].map((item) => (
-              <button key={item.id} onClick={() => setTab(item.id as 'google' | 'email')}
-                className="flex-1 py-2 text-sm font-medium rounded-lg transition-all"
-                style={tab === item.id
-                  ? { background: 'rgba(124,58,237,0.7)', color: '#fff' }
-                  : { color: 'rgba(255,255,255,0.45)' }}>
-                {item.label}
+            {(['google', 'email'] as const).map((id) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                style={{
+                  flex: 1,
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  transition: 'all 0.2s',
+                  background: tab === id ? 'rgba(124,58,237,0.75)' : 'transparent',
+                  color: tab === id ? '#fff' : 'rgba(255,255,255,0.4)',
+                }}
+              >
+                {id === 'google' ? 'Google' : 'Magic Link'}
               </button>
             ))}
           </div>
 
           {tab === 'google' && (
-            <button onClick={handleGoogle}
-              className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl bg-white text-gray-900 text-sm font-semibold transition-all active:scale-95"
-              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+            <button
+              onClick={handleGoogle}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                padding: '14px',
+                borderRadius: '16px',
+                background: '#fff',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '15px',
+                fontWeight: 600,
+                color: '#111',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+              }}
+            >
               <GoogleIcon />
               {t('auth.google')}
             </button>
           )}
 
           {tab === 'email' && !sent && (
-            <form onSubmit={handleMagicLink} className="space-y-3">
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+            <form onSubmit={handleMagicLink} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ position: 'relative' }}>
+                <Mail
+                  size={16}
+                  color="rgba(255,255,255,0.4)"
+                  style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
+                />
+                <input
+                  required
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('auth.email_placeholder')}
-                  className="w-full pl-10 pr-4 py-3.5 rounded-2xl text-sm focus:outline-none"
-                  style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }} />
+                  style={{
+                    width: '100%',
+                    padding: '14px 14px 14px 42px',
+                    borderRadius: '16px',
+                    background: 'rgba(255,255,255,0.07)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    color: '#fff',
+                    fontSize: '14px',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
               </div>
-              {errorMsg && <p className="text-xs text-red-400">{errorMsg}</p>}
-              <button type="submit" disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-white text-sm font-semibold transition-all active:scale-95 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
+              {errorMsg && (
+                <p style={{ fontSize: '12px', color: '#f87171', margin: 0 }}>{errorMsg}</p>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '14px',
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  opacity: loading ? 0.6 : 1,
+                }}
+              >
                 {loading ? (
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span
+                    style={{
+                      width: '16px', height: '16px',
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      borderTopColor: '#fff',
+                      borderRadius: '50%',
+                      display: 'inline-block',
+                      animation: 'spin 0.8s linear infinite',
+                    }}
+                  />
                 ) : (
-                  <><ArrowRight className="w-4 h-4" />{t('auth.send_link')}</>
+                  <>
+                    {t('auth.send_link')}
+                    <ArrowRight size={16} />
+                  </>
                 )}
               </button>
             </form>
           )}
 
           {tab === 'email' && sent && (
-            <div className="text-center py-2">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-                style={{ background: 'rgba(34,197,94,0.15)' }}>
-                <Mail className="w-7 h-7 text-green-400" />
+            <div style={{ textAlign: 'center', padding: '12px 0' }}>
+              <div
+                style={{
+                  width: '56px', height: '56px',
+                  borderRadius: '50%',
+                  background: 'rgba(34,197,94,0.15)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 12px',
+                }}
+              >
+                <Mail size={28} color="#4ade80" />
               </div>
-              <p className="font-semibold text-white">{t('auth.sent')}</p>
-              <p className="text-sm text-gray-400 mt-1">
-                {t('auth.sent_sub')} <span className="text-purple-400">{email}</span>
+              <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 4px' }}>{t('auth.sent')}</p>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+                {t('auth.sent_sub')} <span style={{ color: '#a78bfa' }}>{email}</span>
               </p>
             </div>
           )}
-
-          <p className="text-center text-xs mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            By signing in, you agree to our{' '}
-            <a href="/legal/terms" className="text-purple-400 hover:underline">Terms</a>{' '}
-            and{' '}
-            <a href="/legal/privacy" className="text-purple-400 hover:underline">Privacy Policy</a>
-          </p>
         </div>
+
+        {/* Legal */}
+        <p style={{ textAlign: 'center', fontSize: '12px', color: 'rgba(255,255,255,0.25)', marginTop: '20px' }}>
+          By signing in, you agree to our{' '}
+          <a href="/legal/terms" style={{ color: '#a78bfa' }}>Terms</a>{' '}
+          and{' '}
+          <a href="/legal/privacy" style={{ color: '#a78bfa' }}>Privacy Policy</a>
+        </p>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen" style={{ background: "#0f0f13" }} />}>
+    <Suspense fallback={<div style={{ background: '#0f0f13', minHeight: '100dvh' }} />}>
       <LoginContent />
     </Suspense>
   );
