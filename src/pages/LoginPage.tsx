@@ -1,7 +1,8 @@
-import { useState, Suspense } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Radar, Mail, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGoogleLogin } from '@react-oauth/google';
 import api from '@/lib/api';
 
 const GoogleIcon = () => (
@@ -16,6 +17,7 @@ const GoogleIcon = () => (
 function LoginContent() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [tab, setTab] = useState<'google' | 'email'>('google');
@@ -24,11 +26,26 @@ function LoginContent() {
 
   const redirectTo = searchParams.get('redirect') || '/app/dashboard';
 
-  const handleGoogle = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://api.subradar.ai';
-    const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
-    window.location.href = `${apiUrl}/api/v1/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-  };
+  const handleGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      setErrorMsg('');
+      try {
+        // Получаем id_token через userinfo (access_token flow)
+        const { data } = await api.post('/auth/google/token', {
+          accessToken: tokenResponse.access_token,
+        });
+        localStorage.setItem('auth_token', data.accessToken);
+        if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
+        navigate(redirectTo);
+      } catch {
+        setErrorMsg('Google sign-in failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => setErrorMsg('Google sign-in failed. Please try again.'),
+  });
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,7 +145,7 @@ function LoginContent() {
 
           {tab === 'google' && (
             <button
-              onClick={handleGoogle}
+              onClick={() => handleGoogle()}
               style={{
                 width: '100%',
                 display: 'flex',
@@ -258,9 +275,5 @@ function LoginContent() {
 }
 
 export default function LoginPage() {
-  return (
-    <Suspense fallback={<div style={{ background: '#0f0f13', minHeight: '100dvh' }} />}>
-      <LoginContent />
-    </Suspense>
-  );
+  return <LoginContent />;
 }
