@@ -1,0 +1,27 @@
+name: Deploy Web
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to server
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -az --delete
+          path: out/
+          remote_path: /var/www/app.subradar.ai/
+          remote_host: 46.101.197.19
+          remote_user: root
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
