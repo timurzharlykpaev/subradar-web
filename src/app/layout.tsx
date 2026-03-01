@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
+import { I18nProvider } from '@/providers/I18nProvider';
 
 export const metadata: Metadata = {
   title: 'SubRadar AI — Know exactly where your money goes',
@@ -22,9 +23,11 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body>
         <QueryProvider>
-          <ThemeProvider>
-            {children}
-          </ThemeProvider>
+          <I18nProvider>
+            <ThemeProvider>
+              {children}
+            </ThemeProvider>
+          </I18nProvider>
         </QueryProvider>
       </body>
     </html>

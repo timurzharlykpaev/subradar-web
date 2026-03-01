@@ -17,15 +17,7 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-  { href: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/app/subscriptions', icon: Layers, label: 'Subscriptions' },
-  { href: '/app/cards', icon: CreditCard, label: 'Cards' },
-  { href: '/app/analytics', icon: BarChart3, label: 'Analytics' },
-  { href: '/app/reports', icon: FileText, label: 'Reports' },
-  { href: '/app/settings', icon: Settings, label: 'Settings' },
-];
+import { useTranslation } from 'react-i18next';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -34,6 +26,16 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useAppStore();
+  const { t } = useTranslation();
+
+  const navItems = [
+    { href: '/app/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
+    { href: '/app/subscriptions', icon: Layers, label: t('nav.subscriptions') },
+    { href: '/app/cards', icon: CreditCard, label: t('nav.cards') },
+    { href: '/app/analytics', icon: BarChart3, label: t('nav.analytics') },
+    { href: '/app/reports', icon: FileText, label: t('nav.reports') },
+    { href: '/app/settings', icon: Settings, label: t('nav.settings') },
+  ];
 
   return (
     <div className="min-h-screen flex">

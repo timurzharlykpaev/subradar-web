@@ -7,39 +7,41 @@ import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart';
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { UpcomingPayments } from '@/components/subscriptions/UpcomingPayments';
 import { formatCurrency } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const analytics = mockAnalytics;
 
   const statCards = [
     {
-      label: 'Monthly Spend',
+      label: t('dashboard.monthly_spend'),
       value: formatCurrency(analytics.totalMonthly),
-      sub: `${analytics.activeCount} active subscriptions`,
+      sub: `${analytics.activeCount} ${t('dashboard.active_subscriptions')}`,
       icon: TrendingUp,
       color: '#8B5CF6',
     },
     {
-      label: 'Yearly Total',
+      label: t('dashboard.yearly_total'),
       value: formatCurrency(analytics.totalYearly),
-      sub: 'Projected annual spend',
+      sub: t('dashboard.projected_annual'),
       icon: CreditCard,
       color: '#10B981',
     },
     {
-      label: 'Renewals Soon',
+      label: t('dashboard.renewals_soon'),
       value: mockSubscriptions.filter((s) => {
         const days = Math.ceil((new Date(s.nextPaymentDate).getTime() - Date.now()) / 86400000);
         return days <= 7 && days >= 0;
       }).length.toString(),
-      sub: 'Within next 7 days',
+      sub: t('dashboard.within_7_days'),
       icon: AlertCircle,
       color: '#F59E0B',
     },
     {
-      label: 'Savings Possible',
+      label: t('dashboard.savings_possible'),
       value: '$12.99',
-      sub: 'Unused subscriptions',
+      sub: t('dashboard.unused_subscriptions'),
       icon: Zap,
       color: '#EF4444',
     },
@@ -49,15 +51,15 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-gray-400 text-sm mt-1">Your subscription overview</p>
+          <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
+          <p className="text-gray-400 text-sm mt-1">{t('dashboard.subtitle')}</p>
         </div>
         <Link
           href="/app/subscriptions/add"
           className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-all shadow-lg shadow-purple-500/20"
         >
           <Plus className="w-5 h-5" />
-          Add Subscription
+          {t('subscriptions.add')}
         </Link>
       </div>
 
@@ -83,11 +85,11 @@ export default function DashboardPage() {
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card rounded-2xl p-5">
-          <h3 className="font-semibold text-sm text-gray-300 mb-4">Monthly Spend Trend</h3>
+          <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('dashboard.monthly_trend')}</h3>
           <MonthlyBarChart data={analytics.monthlyTrend} />
         </div>
         <div className="glass-card rounded-2xl p-5">
-          <h3 className="font-semibold text-sm text-gray-300 mb-4">Spend by Category</h3>
+          <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('dashboard.by_category')}</h3>
           <CategoryDonutChart data={analytics.byCategory} />
         </div>
       </div>
