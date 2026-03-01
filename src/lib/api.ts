@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://api.subradar.ai';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://api.subradar.ai/api/v1';
 
 export const api = axios.create({
   baseURL: BASE_URL,
