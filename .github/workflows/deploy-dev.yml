@@ -20,7 +20,7 @@ jobs:
           npm install
           npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://api-dev.subradar.io
+          NEXT_PUBLIC_API_URL: https://api-dev.subradar.ai
           NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
 
       - name: Deploy to server
@@ -30,7 +30,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: out/*
-          target: /var/www/app-dev.subradar.io/
+          target: /var/www/app-dev.subradar.ai/
           strip_components: 1
 
       - name: Reload nginx

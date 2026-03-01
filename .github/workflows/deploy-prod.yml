@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -19,38 +18,33 @@ jobs:
           npm install
           npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://api.subradar.io
+          NEXT_PUBLIC_API_URL: https://api.subradar.ai
           NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
 
-      - name: Deploy standalone to server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 46.101.197.19
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p /opt/subradar/web-prod
+      - name: Prepare standalone
+        run: |
+          cp -r .next/static .next/standalone/.next/static || true
+          cp -r public .next/standalone/public || true
 
-      - name: Copy build to server
+      - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: 46.101.197.19
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".next/standalone/,public/,.next/static/"
-          target: /opt/subradar/web-prod/
+          source: ".next/standalone/"
+          target: /opt/subradar/web-prod-new/
+          strip_components: 2
 
-      - name: Start/Restart app
+      - name: Restart app
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: 46.101.197.19
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cp -r /opt/subradar/web-prod/.next/static /opt/subradar/web-prod/.next/standalone/.next/static
-            cp -r /opt/subradar/web-prod/public /opt/subradar/web-prod/.next/standalone/public
-            cd /opt/subradar/web-prod/.next/standalone
+            rsync -a /opt/subradar/web-prod-new/ /opt/subradar/web-prod-app/
+            cd /opt/subradar/web-prod-app
             PORT=3200 pm2 restart subradar-web-prod 2>/dev/null || PORT=3200 pm2 start server.js --name subradar-web-prod
             pm2 save
-            systemctl reload nginx
-            echo "✅ deployed"
+            echo "✅ deployed to https://app.subradar.ai"
