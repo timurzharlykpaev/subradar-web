@@ -38,7 +38,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex" style={{ minHeight: "100dvh" }}>
       {/* Sidebar (desktop) */}
       <aside className="hidden md:flex flex-col w-64 border-r border-white/10 bg-black/20 fixed h-full z-10">
         <div className="p-6 border-b border-white/10">
@@ -95,7 +95,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+      <div className="flex-1 md:ml-64 flex flex-col" style={{ minHeight: "100dvh" }}>
         <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6">
           {children}
         </main>
