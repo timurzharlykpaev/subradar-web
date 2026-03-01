@@ -1,0 +1,32 @@
+name: Deploy Landing (subradar.ai)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'landing/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /var/www/subradar.ai
+
+      - name: Upload landing files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "landing/*"
+          target: "/var/www/subradar.ai"
+          strip_components: 1

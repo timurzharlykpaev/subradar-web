@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SubRadar — Track Every Subscription with AI</title>
+  <meta name="description" content="Know exactly where your money goes. SubRadar uses AI to track all your subscriptions, send smart reminders, and give you full spending insights." />
+  <meta property="og:title" content="SubRadar — AI Subscription Tracker" />
+  <meta property="og:description" content="Know exactly where your money goes." />
+  <meta property="og:image" content="/logo.png" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #8B5CF6;
+      --blue: #3B82F6;
+      --green: #10B981;
+      --bg: #0a0a0f;
+      --surface: #13131f;
+      --surface2: #1a1a2e;
+      --text: #f1f1f8;
+      --muted: #8b8ba8;
+    }
+
+    body.light {
+      --bg: #f8f7ff;
+      --surface: #ffffff;
+      --surface2: #f0effe;
+      --text: #0f0f1a;
+      --muted: #5c5c80;
+    }
+    body.light .glass-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(139,92,246,0.15);
+    }
+    body.light .radar-ring { border-color: rgba(139,92,246,0.12); }
+    body.light .bg-glow { opacity: 0.4; }
+    body.light .sub-item { border-bottom-color: rgba(0,0,0,0.06); }
+    body.light .preview { background: #ffffff; border-color: rgba(139,92,246,0.15); }
+    body.light .feature-card { background: #ffffff; border-color: rgba(139,92,246,0.12); }
+    body.light footer { border-top-color: rgba(0,0,0,0.08); }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(139,92,246,0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(59,130,246,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .radar-ring {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(139,92,246,0.08);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .radar-ring:nth-child(1) { width: 300px; height: 300px; }
+    .radar-ring:nth-child(2) { width: 550px; height: 550px; }
+    .radar-ring:nth-child(3) { width: 800px; height: 800px; }
+    .radar-ring:nth-child(4) { width: 1100px; height: 1100px; }
+
+    /* Layout */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo img { width: 36px; height: 36px; border-radius: 10px; }
+    .badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: rgba(139,92,246,0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139,92,246,0.3);
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 0 60px;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--green);
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
+      font-weight: 600;
+    }
+    .hero-tag::before { content: "●"; font-size: 8px; }
+    h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -1.5px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    /* CTA buttons */
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+      color: white;
+      box-shadow: 0 8px 30px rgba(139,92,246,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(139,92,246,0.45); }
+    .btn-store {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .btn-store:hover { background: rgba(255,255,255,0.07); transform: translateY(-2px); }
+    .btn-store svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .btn-soon {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .btn-soon:hover { transform: none; }
+    .soon-label {
+      font-size: 11px;
+      background: rgba(139,92,246,0.2);
+      color: #a78bfa;
+      padding: 2px 7px;
+      border-radius: 100px;
+      font-weight: 700;
+    }
+
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 80px 0;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 24px;
+      transition: all 0.2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(139,92,246,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+      background: rgba(139,92,246,0.12);
+    }
+    .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* Subscription preview */
+    .preview {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 24px;
+      padding: 28px;
+      margin: 20px 0 80px;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .preview-total { font-size: 13px; color: var(--muted); }
+    .preview-amount { font-size: 28px; font-weight: 800; }
+    .sub-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .sub-item:last-child { border-bottom: none; }
+    .sub-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .sub-info { flex: 1; }
+    .sub-name { font-size: 14px; font-weight: 600; }
+    .sub-date { font-size: 12px; color: var(--muted); }
+    .sub-price { font-size: 14px; font-weight: 700; }
+    .sub-status {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer a { color: #a78bfa; text-decoration: none; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center; margin-bottom: 12px; }
+
+    @media (max-width: 600px) {
+      .cta-group { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 320px; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="radar-ring"></div>
+<div class="radar-ring"></div>
+<div class="radar-ring"></div>
+<div class="radar-ring"></div>
+
+<div class="container">
+  <nav>
+    <div class="logo">
+      <img src="/logo.png" onerror="this.style.display='none'" alt="" />
+      SubRadar
+    </div>
+    <div class="nav-right">
+      <button id="theme-toggle" onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;padding:8px;border-radius:10px;color:var(--text);font-size:18px;transition:all 0.2s;" title="Toggle theme">🌙</button>
+      <select id="lang-select" onchange="setLang(this.value)" style="background:var(--surface2);color:var(--text);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:6px 10px;font-size:13px;cursor:pointer;outline:none;">
+        <option value="en">🇺🇸 EN</option>
+        <option value="ru">🇷🇺 RU</option>
+        <option value="kz">🇰🇿 KZ</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="es">🇪🇸 ES</option>
+        <option value="zh">🇨🇳 ZH</option>
+        <option value="ja">🇯🇵 JA</option>
+        <option value="ko">🇰🇷 KO</option>
+      </select>
+      <span class="badge" data-i18n="badge">Coming Soon</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-tag" data-i18n="hero_tag">Now in development</div>
+    <h1><span data-i18n="h1_line1">Know exactly where</span><br /><span data-i18n="h1_line2">your money goes</span></h1>
+    <p class="subtitle" data-i18n="subtitle">
+      SubRadar uses AI to track all your subscriptions — Netflix, Spotify, ChatGPT and more.
+      Smart reminders, spending analytics, tax reports.
+    </p>
+
+    <div class="cta-group">
+      <a href="https://app.subradar.ai" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>
+        <span data-i18n="btn_web">Open Web App</span>
+      </a>
+      <a href="#" class="btn btn-store btn-soon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <span data-i18n="btn_ios">App Store</span>
+        <span class="soon-label" data-i18n="soon">Soon</span>
+      </a>
+      <a href="#" class="btn btn-store btn-soon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.24.99.19l12.48-12.48L12.9 7.72 3.18 23.76zm17.26-9.96l-2.87-1.67-3.36 3.36 3.36 3.36 2.9-1.69c.83-.48.83-1.88-.03-2.36zM3.24.25C2.92.46 2.7.83 2.7 1.3v21.4c0 .47.22.84.54 1.04L15.42 12 3.24.25zm10.14 11.07l3.36-3.36L3.18.24c-.3-.17-.64-.22-.99-.17l10.19 11.25z"/></svg>
+        <span data-i18n="btn_android">Google Play</span>
+        <span class="soon-label" data-i18n="soon">Soon</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Preview card -->
+  <div class="preview">
+    <div class="preview-header">
+      <div>
+        <div class="preview-total" data-i18n="preview_title">This month</div>
+        <div class="preview-amount">$127.97</div>
+      </div>
+      <div style="font-size:13px;color:#10B981;background:rgba(16,185,129,0.1);padding:4px 10px;border-radius:100px;" data-i18n="trend">↓ 12% vs last mo</div>
+    </div>
+    <div class="sub-item">
+      <div class="sub-icon" style="background:#E50914">🎬</div>
+      <div class="sub-info">
+        <div class="sub-name">Netflix</div>
+        <div class="sub-date">Renews Mar 15 · ••••4242</div>
+      </div>
+      <div class="sub-price">$15.99</div>
+      <div class="sub-status"></div>
+    </div>
+    <div class="sub-item">
+      <div class="sub-icon" style="background:#1DB954">🎵</div>
+      <div class="sub-info">
+        <div class="sub-name">Spotify Premium</div>
+        <div class="sub-date">Renews Mar 22 · ••••1337</div>
+      </div>
+      <div class="sub-price">$9.99</div>
+      <div class="sub-status"></div>
+    </div>
+    <div class="sub-item">
+      <div class="sub-icon" style="background:#10a37f">🤖</div>
+      <div class="sub-info">
+        <div class="sub-name">ChatGPT Plus</div>
+        <div class="sub-date">Renews Mar 5 · ••••9001</div>
+      </div>
+      <div class="sub-price">$20.00</div>
+      <div class="sub-status"></div>
+    </div>
+    <div class="sub-item">
+      <div class="sub-icon" style="background:#0080ff">☁️</div>
+      <div class="sub-info">
+        <div class="sub-name">DigitalOcean</div>
+        <div class="sub-date">Renews Mar 1 · ••••4242</div>
+      </div>
+      <div class="sub-price">$48.00</div>
+      <div class="sub-status"></div>
+    </div>
+    <div class="sub-item">
+      <div class="sub-icon" style="background:#6e5494">🛠️</div>
+      <div class="sub-info">
+        <div class="sub-name">GitHub Pro</div>
+        <div class="sub-date">Renews Mar 18 · ••••4242</div>
+      </div>
+      <div class="sub-price">$4.00</div>
+      <div class="sub-status" style="background:#F59E0B"></div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3 data-i18n="f1_title">AI-Powered Add</h3>
+      <p data-i18n="f1_desc">Say "Netflix" and AI instantly finds plans, price, cancel link for your region.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📸</div>
+      <h3 data-i18n="f2_title">Screenshot Scan</h3>
+      <p data-i18n="f2_desc">Take a photo of any receipt or notification — AI extracts all the details.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <h3 data-i18n="f3_title">Smart Reminders</h3>
+      <p data-i18n="f3_desc">Get notified 1, 3 or 7 days before any charge. Never get surprised again.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3 data-i18n="f4_title">Spending Analytics</h3>
+      <p data-i18n="f4_desc">Monthly charts, category breakdown, card-by-card spending. Full visibility.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧾</div>
+      <h3 data-i18n="f5_title">Tax Reports</h3>
+      <p data-i18n="f5_desc">Export PDF reports with business expenses marked. Perfect for accountants.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <h3 data-i18n="f6_title">Card Tracking</h3>
+      <p data-i18n="f6_desc">See which card each subscription charges. Track spend per card.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <p style="margin-bottom:8px" data-i18n="footer">© 2026 SubRadar · LLP Goalin</p>
+      <a href="https://app.subradar.ai/legal/privacy">Privacy Policy</a>
+      <a href="https://app.subradar.ai/legal/terms">Terms</a>
+      <a href="https://app.subradar.ai/legal/refund">Refund Policy</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ===================== THEME =====================
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('subradar-theme', isLight ? 'light' : 'dark');
+  document.getElementById('theme-toggle').textContent = isLight ? '☀️' : '🌙';
+}
+// Apply saved theme on load
+const saved = localStorage.getItem('subradar-theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (saved === 'light' || (!saved && !prefersDark)) {
+  document.body.classList.add('light');
+  document.getElementById('theme-toggle').textContent = '☀️';
+}
+
+// ===================== i18n =====================
+const translations = {
+  en: {
+    badge: "Coming Soon",
+    hero_tag: "Now in development",
+    h1_line1: "Know exactly where",
+    h1_line2: "your money goes",
+    subtitle: "SubRadar uses AI to track all your subscriptions — Netflix, Spotify, ChatGPT and more. Smart reminders, spending analytics, tax reports.",
+    btn_web: "Open Web App",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "Soon",
+    preview_title: "This month",
+    trend: "↓ 12% vs last mo",
+    f1_title: "AI-Powered Add",
+    f1_desc: "Say \"Netflix\" and AI instantly finds plans, price, cancel link for your region.",
+    f2_title: "Screenshot Scan",
+    f2_desc: "Take a photo of any receipt or notification — AI extracts all the details.",
+    f3_title: "Smart Reminders",
+    f3_desc: "Get notified 1, 3 or 7 days before any charge. Never get surprised again.",
+    f4_title: "Spending Analytics",
+    f4_desc: "Monthly charts, category breakdown, card-by-card spending. Full visibility.",
+    f5_title: "Tax Reports",
+    f5_desc: "Export PDF reports with business expenses marked. Perfect for accountants.",
+    f6_title: "Card Tracking",
+    f6_desc: "See which card each subscription charges. Track spend per card.",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  },
+  ru: {
+    badge: "Скоро",
+    hero_tag: "В разработке",
+    h1_line1: "Знай точно куда",
+    h1_line2: "уходят деньги",
+    subtitle: "SubRadar использует ИИ для отслеживания всех подписок — Netflix, Spotify, ChatGPT и других. Умные напоминания, аналитика расходов, налоговые отчёты.",
+    btn_web: "Открыть веб-приложение",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "Скоро",
+    preview_title: "В этом месяце",
+    trend: "↓ 12% по сравнению с прошлым мес.",
+    f1_title: "Добавление через ИИ",
+    f1_desc: "Скажи «Netflix» и ИИ мгновенно найдёт планы, цены и ссылку для отмены в твоём регионе.",
+    f2_title: "Сканирование скриншотов",
+    f2_desc: "Сфотографируй любой чек или уведомление — ИИ извлечёт все детали.",
+    f3_title: "Умные напоминания",
+    f3_desc: "Получай уведомления за 1, 3 или 7 дней до списания. Никаких сюрпризов.",
+    f4_title: "Аналитика расходов",
+    f4_desc: "Ежемесячные графики, разбивка по категориям, расходы по картам. Полная прозрачность.",
+    f5_title: "Налоговые отчёты",
+    f5_desc: "Экспортируй PDF-отчёты с отмеченными бизнес-расходами. Идеально для бухгалтеров.",
+    f6_title: "Отслеживание карт",
+    f6_desc: "Видь, с какой карты списывается каждая подписка. Отслеживай расходы по картам.",
+    footer: "© 2026 SubRadar · ТОО Goalin"
+  },
+  kz: {
+    badge: "Жақында",
+    hero_tag: "Әзірленуде",
+    h1_line1: "Ақшаң қайда",
+    h1_line2: "кететінін біл",
+    subtitle: "SubRadar ЖИ арқылы барлық жазылымдарыңды — Netflix, Spotify, ChatGPT және басқаларды бақылайды. Ақылды еске салулар, шығын аналитикасы, салық есептері.",
+    btn_web: "Веб-қосымшаны ашу",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "Жақында",
+    preview_title: "Осы айда",
+    trend: "↓ 12% өткен айға қарағанда",
+    f1_title: "ЖИ арқылы қосу",
+    f1_desc: "«Netflix» де, ЖИ дереу жоспарларды, бағаны және бас тарту сілтемесін табады.",
+    f2_title: "Скриншот сканерлеу",
+    f2_desc: "Кез келген чекті немесе хабарландыруды суретке түсір — ЖИ барлық мәліметтерді шығарады.",
+    f3_title: "Ақылды еске салулар",
+    f3_desc: "Кез келген есептен 1, 3 немесе 7 күн бұрын хабарлама ал. Тосын жағдайлар болмасын.",
+    f4_title: "Шығын аналитикасы",
+    f4_desc: "Ай сайынғы кестелер, санат бойынша бөлу, карта бойынша шығын. Толық ашықтық.",
+    f5_title: "Салық есептері",
+    f5_desc: "Бизнес шығындары белгіленген PDF есептерін экспорттау. Бухгалтерлер үшін тамаша.",
+    f6_title: "Карталарды бақылау",
+    f6_desc: "Әр жазылым қандай картадан алынатынын көр. Картадағы шығынды бақыла.",
+    footer: "© 2026 SubRadar · ЖШС Goalin"
+  },
+  de: {
+    badge: "Demnächst",
+    hero_tag: "In Entwicklung",
+    h1_line1: "Wisse genau wohin",
+    h1_line2: "dein Geld geht",
+    subtitle: "SubRadar nutzt KI, um alle deine Abonnements zu verfolgen — Netflix, Spotify, ChatGPT und mehr. Clevere Erinnerungen, Ausgabenanalysen, Steuerberichte.",
+    btn_web: "Web-App öffnen",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "Bald",
+    preview_title: "Diesen Monat",
+    trend: "↓ 12% ggü. letztem Monat",
+    f1_title: "KI-gestütztes Hinzufügen",
+    f1_desc: "Sag \"Netflix\" und KI findet sofort Tarife, Preise und Kündigungslink für deine Region.",
+    f2_title: "Screenshot-Scan",
+    f2_desc: "Fotografiere jeden Beleg oder jede Benachrichtigung — KI extrahiert alle Details.",
+    f3_title: "Smarte Erinnerungen",
+    f3_desc: "Werde 1, 3 oder 7 Tage vor jeder Abbuchung benachrichtigt. Keine Überraschungen mehr.",
+    f4_title: "Ausgabenanalyse",
+    f4_desc: "Monatliche Diagramme, Kategorieaufschlüsselung, kartenweise Ausgaben. Volle Übersicht.",
+    f5_title: "Steuerberichte",
+    f5_desc: "Exportiere PDF-Berichte mit markierten Geschäftsausgaben. Perfekt für Buchhalter.",
+    f6_title: "Kartenverfolgung",
+    f6_desc: "Sieh, welche Karte für jedes Abonnement belastet wird. Verfolge Ausgaben pro Karte.",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  },
+  fr: {
+    badge: "Bientôt",
+    hero_tag: "En développement",
+    h1_line1: "Sachez exactement où",
+    h1_line2: "va votre argent",
+    subtitle: "SubRadar utilise l'IA pour suivre tous vos abonnements — Netflix, Spotify, ChatGPT et plus. Rappels intelligents, analyses des dépenses, rapports fiscaux.",
+    btn_web: "Ouvrir l'app web",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "Bientôt",
+    preview_title: "Ce mois-ci",
+    trend: "↓ 12% vs mois dernier",
+    f1_title: "Ajout par IA",
+    f1_desc: "Dites \"Netflix\" et l'IA trouve instantanément les plans, prix et lien d'annulation pour votre région.",
+    f2_title: "Scan de capture d'écran",
+    f2_desc: "Prenez une photo de n'importe quel reçu ou notification — l'IA extrait tous les détails.",
+    f3_title: "Rappels intelligents",
+    f3_desc: "Soyez notifié 1, 3 ou 7 jours avant tout prélèvement. Ne soyez plus jamais surpris.",
+    f4_title: "Analyse des dépenses",
+    f4_desc: "Graphiques mensuels, répartition par catégorie, dépenses par carte. Visibilité totale.",
+    f5_title: "Rapports fiscaux",
+    f5_desc: "Exportez des rapports PDF avec les dépenses professionnelles marquées. Parfait pour les comptables.",
+    f6_title: "Suivi des cartes",
+    f6_desc: "Voyez quelle carte est débitée pour chaque abonnement. Suivez les dépenses par carte.",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  },
+  es: {
+    badge: "Próximamente",
+    hero_tag: "En desarrollo",
+    h1_line1: "Sabe exactamente adónde",
+    h1_line2: "va tu dinero",
+    subtitle: "SubRadar usa IA para rastrear todas tus suscripciones — Netflix, Spotify, ChatGPT y más. Recordatorios inteligentes, análisis de gastos, informes fiscales.",
+    btn_web: "Abrir app web",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "Pronto",
+    preview_title: "Este mes",
+    trend: "↓ 12% vs mes anterior",
+    f1_title: "Añadir con IA",
+    f1_desc: "Di \"Netflix\" y la IA encuentra al instante planes, precio y enlace de cancelación para tu región.",
+    f2_title: "Escaneo de capturas",
+    f2_desc: "Toma una foto de cualquier recibo o notificación — la IA extrae todos los detalles.",
+    f3_title: "Recordatorios inteligentes",
+    f3_desc: "Recibe notificaciones 1, 3 o 7 días antes de cualquier cargo. Nunca más sorpresas.",
+    f4_title: "Análisis de gastos",
+    f4_desc: "Gráficos mensuales, desglose por categorías, gastos por tarjeta. Visibilidad total.",
+    f5_title: "Informes fiscales",
+    f5_desc: "Exporta informes PDF con gastos empresariales marcados. Perfecto para contables.",
+    f6_title: "Seguimiento de tarjetas",
+    f6_desc: "Ve qué tarjeta se cobra para cada suscripción. Controla el gasto por tarjeta.",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  },
+  zh: {
+    badge: "即将推出",
+    hero_tag: "开发中",
+    h1_line1: "精确掌握",
+    h1_line2: "每一分钱的去向",
+    subtitle: "SubRadar 利用 AI 追踪所有订阅——Netflix、Spotify、ChatGPT 等。智能提醒、消费分析、税务报告。",
+    btn_web: "打开网页应用",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "即将推出",
+    preview_title: "本月",
+    trend: "↓ 比上月少 12%",
+    f1_title: "AI 智能添加",
+    f1_desc: "说出「Netflix」，AI 立即为您所在地区找到套餐、价格和取消链接。",
+    f2_title: "截图扫描",
+    f2_desc: "拍摄任何收据或通知的照片——AI 提取所有详细信息。",
+    f3_title: "智能提醒",
+    f3_desc: "在任何扣款前 1、3 或 7 天收到通知。再也不会感到意外。",
+    f4_title: "消费分析",
+    f4_desc: "月度图表、类别细分、按卡消费。全面可视化。",
+    f5_title: "税务报告",
+    f5_desc: "导出标记了商业支出的 PDF 报告。非常适合会计师。",
+    f6_title: "卡片追踪",
+    f6_desc: "查看每个订阅从哪张卡扣费。按卡追踪消费。",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  },
+  ja: {
+    badge: "近日公開",
+    hero_tag: "開発中",
+    h1_line1: "お金がどこに",
+    h1_line2: "消えるかを把握",
+    subtitle: "SubRadar は AI を使ってすべてのサブスクリプション（Netflix、Spotify、ChatGPT など）を追跡します。スマートなリマインダー、支出分析、税務レポート。",
+    btn_web: "ウェブアプリを開く",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "近日公開",
+    preview_title: "今月",
+    trend: "↓ 先月比 12% 減",
+    f1_title: "AI でサブスク追加",
+    f1_desc: "「Netflix」と言うだけで、AI があなたの地域のプラン、価格、解約リンクを瞬時に検索。",
+    f2_title: "スクリーンショットスキャン",
+    f2_desc: "レシートや通知を写真に撮るだけ — AI がすべての詳細を抽出します。",
+    f3_title: "スマートリマインダー",
+    f3_desc: "請求の 1、3、または 7 日前に通知を受け取ります。もう驚きはありません。",
+    f4_title: "支出分析",
+    f4_desc: "月次グラフ、カテゴリ別内訳、カード別支出。完全な可視性。",
+    f5_title: "税務レポート",
+    f5_desc: "ビジネス経費がマークされた PDF レポートをエクスポート。経理担当者に最適。",
+    f6_title: "カード追跡",
+    f6_desc: "各サブスクリプションがどのカードで請求されるかを確認。カード別支出を追跡。",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  },
+  ko: {
+    badge: "출시 예정",
+    hero_tag: "개발 중",
+    h1_line1: "돈이 어디로",
+    h1_line2: "가는지 정확히 알아보세요",
+    subtitle: "SubRadar는 AI를 사용하여 Netflix, Spotify, ChatGPT 등 모든 구독을 추적합니다. 스마트 알림, 지출 분석, 세금 보고서.",
+    btn_web: "웹 앱 열기",
+    btn_ios: "App Store",
+    btn_android: "Google Play",
+    soon: "출시 예정",
+    preview_title: "이번 달",
+    trend: "↓ 지난달 대비 12% 감소",
+    f1_title: "AI 구독 추가",
+    f1_desc: "\"Netflix\"라고 말하면 AI가 해당 지역의 플랜, 가격, 취소 링크를 즉시 찾아줍니다.",
+    f2_title: "스크린샷 스캔",
+    f2_desc: "영수증이나 알림 사진을 찍으면 AI가 모든 세부 정보를 추출합니다.",
+    f3_title: "스마트 알림",
+    f3_desc: "결제 1, 3 또는 7일 전에 알림을 받으세요. 다시는 놀라지 않습니다.",
+    f4_title: "지출 분석",
+    f4_desc: "월별 차트, 카테고리별 분류, 카드별 지출. 완전한 가시성.",
+    f5_title: "세금 보고서",
+    f5_desc: "비즈니스 경비가 표시된 PDF 보고서를 내보내세요. 회계사에게 완벽합니다.",
+    f6_title: "카드 추적",
+    f6_desc: "각 구독이 어느 카드로 청구되는지 확인하세요. 카드별 지출을 추적합니다.",
+    footer: "© 2026 SubRadar · LLP Goalin"
+  }
+};
+
+function setLang(lang) {
+  if (!translations[lang]) lang = 'en';
+  const t = translations[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  localStorage.setItem('subradar-lang', lang);
+  document.getElementById('lang-select').value = lang;
+}
+
+// Auto-detect language on load
+(function() {
+  const savedLang = localStorage.getItem('subradar-lang');
+  const detected = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  const supported = Object.keys(translations);
+  const lang = savedLang || (supported.includes(detected) ? detected : 'en');
+  setLang(lang);
+})();
+</script>
+
+</body>
+</html>
