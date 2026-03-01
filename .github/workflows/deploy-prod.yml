@@ -13,7 +13,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Install & Build
         run: |
@@ -23,20 +22,35 @@ jobs:
           NEXT_PUBLIC_API_URL: https://api.subradar.io
           NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
 
-      - name: Deploy to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 46.101.197.19
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: out/*
-          target: /var/www/app.subradar.io/
-          strip_components: 1
-
-      - name: Reload nginx
+      - name: Deploy standalone to server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: 46.101.197.19
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: systemctl reload nginx
+          script: |
+            mkdir -p /opt/subradar/web-prod
+
+      - name: Copy build to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".next/standalone/,public/,.next/static/"
+          target: /opt/subradar/web-prod/
+
+      - name: Start/Restart app
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cp -r /opt/subradar/web-prod/.next/static /opt/subradar/web-prod/.next/standalone/.next/static
+            cp -r /opt/subradar/web-prod/public /opt/subradar/web-prod/.next/standalone/public
+            cd /opt/subradar/web-prod/.next/standalone
+            PORT=3200 pm2 restart subradar-web-prod 2>/dev/null || PORT=3200 pm2 start server.js --name subradar-web-prod
+            pm2 save
+            systemctl reload nginx
+            echo "✅ deployed"
