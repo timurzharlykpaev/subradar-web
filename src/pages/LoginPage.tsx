@@ -27,7 +27,7 @@ function LoginContent() {
   const handleGoogle = () => {
     const apiUrl = import.meta.env.VITE_API_URL || 'https://api.subradar.ai';
     const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
-    window.location.href = `${apiUrl}/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+    window.location.href = `${apiUrl}/api/v1/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
   };
 
   const handleMagicLink = async (e: React.FormEvent) => {
