@@ -35,7 +35,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     if (!isAuthenticated && typeof window !== 'undefined' && !localStorage.getItem('auth_token')) {
       navigate('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, navigate]);
 
   const handleLogout = () => {
     logout();
@@ -57,7 +57,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Sidebar (desktop) */}
       <aside className="hidden md:flex flex-col w-64 border-r border-white/10 bg-black/20 fixed h-full z-10">
         <div className="p-6 border-b border-white/10">
-          <Link href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-lg bg-purple-600 flex items-center justify-center">
               <Radar className="w-5 h-5 text-white" />
             </div>
@@ -71,7 +71,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             return (
               <Link
                 key={href}
-                href={href}
+                to={href}
                 className={cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all',
                   isActive
@@ -88,7 +88,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         <div className="p-4 border-t border-white/10 space-y-2">
           <Link
-            href="/app/subscriptions/add"
+            to="/app/subscriptions/add"
             className="flex items-center gap-2 w-full px-4 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all shadow-lg"
           >
             <Plus className="w-5 h-5" />
@@ -124,7 +124,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             return (
               <Link
                 key={href}
-                href={href}
+                to={href}
                 className={cn(
                   'flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all',
                   isActive ? 'text-purple-400' : 'text-gray-500'
@@ -136,7 +136,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             );
           })}
           <Link
-            href="/app/subscriptions/add"
+            to="/app/subscriptions/add"
             className="flex flex-col items-center gap-1 px-3 py-2"
           >
             <div className="w-11 h-11 rounded-full bg-purple-600 flex items-center justify-center -mt-5 shadow-lg shadow-purple-500/40">
@@ -148,7 +148,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Mobile FAB */}
       <Link
-        href="/app/subscriptions/add"
+        to="/app/subscriptions/add"
         className="fixed bottom-20 right-4 md:hidden w-14 h-14 rounded-full bg-purple-600 flex items-center justify-center shadow-xl shadow-purple-500/40 z-50 hover:bg-purple-700 transition-all"
         aria-label="Add subscription"
       >

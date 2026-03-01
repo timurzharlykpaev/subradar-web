@@ -25,7 +25,7 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
       {action && (
         action.href ? (
           <Link
-            href={action.href}
+            to={action.href}
             className="mt-4 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all"
           >
             {action.label}

@@ -16,7 +16,7 @@ export function SubscriptionCard({ subscription, onClick }: SubscriptionCardProp
   const isUrgent = days <= 3 && days >= 0;
 
   return (
-    <Link href={`/app/subscriptions/${subscription.id}`} onClick={onClick}>
+    <Link to={`/app/subscriptions/${subscription.id}`} onClick={onClick}>
       <div className="glass-card rounded-2xl p-4 hover:border-purple-500/40 transition-all cursor-pointer group">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">

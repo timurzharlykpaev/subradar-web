@@ -28,7 +28,6 @@ function LoginContent() {
 
   const handleGoogle = useGoogleLogin({
     flow: 'implicit',
-    ux_mode: 'popup',
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       setErrorMsg('');
