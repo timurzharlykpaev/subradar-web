@@ -29,7 +29,7 @@ jobs:
           fi
 
       - name: Install & Build
-        run: npm ci && npm run build
+        run: npm ci --legacy-peer-deps && npm run build
         env:
           VITE_API_URL: ${{ steps.env.outputs.api_url }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
