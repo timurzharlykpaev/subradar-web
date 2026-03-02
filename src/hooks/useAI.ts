@@ -17,7 +17,7 @@ export interface ServiceLookupResult {
 export function useLookupService() {
   return useMutation({
     mutationFn: async (query: string) => {
-      const { data } = await api.post<ServiceLookupResult>('/ai/lookup-service', { query });
+      const { data } = await api.post<ServiceLookupResult>('/ai/lookup', { query });
       return data;
     },
   });

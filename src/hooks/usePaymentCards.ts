@@ -6,7 +6,7 @@ export function usePaymentCards() {
   return useQuery({
     queryKey: ['cards'],
     queryFn: async () => {
-      const { data } = await api.get<PaymentCard[]>('/cards');
+      const { data } = await api.get<PaymentCard[]>('/payment-cards');
       return data;
     },
   });
@@ -16,7 +16,7 @@ export function useCreateCard() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (payload: Partial<PaymentCard>) => {
-      const { data } = await api.post<PaymentCard>('/cards', payload);
+      const { data } = await api.post<PaymentCard>('/payment-cards', payload);
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['cards'] }),
@@ -27,7 +27,7 @@ export function useUpdateCard(id: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (payload: Partial<PaymentCard>) => {
-      const { data } = await api.patch<PaymentCard>(`/cards/${id}`, payload);
+      const { data } = await api.patch<PaymentCard>(`/payment-cards/${id}`, payload);
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['cards'] }),
@@ -38,7 +38,7 @@ export function useDeleteCard() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/cards/${id}`);
+      await api.delete(`/payment-cards/${id}`);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['cards'] }),
   });
