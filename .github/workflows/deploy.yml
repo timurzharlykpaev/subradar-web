@@ -1,27 +1,53 @@
-name: Deploy Web
+name: Deploy
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [dev, main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npm run build
+
+      - name: Set environment
+        id: env
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "target=prod" >> $GITHUB_OUTPUT
+            echo "api_url=https://api.subradar.ai/api/v1" >> $GITHUB_OUTPUT
+            echo "web_dir=/var/www/app.subradar.ai" >> $GITHUB_OUTPUT
+          else
+            echo "target=dev" >> $GITHUB_OUTPUT
+            echo "api_url=https://api-dev.subradar.ai/api/v1" >> $GITHUB_OUTPUT
+            echo "web_dir=/var/www/app-dev.subradar.ai" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install & Build
+        run: npm ci && npm run build
+        env:
+          VITE_API_URL: ${{ steps.env.outputs.api_url }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+
       - name: Deploy to server
-        uses: burnett01/rsync-deployments@7.0.1
+        uses: appleboy/scp-action@v0.1.7
         with:
-          switches: -az --delete
-          path: dist/
-          remote_path: /var/www/app.subradar.ai/
-          remote_host: 46.101.197.19
-          remote_user: root
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: dist/
+          target: ${{ steps.env.outputs.web_dir }}
+          strip_components: 1
+
+      - name: Reload nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.101.197.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: systemctl reload nginx && echo "✅ subradar-web ${{ steps.env.outputs.target }} deployed"
