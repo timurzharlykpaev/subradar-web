@@ -10,6 +10,7 @@ import ReportsPage from '@/pages/ReportsPage'
 import SettingsPage from '@/pages/SettingsPage'
 import LoginPage from '@/pages/LoginPage'
 import AuthCallbackPage from '@/pages/AuthCallbackPage'
+import MagicLinkPage from '@/pages/MagicLinkPage'
 import PrivacyPage from '@/pages/legal/PrivacyPage'
 import RefundPage from '@/pages/legal/RefundPage'
 import TermsPage from '@/pages/legal/TermsPage'
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
+      <Route path="/auth/magic" element={<MagicLinkPage />} />
       <Route path="/legal/privacy" element={<PrivacyPage />} />
       <Route path="/legal/refund" element={<RefundPage />} />
       <Route path="/legal/terms" element={<TermsPage />} />
