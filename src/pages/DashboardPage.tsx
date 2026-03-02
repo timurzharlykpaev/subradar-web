@@ -26,7 +26,7 @@ export default function DashboardPage() {
     {
       label: t('dashboard.monthly_spend'),
       value: summary ? formatCurrency(summary.totalMonthly) : '—',
-      sub: summary ? `${summary.activeCount} ${t('dashboard.active_subscriptions')}` : '—',
+      sub: summary ? `${summary.activeCount ?? 0} ${t('dashboard.active_subscriptions')}` : '—',
       icon: TrendingUp,
       color: '#8B5CF6',
     },

@@ -111,7 +111,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col" style={{ minHeight: "100dvh" }}>
-        <main className="flex-1 px-4 pt-4 sm:px-6 sm:pt-6 pb-24 md:pb-6">
+        <main className="flex-1 pb-24 md:pb-6" style={{ padding: '16px 16px 96px', paddingLeft: 'max(16px, env(safe-area-inset-left))', paddingRight: 'max(16px, env(safe-area-inset-right))' }}>
           {children}
         </main>
       </div>
@@ -146,14 +146,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       </nav>
 
-      {/* Mobile FAB */}
-      <Link
-        to="/app/subscriptions/add"
-        className="fixed bottom-20 right-4 md:hidden w-14 h-14 rounded-full bg-purple-600 flex items-center justify-center shadow-xl shadow-purple-500/40 z-50 hover:bg-purple-700 transition-all"
-        aria-label="Add subscription"
-      >
-        <Plus className="w-7 h-7 text-white" />
-      </Link>
+
     </div>
   );
 }
