@@ -111,13 +111,24 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col" style={{ minHeight: "100dvh" }}>
-        <main className="flex-1 pb-24 md:pb-6" style={{ padding: '16px 16px 96px', paddingLeft: 'max(16px, env(safe-area-inset-left))', paddingRight: 'max(16px, env(safe-area-inset-right))' }}>
+        <main
+          className="flex-1"
+          style={{
+            padding: '16px',
+            paddingLeft: 'max(16px, env(safe-area-inset-left))',
+            paddingRight: 'max(16px, env(safe-area-inset-right))',
+            paddingBottom: 'calc(80px + env(safe-area-inset-bottom))',
+          }}
+        >
           {children}
         </main>
       </div>
 
       {/* Bottom nav (mobile) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-10 border-t border-white/10 bg-black/80 backdrop-blur-xl">
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 z-10 border-t border-white/10 bg-black/80 backdrop-blur-xl"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
         <div className="flex items-center justify-around px-2 py-2">
           {navItems.slice(0, 5).map(({ href, icon: Icon, label }) => {
             const isActive = pathname === href || pathname.startsWith(href + '/');
@@ -135,16 +146,20 @@ export function AppLayout({ children }: AppLayoutProps) {
               </Link>
             );
           })}
-          <Link
-            to="/app/subscriptions/add"
-            className="flex flex-col items-center gap-1 px-3 py-2"
-          >
-            <div className="w-11 h-11 rounded-full bg-purple-600 flex items-center justify-center -mt-5 shadow-lg shadow-purple-500/40">
-              <Plus className="w-6 h-6 text-white" />
-            </div>
-          </Link>
         </div>
       </nav>
+
+      {/* Mobile FAB */}
+      <Link
+        to="/app/subscriptions/add"
+        className="fixed md:hidden z-50"
+        style={{ bottom: 'calc(72px + env(safe-area-inset-bottom))', right: '16px' }}
+        aria-label="Add subscription"
+      >
+        <div className="w-14 h-14 rounded-full bg-purple-600 flex items-center justify-center shadow-xl shadow-purple-500/40 hover:bg-purple-700 transition-all">
+          <Plus className="w-7 h-7 text-white" />
+        </div>
+      </Link>
 
 
     </div>
