@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Trash2, Edit3, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Edit3, Loader2, CreditCard } from 'lucide-react';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
 import { PaymentCard, CardBrand } from '@/types';
 import { usePaymentCards, useCreateCard, useUpdateCard, useDeleteCard } from '@/hooks/usePaymentCards';
@@ -186,6 +186,23 @@ export default function CardsPage() {
 
       {showForm && <CardForm form={form} setForm={setForm} onSubmit={handleAdd} submitLabel="Add Card" isPending={createMutation.isPending} onCancel={handleCancel} />}
       {editingId && <CardForm form={form} setForm={setForm} onSubmit={handleUpdate} submitLabel="Update Card" isPending={updateMutation.isPending} onCancel={handleCancel} />}
+
+      {!isLoading && (cards ?? []).length === 0 && !showForm && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+            <CreditCard className="w-8 h-8 text-gray-500" />
+          </div>
+          <p className="text-gray-300 font-semibold mb-1">No cards linked</p>
+          <p className="text-gray-500 text-sm mb-6">Add a payment card to track which subscriptions are linked to it</p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            Add First Card
+          </button>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

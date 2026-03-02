@@ -38,7 +38,7 @@ export default function AnalyticsPage() {
             { label: 'Yearly', value: formatCurrency(summary?.totalYearly ?? 0) },
             { label: 'Active', value: (summary?.activeCount ?? 0).toString() },
           ].map(({ label, value }) => (
-            <div key={label} className="glass-card rounded-2xl p-4 text-center">
+            <div key={label} className="glass-card rounded-2xl p-3 sm:p-4 text-center">
               <p className="text-xs text-gray-400 mb-1">{label}</p>
               <p className="text-base sm:text-lg font-bold text-purple-400 truncate">{value}</p>
             </div>

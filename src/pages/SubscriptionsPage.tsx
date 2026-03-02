@@ -34,7 +34,7 @@ export default function SubscriptionsPage() {
         </div>
         <Link
           to="/app/subscriptions/add"
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-all shadow-lg"
+          className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-all shadow-lg"
         >
           <Plus className="w-5 h-5" />
           <span>{t('common.add')}</span>

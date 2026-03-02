@@ -149,8 +149,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       </nav>
 
-      {/* Mobile FAB */}
-      <Link
+      {/* Mobile FAB — only on Dashboard and Subscriptions */}
+      {(pathname.includes('/dashboard') || pathname.includes('/subscriptions')) && <Link
         to="/app/subscriptions/add"
         className="fixed md:hidden z-50"
         style={{ bottom: 'calc(72px + env(safe-area-inset-bottom))', right: '16px' }}
@@ -159,7 +159,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="w-14 h-14 rounded-full bg-purple-600 flex items-center justify-center shadow-xl shadow-purple-500/40 hover:bg-purple-700 transition-all">
           <Plus className="w-7 h-7 text-white" />
         </div>
-      </Link>
+      </Link>}
 
 
     </div>
