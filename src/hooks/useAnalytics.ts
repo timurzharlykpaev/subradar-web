@@ -13,6 +13,10 @@ export interface AnalyticsSummary {
 export interface MonthlyData {
   month: string;
   amount: number;
+  // raw backend fields
+  label?: string;
+  total?: number;
+  year?: number;
 }
 
 export interface CategoryData {
@@ -59,8 +63,8 @@ export function useAnalyticsMonthly(months = 12) {
   return useQuery<MonthlyData[]>({
     queryKey: ['analytics', 'monthly', months],
     queryFn: async () => {
-      const { data } = await api.get<MonthlyData[]>('/analytics/monthly', { params: { months } });
-      return data;
+      const { data } = await api.get<any[]>('/analytics/monthly', { params: { months } });
+      return data.map((d) => ({ month: d.label || d.month, amount: d.total ?? d.amount ?? 0 }));
     },
   });
 }
@@ -69,8 +73,8 @@ export function useAnalyticsByCategory() {
   return useQuery<CategoryData[]>({
     queryKey: ['analytics', 'by-category'],
     queryFn: async () => {
-      const { data } = await api.get<CategoryData[]>('/analytics/by-category');
-      return data;
+      const { data } = await api.get<any[]>('/analytics/by-category');
+      return data.map((d) => ({ category: d.category, amount: d.total ?? d.amount ?? 0, count: d.count ?? 0 }));
     },
   });
 }
@@ -79,8 +83,8 @@ export function useAnalyticsByCard() {
   return useQuery<CardAnalyticsData[]>({
     queryKey: ['analytics', 'by-card'],
     queryFn: async () => {
-      const { data } = await api.get<CardAnalyticsData[]>('/analytics/by-card');
-      return data;
+      const { data } = await api.get<any[]>('/analytics/by-card');
+      return data.map((d) => ({ cardId: d.card?.id ?? '', card: d.card, amount: d.total ?? d.amount ?? 0, count: d.subscriptions ?? d.count ?? 0 }));
     },
   });
 }
