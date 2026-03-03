@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, SlidersHorizontal, X } from 'lucide-react';
+import { PlanUsageBar } from '@/components/ui/PlanUsageBar';
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { SubscriptionStatus } from '@/types';
