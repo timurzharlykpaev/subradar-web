@@ -1,5 +1,6 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
+import { BillingInfo } from '@/types';
 
 export interface BillingPlan {
   id: string;
@@ -8,13 +9,6 @@ export interface BillingPlan {
   yearlyPrice: number;
   currency: string;
   features: string[];
-}
-
-export interface BillingMe {
-  plan: string;
-  status: 'active' | 'cancelled' | 'trialing';
-  currentPeriodEnd: string;
-  cancelAtPeriodEnd: boolean;
 }
 
 export function useBillingPlans() {
@@ -28,12 +22,13 @@ export function useBillingPlans() {
 }
 
 export function useBillingMe() {
-  return useQuery<BillingMe>({
+  return useQuery<BillingInfo>({
     queryKey: ['billing', 'me'],
     queryFn: async () => {
-      const { data } = await api.get<BillingMe>('/billing/me');
+      const { data } = await api.get<BillingInfo>('/billing/me');
       return data;
     },
+    staleTime: 30000,
   });
 }
 
@@ -47,9 +42,44 @@ export function useCheckout() {
 }
 
 export function useCancelBilling() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async () => {
       await api.post('/billing/cancel');
     },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['billing', 'me'] }),
+  });
+}
+
+export function useStartTrial() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await api.post<{ success: boolean; message: string }>('/billing/trial');
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['billing', 'me'] }),
+  });
+}
+
+export function useProInvite() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const { data } = await api.post<{ success: boolean; message: string }>('/billing/invite', { email });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['billing', 'me'] }),
+  });
+}
+
+export function useRemoveProInvite() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await api.delete<{ success: boolean; message: string }>('/billing/invite');
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['billing', 'me'] }),
   });
 }

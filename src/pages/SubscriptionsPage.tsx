@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, SlidersHorizontal, X } from 'lucide-react';
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { SubscriptionStatus } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { useSubscriptions } from '@/hooks/useSubscriptions';
+import { useBillingMe } from '@/hooks/useBilling';
 import { SkeletonList } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { PlanUsageBar } from '@/components/ui/PlanUsageBar';
+import { UpgradeModal } from '@/components/ui/UpgradeModal';
 
 const statuses: SubscriptionStatus[] = ['active', 'paused', 'trial', 'cancelled'];
 
@@ -20,24 +23,38 @@ const statusColors: Record<SubscriptionStatus, string> = {
 
 export default function SubscriptionsPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   const { data: subscriptions, isLoading } = useSubscriptions(
     category || status ? { category: category || undefined, status: status || undefined } : undefined
   );
+  const { data: billing } = useBillingMe();
 
   const filtered = (subscriptions ?? []).filter((s) => {
     return !search || s.name.toLowerCase().includes(search.toLowerCase());
   });
 
   const hasFilters = !!category || !!status;
+  const isAtSubLimit =
+    billing?.subscriptionLimit !== null &&
+    billing?.subscriptionLimit !== undefined &&
+    (billing?.subscriptionCount ?? 0) >= billing.subscriptionLimit;
 
   const clearFilters = () => {
     setCategory('');
     setStatus('');
+  };
+
+  const handleAddClick = (e: React.MouseEvent) => {
+    if (isAtSubLimit) {
+      e.preventDefault();
+      setUpgradeOpen(true);
+    }
   };
 
   return (
@@ -50,18 +67,35 @@ export default function SubscriptionsPage() {
             {isLoading ? '...' : `${filtered.length} subscriptions`}
           </p>
         </div>
-        <Link
-          to="/app/subscriptions/add"
-          className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all shadow-lg shadow-purple-500/25 flex-shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{t('common.add')}</span>
-        </Link>
+        {isAtSubLimit ? (
+          <button
+            onClick={() => setUpgradeOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/15 hover:bg-yellow-500/25 text-yellow-400 border border-yellow-500/30 text-sm font-semibold transition-all flex-shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add (Upgrade)</span>
+          </button>
+        ) : (
+          <Link
+            to="/app/subscriptions/add"
+            onClick={handleAddClick}
+            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all shadow-lg shadow-purple-500/25 flex-shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>{t('common.add')}</span>
+          </Link>
+        )}
       </div>
+
+      {/* Usage bar for free plan */}
+      {billing && billing.plan === 'free' && (
+        <div className="glass-card rounded-xl p-4">
+          <PlanUsageBar billing={billing} onUpgradeClick={() => setUpgradeOpen(true)} />
+        </div>
+      )}
 
       {/* Search + filter bar */}
       <div className="flex gap-2">
-        {/* Search */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
@@ -78,7 +112,6 @@ export default function SubscriptionsPage() {
           )}
         </div>
 
-        {/* Filter toggle */}
         <button
           onClick={() => setFiltersOpen(!filtersOpen)}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all border ${
@@ -170,7 +203,11 @@ export default function SubscriptionsPage() {
           illustration="/empty-subscriptions.png"
           title={t('subscriptions.empty')}
           description={t('subscriptions.empty_sub')}
-          action={{ label: `+ ${t('subscriptions.add')}`, href: '/app/subscriptions/add' }}
+          action={
+            isAtSubLimit
+              ? { label: 'Upgrade to add more', href: '/app/settings' }
+              : { label: `+ ${t('subscriptions.add')}`, href: '/app/subscriptions/add' }
+          }
         />
       ) : (
         <div className="space-y-2">
@@ -179,6 +216,13 @@ export default function SubscriptionsPage() {
           ))}
         </div>
       )}
+
+      <UpgradeModal
+        isOpen={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        billing={billing}
+        trigger="subscription-limit"
+      />
     </div>
   );
 }

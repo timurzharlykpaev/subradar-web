@@ -69,6 +69,20 @@ export interface User {
   locale: string;
 }
 
+export interface BillingInfo {
+  plan: 'free' | 'pro' | 'organization';
+  status: 'active' | 'cancelled' | 'trialing';
+  currentPeriodEnd?: string | null;
+  cancelAtPeriodEnd?: boolean;
+  trialUsed: boolean;
+  trialDaysLeft?: number | null;
+  subscriptionCount: number;
+  subscriptionLimit: number | null;
+  aiRequestsUsed: number;
+  aiRequestsLimit: number | null;
+  proInviteeEmail?: string | null;
+}
+
 export interface ReportConfig {
   type: 'summary' | 'detailed' | 'tax';
   startDate: string;

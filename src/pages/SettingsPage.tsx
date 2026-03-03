@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { User, Bell, Globe, Zap, Shield, Loader2 } from 'lucide-react';
+import { User, Bell, Globe, Zap, Shield, Loader2, UserPlus, X, Building2, Clock } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import { useToast } from '@/providers/ToastProvider';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
-import { useBillingMe, useCheckout, useCancelBilling } from '@/hooks/useBilling';
+import { useBillingMe, useCheckout, useCancelBilling, useStartTrial, useProInvite, useRemoveProInvite } from '@/hooks/useBilling';
 import { User as UserType } from '@/types';
+import { PlanUsageBar } from '@/components/ui/PlanUsageBar';
+import { UpgradeModal } from '@/components/ui/UpgradeModal';
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -30,6 +32,8 @@ export default function SettingsPage() {
   const [notifications, setNotifications] = useState({
     email: true, push: true, reminders: true, renewals: true,
   });
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
 
   const currencies = ['USD', 'EUR', 'GBP', 'KZT', 'RUB', 'AED'];
 
@@ -60,6 +64,9 @@ export default function SettingsPage() {
   const { data: billing } = useBillingMe();
   const checkoutMutation = useCheckout();
   const cancelBillingMutation = useCancelBilling();
+  const startTrialMutation = useStartTrial();
+  const proInviteMutation = useProInvite();
+  const removeInviteMutation = useRemoveProInvite();
 
   const handleLanguageChange = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -80,15 +87,52 @@ export default function SettingsPage() {
     }
   };
 
+  const handleStartTrial = async () => {
+    try {
+      await startTrialMutation.mutateAsync();
+      success('7-day Pro trial started! Enjoy all features.');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Failed to start trial.';
+      error(msg);
+    }
+  };
+
   const handleCancelBilling = async () => {
     if (!confirm('Cancel your subscription? You will lose access to Pro features at the end of the billing period.')) return;
     try {
       await cancelBillingMutation.mutateAsync();
-      success('Subscription cancelled. You\'ll retain access until end of period.');
+      success("Subscription cancelled. You'll retain access until end of period.");
     } catch {
       error('Failed to cancel subscription.');
     }
   };
+
+  const handleSendInvite = async () => {
+    if (!inviteEmail) return;
+    try {
+      await proInviteMutation.mutateAsync(inviteEmail);
+      success(`Invite sent to ${inviteEmail}`);
+      setInviteEmail('');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Failed to send invite.';
+      error(msg);
+    }
+  };
+
+  const handleRemoveInvite = async () => {
+    if (!confirm('Remove invite? The invited user will lose Pro access.')) return;
+    try {
+      await removeInviteMutation.mutateAsync();
+      success('Invite removed.');
+    } catch {
+      error('Failed to remove invite.');
+    }
+  };
+
+  const isPro = billing?.plan === 'pro' || billing?.plan === 'organization';
+  const isOrg = billing?.plan === 'organization';
+  const isTrialing = billing?.status === 'trialing';
+  const canTrial = billing && !billing.trialUsed && billing.plan === 'free';
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
@@ -173,28 +217,106 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="glass-card rounded-2xl p-5 border border-purple-500/30">
+      {/* Plan & Billing */}
+      <div className={`glass-card rounded-2xl p-5 border ${isPro ? 'border-purple-500/30' : 'border-white/10'}`}>
         <div className="flex items-center gap-2 mb-3">
           <Zap className="w-4 h-4 text-yellow-400" />
-          <h3 className="font-semibold">SubRadar Pro</h3>
-          {billing?.plan === 'pro' ? (
+          <h3 className="font-semibold">
+            SubRadar {isOrg ? 'Organization' : isPro ? 'Pro' : 'Free'}
+          </h3>
+          {isTrialing && (
+            <span className="ml-auto flex items-center gap-1 text-xs bg-blue-400/20 text-blue-400 px-2 py-0.5 rounded-full">
+              <Clock className="w-3 h-3" />
+              Trial: {billing?.trialDaysLeft}d left
+            </span>
+          )}
+          {isPro && !isTrialing && (
             <span className="ml-auto text-xs bg-green-400/20 text-green-400 px-2 py-0.5 rounded-full">ACTIVE</span>
-          ) : (
-            <span className="ml-auto text-xs bg-yellow-400/20 text-yellow-400 px-2 py-0.5 rounded-full">UPGRADE</span>
+          )}
+          {!isPro && (
+            <span className="ml-auto text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded-full">FREE</span>
           )}
         </div>
-        {billing?.plan === 'pro' ? (
+
+        {billing && (
+          <div className="mb-4">
+            <PlanUsageBar billing={billing} onUpgradeClick={() => setUpgradeOpen(true)} />
+          </div>
+        )}
+
+        {isPro ? (
           <div className="space-y-3">
             <p className="text-sm text-gray-400">
-              You&apos;re on Pro. Renews {billing.currentPeriodEnd ? new Date(billing.currentPeriodEnd).toLocaleDateString() : '—'}.
-              {billing.cancelAtPeriodEnd && ' (Cancels at period end)'}
+              {isTrialing
+                ? `Trial ends ${billing?.currentPeriodEnd ? new Date(billing.currentPeriodEnd).toLocaleDateString() : '—'}.`
+                : `Renews ${billing?.currentPeriodEnd ? new Date(billing.currentPeriodEnd).toLocaleDateString() : '—'}.`}
+              {billing?.cancelAtPeriodEnd && ' (Cancels at period end)'}
             </p>
-            {!billing.cancelAtPeriodEnd && (
+
+            {/* Pro Invite section */}
+            {!isOrg && (
+              <div className="pt-3 border-t border-white/8">
+                <div className="flex items-center gap-2 mb-2">
+                  <UserPlus className="w-4 h-4 text-purple-400" />
+                  <p className="text-sm font-medium">Pro Invite — For You + One</p>
+                </div>
+                {billing?.proInviteeEmail ? (
+                  <div className="flex items-center justify-between bg-white/5 rounded-xl px-3 py-2">
+                    <span className="text-sm text-gray-300">{billing.proInviteeEmail}</span>
+                    <button
+                      onClick={handleRemoveInvite}
+                      disabled={removeInviteMutation.isPending}
+                      className="text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="friend@example.com"
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500"
+                    />
+                    <button
+                      onClick={handleSendInvite}
+                      disabled={proInviteMutation.isPending || !inviteEmail}
+                      className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all disabled:opacity-60"
+                    >
+                      {proInviteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Invite'}
+                    </button>
+                  </div>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Invite one person to share your Pro access. If you cancel, both lose Pro.
+                </p>
+              </div>
+            )}
+
+            {isOrg && (
+              <div className="pt-3 border-t border-white/8">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-blue-400" />
+                  <a href="/app/workspace" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                    Manage your organization workspace →
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {!billing?.cancelAtPeriodEnd && !isTrialing && (
               <button onClick={handleCancelBilling} disabled={cancelBillingMutation.isPending}
                 className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-all disabled:opacity-60">
                 {cancelBillingMutation.isPending ? 'Cancelling...' : 'Cancel Pro Subscription'}
               </button>
             )}
+
+            <button onClick={() => setUpgradeOpen(true)}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/8 text-gray-300 text-sm font-medium transition-all">
+              View all plans
+            </button>
           </div>
         ) : (
           <>
@@ -211,11 +333,28 @@ export default function SettingsPage() {
                 <p className="text-xs text-gray-400">per year <span className="text-green-400">30% off</span></p>
               </div>
             </div>
-            <button onClick={handleUpgrade} disabled={checkoutMutation.isPending}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white text-sm font-bold transition-all disabled:opacity-60">
-              {checkoutMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-              Upgrade to Pro
-            </button>
+            {canTrial ? (
+              <div className="space-y-2">
+                <button
+                  onClick={handleStartTrial}
+                  disabled={startTrialMutation.isPending}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white text-sm font-bold transition-all disabled:opacity-60"
+                >
+                  {startTrialMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Start 7-day free trial
+                </button>
+                <button onClick={handleUpgrade} disabled={checkoutMutation.isPending}
+                  className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/8 text-gray-400 text-sm transition-all disabled:opacity-60">
+                  Upgrade to Pro directly
+                </button>
+              </div>
+            ) : (
+              <button onClick={handleUpgrade} disabled={checkoutMutation.isPending}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white text-sm font-bold transition-all disabled:opacity-60">
+                {checkoutMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                Upgrade to Pro
+              </button>
+            )}
           </>
         )}
       </div>
@@ -234,6 +373,8 @@ export default function SettingsPage() {
           </button>
         </div>
       </div>
+
+      <UpgradeModal isOpen={upgradeOpen} onClose={() => setUpgradeOpen(false)} billing={billing} />
     </div>
   );
 }
