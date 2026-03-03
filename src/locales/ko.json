@@ -78,7 +78,8 @@
     "due_tomorrow": "내일 결제",
     "due_in_days": "{{days}}일 후",
     "status": "상태",
-    "total": "개"
+    "total": "개",
+    "total_one": "개"
   },
   "add": {
     "title": "구독 추가",

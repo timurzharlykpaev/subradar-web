@@ -9,7 +9,6 @@ import { useSubscriptions } from '@/hooks/useSubscriptions';
 import { useBillingMe } from '@/hooks/useBilling';
 import { SkeletonList } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { PlanUsageBar } from '@/components/ui/PlanUsageBar';
 import { UpgradeModal } from '@/components/ui/UpgradeModal';
 
 const statuses: SubscriptionStatus[] = ['ACTIVE', 'PAUSED', 'TRIAL', 'CANCELLED'];
@@ -64,7 +63,7 @@ export default function SubscriptionsPage() {
         <div>
           <h1 className="page-title">{t('subscriptions.title')}</h1>
           <p className="page-subtitle">
-            {isLoading ? '...' : `${filtered.length} ${t('subscriptions.total')}`}
+            {isLoading ? '...' : filtered.length === 1 ? `1 ${t('subscriptions.total_one')}` : `${filtered.length} ${t('subscriptions.total')}`}
           </p>
         </div>
         {isAtSubLimit ? (
@@ -90,7 +89,7 @@ export default function SubscriptionsPage() {
       {/* Usage bar for free plan */}
       {billing && billing.plan === 'free' && (
         <div className="glass-card rounded-xl p-4">
-          <PlanUsageBar billing={billing} onUpgradeClick={() => setUpgradeOpen(true)} />
+          
         </div>
       )}
 

@@ -30,7 +30,7 @@ export function SubscriptionCard({ subscription, onClick }: SubscriptionCardProp
     ? 'Due today'
     : days === 1
     ? 'Due tomorrow'
-    : `Due in ${days}d`;
+    : days !== null ? `Due in ${days}d` : '—';
 
   const billingLabel = subscription.billingPeriod?.toLowerCase() ?? '';
 

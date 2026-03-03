@@ -20,9 +20,11 @@ export function formatDate(date: string | Date): string {
   }).format(new Date(date));
 }
 
-export function daysUntil(date: string | Date): number {
+export function daysUntil(date: string | Date | null | undefined): number | null {
+  if (!date) return null;
   const now = new Date();
   const target = new Date(date);
+  if (isNaN(target.getTime())) return null;
   const diff = target.getTime() - now.getTime();
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }

@@ -78,7 +78,8 @@
     "due_tomorrow": "Amanhã",
     "due_in_days": "Em {{days}} dias",
     "status": "Status",
-    "total": "assinaturas"
+    "total": "assinaturas",
+    "total_one": "assinatura"
   },
   "add": {
     "title": "Adicionar assinatura",

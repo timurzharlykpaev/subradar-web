@@ -78,7 +78,8 @@
     "due_tomorrow": "明日期限",
     "due_in_days": "{{days}}日後",
     "status": "ステータス",
-    "total": "件"
+    "total": "件",
+    "total_one": "件"
   },
   "add": {
     "title": "サブスクリプションを追加",

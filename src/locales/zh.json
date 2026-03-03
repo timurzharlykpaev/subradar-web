@@ -78,7 +78,8 @@
     "due_tomorrow": "明天到期",
     "due_in_days": "{{days}}天后",
     "status": "状态",
-    "total": "个订阅"
+    "total": "个订阅",
+    "total_one": "个订阅"
   },
   "add": {
     "title": "添加订阅",

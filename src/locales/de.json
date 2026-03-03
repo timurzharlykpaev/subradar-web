@@ -78,7 +78,8 @@
     "due_tomorrow": "Morgen fällig",
     "due_in_days": "In {{days}} Tagen",
     "status": "Status",
-    "total": "Abonnements"
+    "total": "Abonnements",
+    "total_one": "Abonnement"
   },
   "add": {
     "title": "Abonnement hinzufügen",
