@@ -86,12 +86,6 @@ export default function SubscriptionsPage() {
         )}
       </div>
 
-      {/* Usage bar for free plan */}
-      {billing && billing.plan === 'free' && (
-        <div className="glass-card rounded-xl p-4">
-          
-        </div>
-      )}
 
       {/* Search + filter bar */}
       <div className="flex gap-2">
