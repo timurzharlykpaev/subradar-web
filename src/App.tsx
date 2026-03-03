@@ -10,6 +10,7 @@ import ReportsPage from '@/pages/ReportsPage'
 import SettingsPage from '@/pages/SettingsPage'
 import WorkspacePage from '@/pages/WorkspacePage'
 import LoginPage from '@/pages/LoginPage'
+import LanguageSelectPage from '@/pages/LanguageSelectPage'
 import AuthCallbackPage from '@/pages/AuthCallbackPage'
 import MagicLinkPage from '@/pages/MagicLinkPage'
 import PrivacyPage from '@/pages/legal/PrivacyPage'
@@ -26,7 +27,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={
+        localStorage.getItem('subradar_lang_chosen')
+          ? <Navigate to="/login" replace />
+          : <LanguageSelectPage />
+      } />
+      <Route path="/language" element={<LanguageSelectPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/auth/magic" element={<MagicLinkPage />} />
