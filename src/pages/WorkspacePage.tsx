@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Users, Plus, Trash2, Crown, Shield, User as UserIcon, Loader2, Mail } from 'lucide-react';
 import { useWorkspace, useCreateWorkspace, useInviteMember, useRemoveMember } from '@/hooks/useWorkspace';
@@ -12,13 +13,13 @@ const roleIcon = (role: WorkspaceMemberRole) => {
 };
 
 const roleLabel = (role: WorkspaceMemberRole) => {
-  if (role === 'OWNER') return 'Owner';
+  if (role === 'OWNER') return 'Owner'; // i18n done in JSX
   if (role === 'ADMIN') return 'Admin';
   return 'Member';
 };
 
 export default function WorkspacePage() {
-  const { success, error } = useToast();
+  const { t } = useTranslation();  const { success, error } = useToast();
   const { user } = useAppStore();
 
   const { data: workspace, isLoading } = useWorkspace();
@@ -34,7 +35,7 @@ export default function WorkspacePage() {
     if (!workspaceName.trim()) return;
     try {
       await createWorkspace.mutateAsync(workspaceName.trim());
-      success('Workspace created!');
+      success(t('common.success'));
       setWorkspaceName('');
     } catch {
       error('Failed to create workspace.');
@@ -45,7 +46,7 @@ export default function WorkspacePage() {
     if (!inviteEmail.trim() || !workspace) return;
     try {
       await inviteMember.mutateAsync({ workspaceId: workspace.id, email: inviteEmail.trim(), role: inviteRole });
-      success(`Invite sent to ${inviteEmail}`);
+      success(t('common.success'));
       setInviteEmail('');
     } catch {
       error('Failed to send invite.');
@@ -57,7 +58,7 @@ export default function WorkspacePage() {
     if (!confirm('Remove this member from the workspace?')) return;
     try {
       await removeMember.mutateAsync({ workspaceId: workspace.id, memberId });
-      success('Member removed.');
+      success(t('common.success'));
     } catch {
       error('Failed to remove member.');
     }

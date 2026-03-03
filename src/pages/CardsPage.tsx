@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, Edit3, Loader2, CreditCard } from 'lucide-react';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
 import { PaymentCard, CardBrand } from '@/types';
@@ -28,46 +29,47 @@ interface CardFormProps {
 }
 
 function CardForm({ form, setForm, onSubmit, submitLabel, isPending, onCancel }: CardFormProps) {
+  const { t } = useTranslation();
   return (
     <form onSubmit={onSubmit} className="glass-card rounded-2xl p-5 space-y-4">
-      <h3 className="font-semibold">{submitLabel === 'Add Card' ? 'New Card' : 'Edit Card'}</h3>
+      <h3 className="font-semibold">{submitLabel}</h3>
       <div className="grid grid-cols-2 gap-3">
         <div className="col-span-2">
-          <label className="text-xs text-gray-400 mb-1 block">Nickname</label>
+          <label className="text-xs text-gray-400 mb-1 block">{t('cards.nickname')}</label>
           <input required value={form.nickname} onChange={(e) => setForm({ ...form, nickname: e.target.value })}
-            placeholder="e.g. Main Card"
+            placeholder={t('cards.nickname_placeholder')}
             className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
         </div>
         <div>
-          <label className="text-xs text-gray-400 mb-1 block">Last 4 digits</label>
+          <label className="text-xs text-gray-400 mb-1 block">{t('cards.last4')}</label>
           <input required maxLength={4} value={form.last4}
             onChange={(e) => setForm({ ...form, last4: e.target.value.replace(/\D/g, '') })}
             placeholder="4242"
             className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
         </div>
         <div>
-          <label className="text-xs text-gray-400 mb-1 block">Brand</label>
+          <label className="text-xs text-gray-400 mb-1 block">{t('cards.brand')}</label>
           <select value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value as CardBrand })}
             className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
             {CARD_BRANDS.map((b) => <option key={b} value={b}>{b.toUpperCase()}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs text-gray-400 mb-1 block">Expiry Month</label>
+          <label className="text-xs text-gray-400 mb-1 block">{t('cards.expiry_month')}</label>
           <input type="number" min="1" max="12" value={form.expiryMonth}
             onChange={(e) => setForm({ ...form, expiryMonth: e.target.value })}
             placeholder="12"
             className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
         </div>
         <div>
-          <label className="text-xs text-gray-400 mb-1 block">Expiry Year</label>
+          <label className="text-xs text-gray-400 mb-1 block">{t('cards.expiry_year')}</label>
           <input type="number" min="2024" value={form.expiryYear}
             onChange={(e) => setForm({ ...form, expiryYear: e.target.value })}
             placeholder="2027"
             className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
         </div>
         <div className="col-span-2">
-          <label className="text-xs text-gray-400 mb-2 block">Card Color</label>
+          <label className="text-xs text-gray-400 mb-2 block">{t('cards.card_color')}</label>
           <div className="flex gap-2">
             {CARD_COLORS.map((c) => (
               <button key={c} type="button" onClick={() => setForm({ ...form, color: c })}
@@ -83,17 +85,18 @@ function CardForm({ form, setForm, onSubmit, submitLabel, isPending, onCancel }:
           {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
           {submitLabel}
         </button>
-        <button type="button"
-          onClick={onCancel}
+        <button type="button" onClick={onCancel}
           className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-medium transition-all">
-          Cancel
+          {t('common.cancel')}
         </button>
       </div>
     </form>
   );
+
 }
 
 export default function CardsPage() {
+  const { t } = useTranslation();
   const { success, error } = useToast();
   const { data: cards, isLoading } = usePaymentCards();
   const createMutation = useCreateCard();
@@ -116,11 +119,11 @@ export default function CardsPage() {
         expiryMonth: parseInt(form.expiryMonth),
         expiryYear: parseInt(form.expiryYear),
       });
-      success('Card added!');
+      success(t('common.success'));
       setShowForm(false);
       setForm(emptyForm);
     } catch {
-      error('Failed to add card.');
+      error(t('common.error'));
     }
   };
 
@@ -135,11 +138,11 @@ export default function CardsPage() {
         expiryMonth: parseInt(form.expiryMonth),
         expiryYear: parseInt(form.expiryYear),
       });
-      success('Card updated!');
+      success(t('common.success'));
       setEditingId(null);
       setForm(emptyForm);
     } catch {
-      error('Failed to update card.');
+      error(t('common.error'));
     }
   };
 
@@ -157,12 +160,12 @@ export default function CardsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Remove this card?')) return;
+    if (!confirm(t('cards.remove_confirm'))) return;
     try {
       await deleteMutation.mutateAsync(id);
-      success('Card removed.');
+      success(t('common.success'));
     } catch {
-      error('Failed to remove card.');
+      error(t('common.error'));
     }
   };
 
@@ -172,8 +175,8 @@ export default function CardsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Payment Cards</h1>
-          <p className="text-gray-400 text-sm mt-1">{cards?.length ?? 0} cards linked</p>
+          <h1 className="text-2xl font-bold">{t('cards.title')}</h1>
+          <p className="text-gray-400 text-sm mt-1">{cards?.length ?? 0} {t('cards.subtitle')}</p>
         </div>
         <button
           onClick={() => { setShowForm(!showForm); setEditingId(null); setForm(emptyForm); }}
@@ -184,16 +187,16 @@ export default function CardsPage() {
         </button>
       </div>
 
-      {showForm && <CardForm form={form} setForm={setForm} onSubmit={handleAdd} submitLabel="Add Card" isPending={createMutation.isPending} onCancel={handleCancel} />}
-      {editingId && <CardForm form={form} setForm={setForm} onSubmit={handleUpdate} submitLabel="Update Card" isPending={updateMutation.isPending} onCancel={handleCancel} />}
+      {showForm && <CardForm form={form} setForm={setForm} onSubmit={handleAdd} submitLabel={t('cards.add')} isPending={createMutation.isPending} onCancel={handleCancel} />}
+      {editingId && <CardForm form={form} setForm={setForm} onSubmit={handleUpdate} submitLabel={t('cards.update')} isPending={updateMutation.isPending} onCancel={handleCancel} />}
 
       {!isLoading && (cards ?? []).length === 0 && !showForm && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
             <CreditCard className="w-8 h-8 text-gray-500" />
           </div>
-          <p className="text-gray-300 font-semibold mb-1">No cards linked</p>
-          <p className="text-gray-500 text-sm mb-6">Add a payment card to track which subscriptions are linked to it</p>
+          <p className="text-gray-300 font-semibold mb-1">{t('cards.no_linked')}</p>
+          <p className="text-gray-500 text-sm mb-6">{t('cards.no_linked_sub')}</p>
           <button
             onClick={() => setShowForm(true)}
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all"

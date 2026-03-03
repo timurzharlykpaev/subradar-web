@@ -122,7 +122,20 @@
     "color": "Cor",
     "linked_subs": "assinaturas vinculadas",
     "expires": "Expira",
-    "delete_confirm": "Excluir este cartão?"
+    "delete_confirm": "Excluir este cartão?",
+    "subtitle": "cartões vinculados",
+    "new_card": "Novo cartão",
+    "edit_card": "Editar cartão",
+    "nickname_placeholder": "ex. Cartão principal",
+    "expiry_month": "Mês de validade",
+    "expiry_year": "Ano de validade",
+    "card_color": "Cor do cartão",
+    "update": "Atualizar cartão",
+    "remove": "Remover",
+    "no_linked": "Sem cartões",
+    "no_linked_sub": "Adicione um cartão para rastrear assinaturas",
+    "add_first": "Adicionar primeiro cartão",
+    "remove_confirm": "Remover este cartão?"
   },
   "analytics": {
     "title": "Análise",
@@ -135,7 +148,14 @@
     "by_card": "Por cartão",
     "monthly_trend": "Tendência",
     "top_expensive": "Mais caras",
-    "no_data": "Sem dados"
+    "no_data": "Sem dados",
+    "subtitle": "Análise detalhada dos seus gastos",
+    "monthly_label": "Mensal",
+    "yearly_label": "Anual",
+    "active_label": "Ativas",
+    "spend_trend": "Tendência mensal",
+    "top5": "Top 5 mais caras",
+    "no_active": "Sem assinaturas ativas"
   },
   "reports": {
     "title": "Relatórios",
@@ -150,7 +170,28 @@
     "date_to": "Até",
     "download": "Baixar",
     "empty": "Sem relatórios",
-    "empty_sub": "Gere seu primeiro relatório"
+    "empty_sub": "Gere seu primeiro relatório",
+    "subtitle": "Gere e baixe relatórios",
+    "type_label": "Tipo de relatório",
+    "summary_label": "Resumo",
+    "summary_desc": "Visão geral das assinaturas",
+    "detailed_label": "Detalhado",
+    "detailed_desc": "Histórico completo de transações",
+    "tax_label": "Relatório fiscal",
+    "tax_desc": "Assinaturas de negócio para impostos",
+    "date_range": "Período",
+    "this_month": "Este mês",
+    "last_month": "Mês passado",
+    "this_year": "Este ano",
+    "format_label": "Formato",
+    "generate_btn": "Gerar relatório",
+    "previous": "Relatórios anteriores",
+    "no_reports": "Sem relatórios ainda.",
+    "report_label": "Relatório",
+    "status_pending": "Pendente",
+    "status_processing": "Processando",
+    "status_ready": "Pronto",
+    "status_failed": "Erro"
   },
   "settings": {
     "title": "Configurações",
@@ -184,7 +225,8 @@
     "sending": "Enviando...",
     "sent": "Verifique seu email!",
     "sent_sub": "Enviamos um link para",
-    "or": "ou"
+    "or": "ou",
+    "signing_in": "Entrando..."
   },
   "landing": {
     "hero_title": "Saiba exatamente para onde vai seu dinheiro",
@@ -192,5 +234,40 @@
     "open_app": "Abrir app",
     "features": "Tudo que você precisa",
     "pricing": "Preços simples"
+  },
+  "workspace": {
+    "title": "Espaço de trabalho",
+    "subtitle": "Gerenciar equipe",
+    "create": "Criar espaço",
+    "invite": "Convidar membro",
+    "invite_email": "Endereço de email",
+    "invite_role": "Função",
+    "no_workspace": "Sem espaço de trabalho",
+    "no_workspace_sub": "Crie um espaço para colaborar",
+    "members": "Membros",
+    "role_owner": "Proprietário",
+    "role_admin": "Admin",
+    "role_member": "Membro",
+    "remove_member": "Remover",
+    "remove_confirm": "Remover este membro?",
+    "creating": "Criando...",
+    "inviting": "Convidando...",
+    "plan_required": "Plano Team necessário",
+    "plan_required_sub": "Atualize para o plano Team",
+    "upgrade": "Atualizar plano"
+  },
+  "subscription": {
+    "detail_title": "Detalhes da assinatura",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "cancel": "Cancelar",
+    "delete_confirm": "Excluir esta assinatura?",
+    "billing_day": "Dia de cobrança",
+    "website": "Site",
+    "notes": "Notas",
+    "card": "Cartão",
+    "no_card": "Sem cartão"
   }
 }

@@ -122,7 +122,20 @@
     "color": "Couleur",
     "linked_subs": "abonnements liés",
     "expires": "Expire",
-    "delete_confirm": "Supprimer cette carte ?"
+    "delete_confirm": "Supprimer cette carte ?",
+    "subtitle": "cartes liées",
+    "new_card": "Nouvelle carte",
+    "edit_card": "Modifier la carte",
+    "nickname_placeholder": "ex. Carte principale",
+    "expiry_month": "Mois d'expiration",
+    "expiry_year": "Année d'expiration",
+    "card_color": "Couleur de la carte",
+    "update": "Mettre à jour",
+    "remove": "Supprimer",
+    "no_linked": "Aucune carte",
+    "no_linked_sub": "Ajoutez une carte pour suivre vos abonnements",
+    "add_first": "Ajouter une carte",
+    "remove_confirm": "Supprimer cette carte?"
   },
   "analytics": {
     "title": "Analytique",
@@ -135,7 +148,14 @@
     "by_card": "Par carte",
     "monthly_trend": "Tendance",
     "top_expensive": "Plus coûteux",
-    "no_data": "Pas de données"
+    "no_data": "Pas de données",
+    "subtitle": "Analyse de vos dépenses d'abonnements",
+    "monthly_label": "Mensuel",
+    "yearly_label": "Annuel",
+    "active_label": "Actifs",
+    "spend_trend": "Tendance mensuelle",
+    "top5": "Top 5 les plus chers",
+    "no_active": "Aucun abonnement actif"
   },
   "reports": {
     "title": "Rapports",
@@ -150,7 +170,28 @@
     "date_to": "Au",
     "download": "Télécharger",
     "empty": "Aucun rapport",
-    "empty_sub": "Générez votre premier rapport"
+    "empty_sub": "Générez votre premier rapport",
+    "subtitle": "Générez et téléchargez des rapports",
+    "type_label": "Type de rapport",
+    "summary_label": "Résumé",
+    "summary_desc": "Vue d'ensemble des abonnements",
+    "detailed_label": "Détaillé",
+    "detailed_desc": "Historique complet des transactions",
+    "tax_label": "Rapport fiscal",
+    "tax_desc": "Abonnements pros pour la fiscalité",
+    "date_range": "Période",
+    "this_month": "Ce mois",
+    "last_month": "Mois dernier",
+    "this_year": "Cette année",
+    "format_label": "Format",
+    "generate_btn": "Générer le rapport",
+    "previous": "Rapports précédents",
+    "no_reports": "Aucun rapport encore.",
+    "report_label": "Rapport",
+    "status_pending": "En attente",
+    "status_processing": "En cours",
+    "status_ready": "Prêt",
+    "status_failed": "Échoué"
   },
   "settings": {
     "title": "Paramètres",
@@ -184,7 +225,8 @@
     "sending": "Envoi...",
     "sent": "Vérifiez votre email !",
     "sent_sub": "Nous avons envoyé un lien à",
-    "or": "ou"
+    "or": "ou",
+    "signing_in": "Connexion en cours..."
   },
   "landing": {
     "hero_title": "Sachez exactement où va votre argent",
@@ -192,5 +234,40 @@
     "open_app": "Ouvrir l'app",
     "features": "Tout ce qu'il vous faut",
     "pricing": "Prix simples"
+  },
+  "workspace": {
+    "title": "Espace de travail",
+    "subtitle": "Gérer l'équipe",
+    "create": "Créer un espace",
+    "invite": "Inviter un membre",
+    "invite_email": "Adresse email",
+    "invite_role": "Rôle",
+    "no_workspace": "Pas d'espace de travail",
+    "no_workspace_sub": "Créez un espace pour collaborer",
+    "members": "Membres",
+    "role_owner": "Propriétaire",
+    "role_admin": "Admin",
+    "role_member": "Membre",
+    "remove_member": "Supprimer",
+    "remove_confirm": "Supprimer ce membre?",
+    "creating": "Création...",
+    "inviting": "Invitation...",
+    "plan_required": "Plan Team requis",
+    "plan_required_sub": "Passez au plan Team",
+    "upgrade": "Mettre à niveau"
+  },
+  "subscription": {
+    "detail_title": "Détails de l'abonnement",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "pause": "Suspendre",
+    "resume": "Reprendre",
+    "cancel": "Annuler",
+    "delete_confirm": "Supprimer cet abonnement?",
+    "billing_day": "Jour de facturation",
+    "website": "Site web",
+    "notes": "Notes",
+    "card": "Carte",
+    "no_card": "Sans carte"
   }
 }

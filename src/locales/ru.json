@@ -122,7 +122,20 @@
     "color": "Цвет",
     "linked_subs": "привязанных подписок",
     "expires": "Истекает",
-    "delete_confirm": "Удалить карту?"
+    "delete_confirm": "Удалить карту?",
+    "subtitle": "привязано карт",
+    "new_card": "Новая карта",
+    "edit_card": "Изменить карту",
+    "nickname_placeholder": "Напр. Основная",
+    "expiry_month": "Месяц истечения",
+    "expiry_year": "Год истечения",
+    "card_color": "Цвет карты",
+    "update": "Сохранить карту",
+    "remove": "Удалить",
+    "no_linked": "Нет карт",
+    "no_linked_sub": "Добавьте карту для отслеживания расходов",
+    "add_first": "Добавить первую карту",
+    "remove_confirm": "Удалить эту карту?"
   },
   "analytics": {
     "title": "Аналитика",
@@ -135,7 +148,14 @@
     "by_card": "По картам",
     "monthly_trend": "Динамика",
     "top_expensive": "Самые дорогие",
-    "no_data": "Нет данных"
+    "no_data": "Нет данных",
+    "subtitle": "Детальный анализ расходов на подписки",
+    "monthly_label": "В месяц",
+    "yearly_label": "В год",
+    "active_label": "Активных",
+    "spend_trend": "Динамика расходов",
+    "top5": "Топ-5 самых дорогих",
+    "no_active": "Нет активных подписок"
   },
   "reports": {
     "title": "Отчёты",
@@ -150,7 +170,28 @@
     "date_to": "По",
     "download": "Скачать",
     "empty": "Нет отчётов",
-    "empty_sub": "Создайте первый отчёт"
+    "empty_sub": "Создайте первый отчёт",
+    "subtitle": "Создание и загрузка отчётов по подпискам",
+    "type_label": "Тип отчёта",
+    "summary_label": "Сводный отчёт",
+    "summary_desc": "Обзор всех подписок и общих расходов",
+    "detailed_label": "Детальный отчёт",
+    "detailed_desc": "История транзакций с чеками",
+    "tax_label": "Налоговый отчёт",
+    "tax_desc": "Бизнес-подписки для налоговой",
+    "date_range": "Период",
+    "this_month": "Этот месяц",
+    "last_month": "Прошлый месяц",
+    "this_year": "Этот год",
+    "format_label": "Формат",
+    "generate_btn": "Создать отчёт",
+    "previous": "Предыдущие отчёты",
+    "no_reports": "Отчётов ещё нет.",
+    "report_label": "Отчёт",
+    "status_pending": "Ожидание",
+    "status_processing": "Обработка",
+    "status_ready": "Готов",
+    "status_failed": "Ошибка"
   },
   "settings": {
     "title": "Настройки",
@@ -184,7 +225,8 @@
     "sending": "Отправка...",
     "sent": "Проверьте почту!",
     "sent_sub": "Мы отправили ссылку на",
-    "or": "или"
+    "or": "или",
+    "signing_in": "Выполняется вход..."
   },
   "landing": {
     "hero_title": "Знайте куда уходят деньги",
@@ -192,5 +234,40 @@
     "open_app": "Открыть приложение",
     "features": "Всё что нужно",
     "pricing": "Простые цены"
+  },
+  "workspace": {
+    "title": "Рабочее пространство",
+    "subtitle": "Управление командой",
+    "create": "Создать пространство",
+    "invite": "Пригласить участника",
+    "invite_email": "Email адрес",
+    "invite_role": "Роль",
+    "no_workspace": "Нет пространства",
+    "no_workspace_sub": "Создайте рабочее пространство для совместной работы",
+    "members": "Участники",
+    "role_owner": "Владелец",
+    "role_admin": "Администратор",
+    "role_member": "Участник",
+    "remove_member": "Удалить",
+    "remove_confirm": "Удалить участника?",
+    "creating": "Создание...",
+    "inviting": "Приглашение...",
+    "plan_required": "Нужен план Team",
+    "plan_required_sub": "Обновите план до Team для доступа к функциям рабочего пространства",
+    "upgrade": "Обновить план"
+  },
+  "subscription": {
+    "detail_title": "Детали подписки",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "pause": "Приостановить",
+    "resume": "Возобновить",
+    "cancel": "Отменить",
+    "delete_confirm": "Удалить эту подписку?",
+    "billing_day": "День списания",
+    "website": "Сайт",
+    "notes": "Заметки",
+    "card": "Карта",
+    "no_card": "Без карты"
   }
 }

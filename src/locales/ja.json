@@ -122,7 +122,20 @@
     "color": "色",
     "linked_subs": "件のサブスクリプション",
     "expires": "有効期限",
-    "delete_confirm": "このカードを削除しますか？"
+    "delete_confirm": "このカードを削除しますか？",
+    "subtitle": "枚のカードが登録済み",
+    "new_card": "新規カード",
+    "edit_card": "カードを編集",
+    "nickname_placeholder": "例：メインカード",
+    "expiry_month": "有効期限月",
+    "expiry_year": "有効期限年",
+    "card_color": "カードの色",
+    "update": "カードを更新",
+    "remove": "削除",
+    "no_linked": "カードなし",
+    "no_linked_sub": "カードを追加してサブスクを追跡",
+    "add_first": "最初のカードを追加",
+    "remove_confirm": "このカードを削除?"
   },
   "analytics": {
     "title": "分析",
@@ -135,7 +148,14 @@
     "by_card": "カード別",
     "monthly_trend": "月次トレンド",
     "top_expensive": "高額順",
-    "no_data": "データなし"
+    "no_data": "データなし",
+    "subtitle": "サブスクリプション支出の詳細分析",
+    "monthly_label": "月額",
+    "yearly_label": "年額",
+    "active_label": "アクティブ",
+    "spend_trend": "月次トレンド",
+    "top5": "高額トップ5",
+    "no_active": "アクティブなサブスクリプションなし"
   },
   "reports": {
     "title": "レポート",
@@ -150,7 +170,28 @@
     "date_to": "終了",
     "download": "ダウンロード",
     "empty": "レポートなし",
-    "empty_sub": "最初のレポートを生成"
+    "empty_sub": "最初のレポートを生成",
+    "subtitle": "レポートを生成・ダウンロード",
+    "type_label": "レポートタイプ",
+    "summary_label": "サマリーレポート",
+    "summary_desc": "サブスクリプションの概要",
+    "detailed_label": "詳細レポート",
+    "detailed_desc": "全取引履歴",
+    "tax_label": "税務レポート",
+    "tax_desc": "税申告用ビジネスサブスク",
+    "date_range": "期間",
+    "this_month": "今月",
+    "last_month": "先月",
+    "this_year": "今年",
+    "format_label": "形式",
+    "generate_btn": "レポートを生成",
+    "previous": "過去のレポート",
+    "no_reports": "まだレポートはありません。",
+    "report_label": "レポート",
+    "status_pending": "保留中",
+    "status_processing": "処理中",
+    "status_ready": "準備完了",
+    "status_failed": "失敗"
   },
   "settings": {
     "title": "設定",
@@ -184,7 +225,8 @@
     "sending": "送信中...",
     "sent": "メールをご確認ください！",
     "sent_sub": "リンクを送信しました：",
-    "or": "または"
+    "or": "または",
+    "signing_in": "サインイン中..."
   },
   "landing": {
     "hero_title": "お金の使い道を正確に把握",
@@ -192,5 +234,40 @@
     "open_app": "アプリを開く",
     "features": "必要なすべて",
     "pricing": "シンプルな料金"
+  },
+  "workspace": {
+    "title": "ワークスペース",
+    "subtitle": "チームを管理",
+    "create": "ワークスペースを作成",
+    "invite": "メンバーを招待",
+    "invite_email": "メールアドレス",
+    "invite_role": "ロール",
+    "no_workspace": "ワークスペースなし",
+    "no_workspace_sub": "コラボレーションのためワークスペースを作成",
+    "members": "メンバー",
+    "role_owner": "オーナー",
+    "role_admin": "管理者",
+    "role_member": "メンバー",
+    "remove_member": "削除",
+    "remove_confirm": "このメンバーを削除?",
+    "creating": "作成中...",
+    "inviting": "招待中...",
+    "plan_required": "Teamプランが必要",
+    "plan_required_sub": "Teamプランにアップグレード",
+    "upgrade": "プランを変更"
+  },
+  "subscription": {
+    "detail_title": "サブスクリプション詳細",
+    "edit": "編集",
+    "delete": "削除",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "delete_confirm": "このサブスクリプションを削除?",
+    "billing_day": "請求日",
+    "website": "ウェブサイト",
+    "notes": "メモ",
+    "card": "カード",
+    "no_card": "カードなし"
   }
 }

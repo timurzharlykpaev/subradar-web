@@ -122,7 +122,20 @@
     "color": "Color",
     "linked_subs": "linked subscriptions",
     "expires": "Expires",
-    "delete_confirm": "Delete this card?"
+    "delete_confirm": "Delete this card?",
+    "subtitle": "cards linked",
+    "new_card": "New Card",
+    "edit_card": "Edit Card",
+    "nickname_placeholder": "e.g. Main Card",
+    "expiry_month": "Expiry Month",
+    "expiry_year": "Expiry Year",
+    "card_color": "Card Color",
+    "update": "Update Card",
+    "remove": "Remove",
+    "no_linked": "No cards linked",
+    "no_linked_sub": "Add a payment card to track which subscriptions are linked to it",
+    "add_first": "Add First Card",
+    "remove_confirm": "Remove this card?"
   },
   "analytics": {
     "title": "Analytics",
@@ -135,7 +148,14 @@
     "by_card": "By Card",
     "monthly_trend": "Monthly Trend",
     "top_expensive": "Top Expensive",
-    "no_data": "No data yet"
+    "no_data": "No data yet",
+    "subtitle": "Deep dive into your subscription spending",
+    "monthly_label": "Monthly",
+    "yearly_label": "Yearly",
+    "active_label": "Active",
+    "spend_trend": "Monthly Spend Trend",
+    "top5": "Top 5 Most Expensive",
+    "no_active": "No active subscriptions"
   },
   "reports": {
     "title": "Reports",
@@ -150,7 +170,28 @@
     "date_to": "To",
     "download": "Download",
     "empty": "No reports yet",
-    "empty_sub": "Generate your first report to see it here"
+    "empty_sub": "Generate your first report to see it here",
+    "subtitle": "Generate and download subscription reports",
+    "type_label": "Report Type",
+    "summary_label": "Summary Report",
+    "summary_desc": "Overview of all subscriptions and total spend",
+    "detailed_label": "Detailed Report",
+    "detailed_desc": "Full transaction history with receipts",
+    "tax_label": "Tax Report",
+    "tax_desc": "Business subscriptions formatted for tax filing",
+    "date_range": "Date Range",
+    "this_month": "This Month",
+    "last_month": "Last Month",
+    "this_year": "This Year",
+    "format_label": "Format",
+    "generate_btn": "Generate Report",
+    "previous": "Previous Reports",
+    "no_reports": "No reports generated yet.",
+    "report_label": "Report",
+    "status_pending": "Pending",
+    "status_processing": "Processing",
+    "status_ready": "Ready",
+    "status_failed": "Failed"
   },
   "settings": {
     "title": "Settings",
@@ -184,7 +225,8 @@
     "sending": "Sending...",
     "sent": "Check your email!",
     "sent_sub": "We sent a magic link to",
-    "or": "or"
+    "or": "or",
+    "signing_in": "Signing you in..."
   },
   "landing": {
     "hero_title": "Know exactly where your money goes",
@@ -192,5 +234,40 @@
     "open_app": "Open Web App",
     "features": "Everything you need",
     "pricing": "Simple, transparent pricing"
+  },
+  "workspace": {
+    "title": "Workspace",
+    "subtitle": "Manage your team",
+    "create": "Create Workspace",
+    "invite": "Invite Member",
+    "invite_email": "Email address",
+    "invite_role": "Role",
+    "no_workspace": "No workspace yet",
+    "no_workspace_sub": "Create a workspace to collaborate with your team",
+    "members": "Members",
+    "role_owner": "Owner",
+    "role_admin": "Admin",
+    "role_member": "Member",
+    "remove_member": "Remove",
+    "remove_confirm": "Remove this member?",
+    "creating": "Creating...",
+    "inviting": "Inviting...",
+    "plan_required": "Team plan required",
+    "plan_required_sub": "Upgrade to Team plan to access workspace features",
+    "upgrade": "Upgrade Plan"
+  },
+  "subscription": {
+    "detail_title": "Subscription Details",
+    "edit": "Edit",
+    "delete": "Delete",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "delete_confirm": "Delete this subscription?",
+    "billing_day": "Billing Day",
+    "website": "Website",
+    "notes": "Notes",
+    "card": "Payment Card",
+    "no_card": "No card"
   }
 }

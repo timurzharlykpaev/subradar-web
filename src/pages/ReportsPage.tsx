@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileText, Download, Loader2, CheckCircle, Clock } from 'lucide-react';
 import { useGenerateReport, useReports, useReportStatus, Report } from '@/hooks/useReports';
 import { useToast } from '@/providers/ToastProvider';
@@ -9,17 +10,17 @@ type ReportType = 'summary' | 'detailed' | 'tax';
 type ReportFormat = 'pdf' | 'csv';
 
 const reportTypes = [
-  { id: 'summary' as ReportType, label: 'Summary Report', desc: 'Overview of all subscriptions and total spend' },
-  { id: 'detailed' as ReportType, label: 'Detailed Report', desc: 'Full transaction history with receipts' },
-  { id: 'tax' as ReportType, label: 'Tax Report', desc: 'Business subscriptions formatted for tax filing' },
+  { id: 'summary' as ReportType, label: t('reports.summary_label'), desc: t('reports.summary_desc') },
+  { id: 'detailed' as ReportType, label: t('reports.detailed_label'), desc: t('reports.detailed_desc') },
+  { id: 'tax' as ReportType, label: t('reports.tax_label'), desc: t('reports.tax_desc') },
 ];
 
 function ReportStatusBadge({ status }: { status: Report['status'] }) {
   const map = {
-    pending: { icon: Clock, color: 'text-yellow-400', label: 'Pending' },
-    processing: { icon: Loader2, color: 'text-blue-400', label: 'Processing' },
-    completed: { icon: CheckCircle, color: 'text-green-400', label: 'Ready' },
-    failed: { icon: FileText, color: 'text-red-400', label: 'Failed' },
+    pending: { icon: Clock, color: 'text-yellow-400', label: t('reports.status_pending') },
+    processing: { icon: Loader2, color: 'text-blue-400', label: t('reports.status_processing') },
+    completed: { icon: CheckCircle, color: 'text-green-400', label: t('reports.status_ready') },
+    failed: { icon: FileText, color: 'text-red-400', label: t('reports.status_failed') },
   };
   const { icon: Icon, color, label } = map[status];
   return (
@@ -31,6 +32,7 @@ function ReportStatusBadge({ status }: { status: Report['status'] }) {
 }
 
 export default function ReportsPage() {
+  const { t } = useTranslation();
   const { success, error } = useToast();
   const [type, setType] = useState<ReportType>('summary');
   const [format, setFormat] = useState<ReportFormat>('pdf');
@@ -51,7 +53,7 @@ export default function ReportsPage() {
 
   const handleGenerate = async () => {
     if (!startDate || !endDate) {
-      error('Please select a date range.');
+      error(t('common.required'));
       return;
     }
     try {
@@ -61,28 +63,28 @@ export default function ReportsPage() {
         refetch();
       } else {
         setPendingReportId(report.id);
-        success('Report generation started. We\'ll download it when ready.');
+        success(t('common.success'));
       }
     } catch {
-      error('Failed to generate report.');
+      error(t('common.error'));
     }
   };
 
   const presets = [
-    { label: 'This Month', start: new Date(new Date().setDate(1)).toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] },
-    { label: 'Last Month', start: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toISOString().split('T')[0], end: new Date(new Date().getFullYear(), new Date().getMonth(), 0).toISOString().split('T')[0] },
-    { label: 'This Year', start: `${new Date().getFullYear()}-01-01`, end: new Date().toISOString().split('T')[0] },
+    { label: t('reports.this_month'), start: new Date(new Date().setDate(1)).toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] },
+    { label: t('reports.last_month'), start: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toISOString().split('T')[0], end: new Date(new Date().getFullYear(), new Date().getMonth(), 0).toISOString().split('T')[0] },
+    { label: t('reports.this_year'), start: `${new Date().getFullYear()}-01-01`, end: new Date().toISOString().split('T')[0] },
   ];
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Reports</h1>
-        <p className="text-gray-400 text-sm mt-1">Generate and download subscription reports</p>
+        <h1 className="text-2xl font-bold">{t('reports.title')}</h1>
+        <p className="text-gray-400 text-sm mt-1">{t('reports.subtitle')}</p>
       </div>
 
       <div className="glass-card rounded-2xl p-5">
-        <h3 className="font-semibold text-sm text-gray-300 mb-4">Report Type</h3>
+        <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('reports.type_label')}</h3>
         <div className="space-y-2">
           {reportTypes.map((rt) => (
             <button key={rt.id} onClick={() => setType(rt.id)}
@@ -98,7 +100,7 @@ export default function ReportsPage() {
       </div>
 
       <div className="glass-card rounded-2xl p-5">
-        <h3 className="font-semibold text-sm text-gray-300 mb-4">Date Range</h3>
+        <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('reports.date_range')}</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {presets.map((p) => (
             <button key={p.label}
@@ -110,12 +112,12 @@ export default function ReportsPage() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">From</label>
+            <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_from')}</label>
             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
               className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
           </div>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">To</label>
+            <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_to')}</label>
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
               className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
           </div>
@@ -123,7 +125,7 @@ export default function ReportsPage() {
       </div>
 
       <div className="glass-card rounded-2xl p-5">
-        <h3 className="font-semibold text-sm text-gray-300 mb-4">Format</h3>
+        <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('reports.format_label')}</h3>
         <div className="flex gap-3 mb-5">
           {(['pdf', 'csv'] as ReportFormat[]).map((f) => (
             <button key={f} onClick={() => setFormat(f)}
@@ -140,25 +142,25 @@ export default function ReportsPage() {
           ) : (
             <Download className="w-4 h-4" />
           )}
-          {pendingReportId ? 'Generating...' : `Generate ${format.toUpperCase()} Report`}
+          {pendingReportId ? t('reports.generating') : `${t('reports.generate_btn')} (.${format.toUpperCase()})`}
         </button>
       </div>
 
       <div className="glass-card rounded-2xl p-5">
-        <h3 className="font-semibold text-sm text-gray-300 mb-4">Previous Reports</h3>
+        <h3 className="font-semibold text-sm text-gray-300 mb-4">{t('reports.previous')}</h3>
         {loadingReports ? (
           <div className="space-y-2">
             {[0, 1, 2].map((i) => <Skeleton key={i} className="h-12 rounded-xl" />)}
           </div>
         ) : !reports || reports.length === 0 ? (
-          <p className="text-sm text-gray-500 text-center py-4">No reports generated yet.</p>
+          <p className="text-sm text-gray-500 text-center py-4">{t('reports.no_reports')}</p>
         ) : (
           <div className="space-y-2">
             {reports.map((r) => (
               <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
                 <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium capitalize">{r.type} Report</p>
+                  <p className="text-sm font-medium capitalize">{r.type} {t('reports.report_label')}</p>
                   <p className="text-xs text-gray-400">
                     {formatDate(r.startDate)} – {formatDate(r.endDate)} · .{r.format.toUpperCase()}
                   </p>

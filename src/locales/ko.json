@@ -122,7 +122,20 @@
     "color": "색상",
     "linked_subs": "개 연결된 구독",
     "expires": "만료",
-    "delete_confirm": "이 카드를 삭제하시겠습니까?"
+    "delete_confirm": "이 카드를 삭제하시겠습니까?",
+    "subtitle": "장 카드 등록됨",
+    "new_card": "새 카드",
+    "edit_card": "카드 편집",
+    "nickname_placeholder": "예: 주 카드",
+    "expiry_month": "만료 월",
+    "expiry_year": "만료 연도",
+    "card_color": "카드 색상",
+    "update": "카드 업데이트",
+    "remove": "삭제",
+    "no_linked": "카드 없음",
+    "no_linked_sub": "카드를 추가해 구독을 추적하세요",
+    "add_first": "첫 카드 추가",
+    "remove_confirm": "이 카드를 삭제하시겠습니까?"
   },
   "analytics": {
     "title": "분석",
@@ -135,7 +148,14 @@
     "by_card": "카드별",
     "monthly_trend": "월별 추세",
     "top_expensive": "가장 비싼",
-    "no_data": "데이터 없음"
+    "no_data": "데이터 없음",
+    "subtitle": "구독 지출 심층 분석",
+    "monthly_label": "월간",
+    "yearly_label": "연간",
+    "active_label": "활성",
+    "spend_trend": "월별 추세",
+    "top5": "비싼 순위 5위",
+    "no_active": "활성 구독 없음"
   },
   "reports": {
     "title": "리포트",
@@ -150,7 +170,28 @@
     "date_to": "종료",
     "download": "다운로드",
     "empty": "리포트 없음",
-    "empty_sub": "첫 번째 리포트를 생성하세요"
+    "empty_sub": "첫 번째 리포트를 생성하세요",
+    "subtitle": "보고서 생성 및 다운로드",
+    "type_label": "보고서 유형",
+    "summary_label": "요약 보고서",
+    "summary_desc": "구독 개요",
+    "detailed_label": "상세 보고서",
+    "detailed_desc": "전체 거래 내역",
+    "tax_label": "세금 보고서",
+    "tax_desc": "세금 신고용 비즈니스 구독",
+    "date_range": "날짜 범위",
+    "this_month": "이번 달",
+    "last_month": "지난 달",
+    "this_year": "올해",
+    "format_label": "형식",
+    "generate_btn": "보고서 생성",
+    "previous": "이전 보고서",
+    "no_reports": "아직 보고서 없음.",
+    "report_label": "보고서",
+    "status_pending": "대기중",
+    "status_processing": "처리중",
+    "status_ready": "준비됨",
+    "status_failed": "실패"
   },
   "settings": {
     "title": "설정",
@@ -184,7 +225,8 @@
     "sending": "전송 중...",
     "sent": "이메일을 확인하세요!",
     "sent_sub": "다음 주소로 링크를 보냈습니다:",
-    "or": "또는"
+    "or": "또는",
+    "signing_in": "로그인 중..."
   },
   "landing": {
     "hero_title": "돈이 어디에 쓰이는지 정확히 파악하세요",
@@ -192,5 +234,40 @@
     "open_app": "앱 열기",
     "features": "필요한 모든 것",
     "pricing": "간단한 가격"
+  },
+  "workspace": {
+    "title": "워크스페이스",
+    "subtitle": "팀 관리",
+    "create": "워크스페이스 생성",
+    "invite": "멤버 초대",
+    "invite_email": "이메일 주소",
+    "invite_role": "역할",
+    "no_workspace": "워크스페이스 없음",
+    "no_workspace_sub": "협업을 위한 워크스페이스 생성",
+    "members": "멤버",
+    "role_owner": "소유자",
+    "role_admin": "관리자",
+    "role_member": "멤버",
+    "remove_member": "삭제",
+    "remove_confirm": "이 멤버를 삭제하시겠습니까?",
+    "creating": "생성 중...",
+    "inviting": "초대 중...",
+    "plan_required": "Team 플랜 필요",
+    "plan_required_sub": "Team 플랜으로 업그레이드",
+    "upgrade": "플랜 업그레이드"
+  },
+  "subscription": {
+    "detail_title": "구독 상세",
+    "edit": "편집",
+    "delete": "삭제",
+    "pause": "일시정지",
+    "resume": "재개",
+    "cancel": "취소",
+    "delete_confirm": "이 구독을 삭제하시겠습니까?",
+    "billing_day": "결제일",
+    "website": "웹사이트",
+    "notes": "메모",
+    "card": "카드",
+    "no_card": "카드 없음"
   }
 }

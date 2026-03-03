@@ -122,7 +122,20 @@
     "color": "Color",
     "linked_subs": "suscripciones vinculadas",
     "expires": "Vence",
-    "delete_confirm": "¿Eliminar esta tarjeta?"
+    "delete_confirm": "¿Eliminar esta tarjeta?",
+    "subtitle": "tarjetas vinculadas",
+    "new_card": "Nueva tarjeta",
+    "edit_card": "Editar tarjeta",
+    "nickname_placeholder": "Ej. Tarjeta principal",
+    "expiry_month": "Mes de vencimiento",
+    "expiry_year": "Año de vencimiento",
+    "card_color": "Color de tarjeta",
+    "update": "Actualizar tarjeta",
+    "remove": "Eliminar",
+    "no_linked": "Sin tarjetas",
+    "no_linked_sub": "Agrega una tarjeta para rastrear suscripciones vinculadas",
+    "add_first": "Agregar primera tarjeta",
+    "remove_confirm": "¿Eliminar esta tarjeta?"
   },
   "analytics": {
     "title": "Analítica",
@@ -135,7 +148,14 @@
     "by_card": "Por tarjeta",
     "monthly_trend": "Tendencia",
     "top_expensive": "Más caras",
-    "no_data": "Sin datos"
+    "no_data": "Sin datos",
+    "subtitle": "Análisis de tu gasto en suscripciones",
+    "monthly_label": "Mensual",
+    "yearly_label": "Anual",
+    "active_label": "Activas",
+    "spend_trend": "Tendencia mensual",
+    "top5": "Top 5 más caras",
+    "no_active": "No hay suscripciones activas"
   },
   "reports": {
     "title": "Informes",
@@ -150,7 +170,28 @@
     "date_to": "Hasta",
     "download": "Descargar",
     "empty": "Sin informes",
-    "empty_sub": "Genera tu primer informe"
+    "empty_sub": "Genera tu primer informe",
+    "subtitle": "Genera y descarga informes",
+    "type_label": "Tipo de informe",
+    "summary_label": "Resumen",
+    "summary_desc": "Vista general de suscripciones",
+    "detailed_label": "Detallado",
+    "detailed_desc": "Historial completo de transacciones",
+    "tax_label": "Informe fiscal",
+    "tax_desc": "Suscripciones de negocio para impuestos",
+    "date_range": "Rango de fechas",
+    "this_month": "Este mes",
+    "last_month": "Mes pasado",
+    "this_year": "Este año",
+    "format_label": "Formato",
+    "generate_btn": "Generar informe",
+    "previous": "Informes anteriores",
+    "no_reports": "Sin informes aún.",
+    "report_label": "Informe",
+    "status_pending": "Pendiente",
+    "status_processing": "Procesando",
+    "status_ready": "Listo",
+    "status_failed": "Error"
   },
   "settings": {
     "title": "Ajustes",
@@ -184,7 +225,8 @@
     "sending": "Enviando...",
     "sent": "¡Revisa tu correo!",
     "sent_sub": "Enviamos un enlace a",
-    "or": "o"
+    "or": "o",
+    "signing_in": "Iniciando sesión..."
   },
   "landing": {
     "hero_title": "Sabe exactamente a dónde va tu dinero",
@@ -192,5 +234,40 @@
     "open_app": "Abrir app",
     "features": "Todo lo que necesitas",
     "pricing": "Precios simples"
+  },
+  "workspace": {
+    "title": "Espacio de trabajo",
+    "subtitle": "Gestionar equipo",
+    "create": "Crear espacio",
+    "invite": "Invitar miembro",
+    "invite_email": "Correo electrónico",
+    "invite_role": "Rol",
+    "no_workspace": "Sin espacio de trabajo",
+    "no_workspace_sub": "Crea un espacio para colaborar",
+    "members": "Miembros",
+    "role_owner": "Propietario",
+    "role_admin": "Admin",
+    "role_member": "Miembro",
+    "remove_member": "Eliminar",
+    "remove_confirm": "¿Eliminar este miembro?",
+    "creating": "Creando...",
+    "inviting": "Invitando...",
+    "plan_required": "Plan Team requerido",
+    "plan_required_sub": "Actualiza al plan Team",
+    "upgrade": "Actualizar plan"
+  },
+  "subscription": {
+    "detail_title": "Detalles de suscripción",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "cancel": "Cancelar",
+    "delete_confirm": "¿Eliminar esta suscripción?",
+    "billing_day": "Día de cobro",
+    "website": "Sitio web",
+    "notes": "Notas",
+    "card": "Tarjeta",
+    "no_card": "Sin tarjeta"
   }
 }

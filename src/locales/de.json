@@ -122,7 +122,20 @@
     "color": "Farbe",
     "linked_subs": "verknüpfte Abonnements",
     "expires": "Läuft ab",
-    "delete_confirm": "Diese Karte löschen?"
+    "delete_confirm": "Diese Karte löschen?",
+    "subtitle": "Karten verknüpft",
+    "new_card": "Neue Karte",
+    "edit_card": "Karte bearbeiten",
+    "nickname_placeholder": "z.B. Hauptkarte",
+    "expiry_month": "Ablaufmonat",
+    "expiry_year": "Ablaufjahr",
+    "card_color": "Kartenfarbe",
+    "update": "Karte aktualisieren",
+    "remove": "Entfernen",
+    "no_linked": "Keine Karten",
+    "no_linked_sub": "Karte hinzufügen um Abonnements zu verfolgen",
+    "add_first": "Erste Karte hinzufügen",
+    "remove_confirm": "Diese Karte entfernen?"
   },
   "analytics": {
     "title": "Analytik",
@@ -135,7 +148,14 @@
     "by_card": "Nach Karte",
     "monthly_trend": "Monatlicher Trend",
     "top_expensive": "Teuerste",
-    "no_data": "Keine Daten"
+    "no_data": "Keine Daten",
+    "subtitle": "Tiefenanalyse deiner Ausgaben",
+    "monthly_label": "Monatlich",
+    "yearly_label": "Jährlich",
+    "active_label": "Aktiv",
+    "spend_trend": "Monatliche Ausgaben",
+    "top5": "Top 5 teuerste",
+    "no_active": "Keine aktiven Abonnements"
   },
   "reports": {
     "title": "Berichte",
@@ -150,7 +170,28 @@
     "date_to": "Bis",
     "download": "Herunterladen",
     "empty": "Keine Berichte",
-    "empty_sub": "Erstelle deinen ersten Bericht"
+    "empty_sub": "Erstelle deinen ersten Bericht",
+    "subtitle": "Berichte erstellen und herunterladen",
+    "type_label": "Berichtstyp",
+    "summary_label": "Zusammenfassung",
+    "summary_desc": "Überblick aller Abonnements",
+    "detailed_label": "Detailliert",
+    "detailed_desc": "Vollständige Transaktionshistorie",
+    "tax_label": "Steuerbericht",
+    "tax_desc": "Geschäftsabonnements für Steuern",
+    "date_range": "Zeitraum",
+    "this_month": "Diesen Monat",
+    "last_month": "Letzten Monat",
+    "this_year": "Dieses Jahr",
+    "format_label": "Format",
+    "generate_btn": "Bericht erstellen",
+    "previous": "Frühere Berichte",
+    "no_reports": "Noch keine Berichte.",
+    "report_label": "Bericht",
+    "status_pending": "Ausstehend",
+    "status_processing": "Wird verarbeitet",
+    "status_ready": "Bereit",
+    "status_failed": "Fehler"
   },
   "settings": {
     "title": "Einstellungen",
@@ -184,7 +225,8 @@
     "sending": "Wird gesendet...",
     "sent": "E-Mail prüfen!",
     "sent_sub": "Wir haben einen Link gesendet an",
-    "or": "oder"
+    "or": "oder",
+    "signing_in": "Anmeldung läuft..."
   },
   "landing": {
     "hero_title": "Wissen Sie genau, wohin Ihr Geld geht",
@@ -192,5 +234,40 @@
     "open_app": "App öffnen",
     "features": "Alles was Sie brauchen",
     "pricing": "Einfache Preise"
+  },
+  "workspace": {
+    "title": "Arbeitsbereich",
+    "subtitle": "Team verwalten",
+    "create": "Arbeitsbereich erstellen",
+    "invite": "Mitglied einladen",
+    "invite_email": "E-Mail-Adresse",
+    "invite_role": "Rolle",
+    "no_workspace": "Kein Arbeitsbereich",
+    "no_workspace_sub": "Erstelle einen Arbeitsbereich für die Zusammenarbeit",
+    "members": "Mitglieder",
+    "role_owner": "Inhaber",
+    "role_admin": "Admin",
+    "role_member": "Mitglied",
+    "remove_member": "Entfernen",
+    "remove_confirm": "Dieses Mitglied entfernen?",
+    "creating": "Erstellen...",
+    "inviting": "Einladen...",
+    "plan_required": "Team-Plan erforderlich",
+    "plan_required_sub": "Upgrade auf Team-Plan",
+    "upgrade": "Plan upgraden"
+  },
+  "subscription": {
+    "detail_title": "Abonnementdetails",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "cancel": "Kündigen",
+    "delete_confirm": "Abonnement löschen?",
+    "billing_day": "Abrechnungstag",
+    "website": "Webseite",
+    "notes": "Notizen",
+    "card": "Karte",
+    "no_card": "Keine Karte"
   }
 }

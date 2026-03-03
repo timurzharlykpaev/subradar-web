@@ -1,4 +1,5 @@
 import { useEffect, useState, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2, Radar, XCircle } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
@@ -66,13 +67,14 @@ function MagicLinkContent() {
       </div>
       <div className="flex items-center gap-3 text-gray-300">
         <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-        <span>Signing you in...</span>
+        <span>{t('auth.signing_in')}</span>
       </div>
     </div>
   );
 }
 
 export default function MagicLinkPage() {
+  const { t } = useTranslation();
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center"

@@ -1,4 +1,5 @@
 import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart';
+import { useTranslation } from 'react-i18next';
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { CardBreakdownChart } from '@/components/charts/CardBreakdownChart';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
@@ -10,6 +11,7 @@ import { Category } from '@/types';
 import { TrendingUp, CreditCard, Layers } from 'lucide-react';
 
 export default function AnalyticsPage() {
+  const { t } = useTranslation();
   const { data: summary, isLoading: loadingSummary } = useAnalyticsSummary();
   const { data: monthly, isLoading: loadingMonthly } = useAnalyticsMonthly();
   const { data: byCategory, isLoading: loadingCategory } = useAnalyticsByCategory();
@@ -23,21 +25,21 @@ export default function AnalyticsPage() {
 
   const summaryItems = [
     {
-      label: 'Monthly',
+      label: t('analytics.monthly_label'),
       value: formatCurrency(summary?.totalMonthly ?? 0),
       icon: TrendingUp,
       color: '#8b5cf6',
       bg: 'rgba(139,92,246,0.12)',
     },
     {
-      label: 'Yearly',
+      label: t('analytics.yearly_label'),
       value: formatCurrency(summary?.totalYearly ?? 0),
       icon: CreditCard,
       color: '#10b981',
       bg: 'rgba(16,185,129,0.12)',
     },
     {
-      label: 'Active',
+      label: t('analytics.active_label'),
       value: (summary?.activeCount ?? 0).toString(),
       icon: Layers,
       color: '#3b82f6',
@@ -48,8 +50,8 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-5 animate-fade-in">
       <div>
-        <h1 className="page-title">Analytics</h1>
-        <p className="page-subtitle">Deep dive into your subscription spending</p>
+        <h1 className="page-title">{t('analytics.title')}</h1>
+        <p className="page-subtitle">{t('analytics.subtitle')}</p>
       </div>
 
       {/* Summary cards */}
@@ -76,7 +78,7 @@ export default function AnalyticsPage() {
 
       {/* Monthly trend */}
       <div className="glass-card rounded-2xl p-5">
-        <p className="section-title">Monthly Spend Trend</p>
+        <p className="section-title">{t('analytics.spend_trend')}</p>
         {loadingMonthly ? (
           <Skeleton className="h-48 w-full rounded-xl" />
         ) : (
@@ -87,7 +89,7 @@ export default function AnalyticsPage() {
       {/* Category + Card charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card rounded-2xl p-5">
-          <p className="section-title">By Category</p>
+          <p className="section-title">{t('analytics.by_category')}</p>
           {loadingCategory ? (
             <Skeleton className="h-48 w-full rounded-xl" />
           ) : (
@@ -95,7 +97,7 @@ export default function AnalyticsPage() {
           )}
         </div>
         <div className="glass-card rounded-2xl p-5">
-          <p className="section-title">By Card</p>
+          <p className="section-title">{t('analytics.by_card')}</p>
           {loadingByCard ? (
             <Skeleton className="h-48 w-full rounded-xl" />
           ) : (
@@ -106,9 +108,9 @@ export default function AnalyticsPage() {
 
       {/* Top 5 */}
       <div className="glass-card rounded-2xl p-5">
-        <p className="section-title">Top 5 Most Expensive</p>
+        <p className="section-title">{t('analytics.top5')}</p>
         {topExpensive.length === 0 ? (
-          <p className="text-sm text-gray-600 text-center py-6">No active subscriptions</p>
+          <p className="text-sm text-gray-600 text-center py-6">{t('analytics.no_active')}</p>
         ) : (
           <div className="space-y-1">
             {topExpensive.map((sub, i) => (

@@ -122,7 +122,20 @@
     "color": "颜色",
     "linked_subs": "个关联订阅",
     "expires": "到期",
-    "delete_confirm": "删除此卡片？"
+    "delete_confirm": "删除此卡片？",
+    "subtitle": "张卡已关联",
+    "new_card": "新卡",
+    "edit_card": "编辑卡片",
+    "nickname_placeholder": "如：主卡",
+    "expiry_month": "到期月份",
+    "expiry_year": "到期年份",
+    "card_color": "卡片颜色",
+    "update": "更新卡片",
+    "remove": "删除",
+    "no_linked": "无卡片",
+    "no_linked_sub": "添加卡片以追踪订阅",
+    "add_first": "添加第一张卡",
+    "remove_confirm": "删除此卡?"
   },
   "analytics": {
     "title": "分析",
@@ -135,7 +148,14 @@
     "by_card": "按卡片",
     "monthly_trend": "月度趋势",
     "top_expensive": "最贵",
-    "no_data": "暂无数据"
+    "no_data": "暂无数据",
+    "subtitle": "深入分析订阅支出",
+    "monthly_label": "每月",
+    "yearly_label": "每年",
+    "active_label": "活跃",
+    "spend_trend": "月度趋势",
+    "top5": "最贵的5个",
+    "no_active": "无活跃订阅"
   },
   "reports": {
     "title": "报告",
@@ -150,7 +170,28 @@
     "date_to": "到",
     "download": "下载",
     "empty": "暂无报告",
-    "empty_sub": "生成您的第一份报告"
+    "empty_sub": "生成您的第一份报告",
+    "subtitle": "生成并下载报告",
+    "type_label": "报告类型",
+    "summary_label": "摘要报告",
+    "summary_desc": "订阅概览",
+    "detailed_label": "详细报告",
+    "detailed_desc": "完整交易记录",
+    "tax_label": "税务报告",
+    "tax_desc": "用于报税的商业订阅",
+    "date_range": "日期范围",
+    "this_month": "本月",
+    "last_month": "上月",
+    "this_year": "今年",
+    "format_label": "格式",
+    "generate_btn": "生成报告",
+    "previous": "历史报告",
+    "no_reports": "暂无报告。",
+    "report_label": "报告",
+    "status_pending": "待处理",
+    "status_processing": "处理中",
+    "status_ready": "就绪",
+    "status_failed": "失败"
   },
   "settings": {
     "title": "设置",
@@ -184,7 +225,8 @@
     "sending": "发送中...",
     "sent": "请查收邮件！",
     "sent_sub": "我们已发送链接至",
-    "or": "或"
+    "or": "或",
+    "signing_in": "登录中..."
   },
   "landing": {
     "hero_title": "精确了解您的钱花在哪里",
@@ -192,5 +234,40 @@
     "open_app": "打开应用",
     "features": "您需要的一切",
     "pricing": "简单透明的定价"
+  },
+  "workspace": {
+    "title": "工作区",
+    "subtitle": "管理团队",
+    "create": "创建工作区",
+    "invite": "邀请成员",
+    "invite_email": "邮箱地址",
+    "invite_role": "角色",
+    "no_workspace": "无工作区",
+    "no_workspace_sub": "创建工作区以协作",
+    "members": "成员",
+    "role_owner": "所有者",
+    "role_admin": "管理员",
+    "role_member": "成员",
+    "remove_member": "移除",
+    "remove_confirm": "移除此成员?",
+    "creating": "创建中...",
+    "inviting": "邀请中...",
+    "plan_required": "需要Team计划",
+    "plan_required_sub": "升级至Team计划",
+    "upgrade": "升级计划"
+  },
+  "subscription": {
+    "detail_title": "订阅详情",
+    "edit": "编辑",
+    "delete": "删除",
+    "pause": "暂停",
+    "resume": "恢复",
+    "cancel": "取消",
+    "delete_confirm": "删除此订阅?",
+    "billing_day": "扣款日",
+    "website": "网站",
+    "notes": "备注",
+    "card": "卡片",
+    "no_card": "无卡片"
   }
 }
