@@ -15,7 +15,12 @@ interface AddSubscriptionModalProps {
   onSubmit?: (data: any) => void;
 }
 
-const billingCycles: BillingCycle[] = ['monthly', 'yearly', 'weekly', 'quarterly'];
+const billingCycles: { value: BillingCycle; label: string }[] = [
+  { value: 'MONTHLY', label: 'Monthly' },
+  { value: 'YEARLY', label: 'Yearly' },
+  { value: 'WEEKLY', label: 'Weekly' },
+  { value: 'QUARTERLY', label: 'Quarterly' },
+];
 
 export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModalProps) {
   const { data: cards = [] } = usePaymentCards();
@@ -28,8 +33,8 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
     plan: '',
     amount: '',
     currency: 'USD',
-    billingCycle: 'monthly' as BillingCycle,
-    category: 'other' as Category,
+    billingCycle: 'MONTHLY' as BillingCycle,
+    category: 'OTHER' as Category,
     cardId: '',
     nextPaymentDate: '',
   });
@@ -43,8 +48,14 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
-      ...form,
+      name: form.name,
+      currentPlan: form.plan || undefined,
       amount: parseFloat(form.amount),
+      currency: form.currency,
+      billingPeriod: form.billingCycle,
+      category: form.category,
+      paymentCardId: form.cardId || undefined,
+      startDate: form.nextPaymentDate || undefined,
     };
     await createSubscription.mutateAsync(payload);
     onSubmit?.(payload);
@@ -133,7 +144,7 @@ export function AddSubscriptionModal({ onClose, onSubmit }: AddSubscriptionModal
                     className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500"
                   >
                     {billingCycles.map((c) => (
-                      <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                      <option key={c.value} value={c.value}>{c.label}</option>
                     ))}
                   </select>
                 </div>

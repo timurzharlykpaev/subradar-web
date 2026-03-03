@@ -12,13 +12,13 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { PlanUsageBar } from '@/components/ui/PlanUsageBar';
 import { UpgradeModal } from '@/components/ui/UpgradeModal';
 
-const statuses: SubscriptionStatus[] = ['active', 'paused', 'trial', 'cancelled'];
+const statuses: SubscriptionStatus[] = ['ACTIVE', 'PAUSED', 'TRIAL', 'CANCELLED'];
 
 const statusColors: Record<SubscriptionStatus, string> = {
-  active: 'bg-green-500/15 text-green-400 border-green-500/25',
-  paused: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/25',
-  trial: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
-  cancelled: 'bg-gray-500/15 text-gray-400 border-gray-500/20',
+  ACTIVE: 'bg-green-500/15 text-green-400 border-green-500/25',
+  PAUSED: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/25',
+  TRIAL: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
+  CANCELLED: 'bg-gray-500/15 text-gray-400 border-gray-500/20',
 };
 
 export default function SubscriptionsPage() {

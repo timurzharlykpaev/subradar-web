@@ -1,15 +1,15 @@
 import { Category } from '@/types';
 
 const categoryMap: Record<Category, { icon: string; label: string; color: string }> = {
-  streaming: { icon: '🎬', label: 'Streaming', color: '#EF4444' },
-  ai: { icon: '🤖', label: 'AI Tools', color: '#8B5CF6' },
-  infra: { icon: '☁️', label: 'Infrastructure', color: '#3B82F6' },
-  music: { icon: '🎵', label: 'Music', color: '#10B981' },
-  gaming: { icon: '🎮', label: 'Gaming', color: '#F59E0B' },
-  productivity: { icon: '📋', label: 'Productivity', color: '#6366F1' },
-  fitness: { icon: '💪', label: 'Fitness', color: '#EC4899' },
-  news: { icon: '📰', label: 'News', color: '#64748B' },
-  other: { icon: '📦', label: 'Other', color: '#94A3B8' },
+  STREAMING: { icon: '🎬', label: 'Streaming', color: '#EF4444' },
+  AI_SERVICES: { icon: '🤖', label: 'AI Tools', color: '#8B5CF6' },
+  INFRASTRUCTURE: { icon: '☁️', label: 'Infrastructure', color: '#3B82F6' },
+  MUSIC: { icon: '🎵', label: 'Music', color: '#10B981' },
+  GAMING: { icon: '🎮', label: 'Gaming', color: '#F59E0B' },
+  PRODUCTIVITY: { icon: '📋', label: 'Productivity', color: '#6366F1' },
+  HEALTH: { icon: '💪', label: 'Health & Fitness', color: '#EC4899' },
+  NEWS: { icon: '📰', label: 'News', color: '#64748B' },
+  OTHER: { icon: '📦', label: 'Other', color: '#94A3B8' },
 };
 
 interface CategoryIconProps {
@@ -19,7 +19,8 @@ interface CategoryIconProps {
 }
 
 export function CategoryIcon({ category, size = 'md', showLabel = false }: CategoryIconProps) {
-  const { icon, label, color } = categoryMap[category] || categoryMap.other;
+  const normalized = (category?.toUpperCase() ?? 'OTHER') as Category;
+  const { icon, label, color } = categoryMap[normalized] || categoryMap.OTHER;
   const sizeClasses = {
     sm: 'w-7 h-7 text-sm',
     md: 'w-9 h-9 text-base',
@@ -44,7 +45,8 @@ export function CategoryIcon({ category, size = 'md', showLabel = false }: Categ
 }
 
 export function getCategoryInfo(category: Category) {
-  return categoryMap[category] || categoryMap.other;
+  const normalized = (category?.toUpperCase() ?? 'OTHER') as Category;
+  return categoryMap[normalized] || categoryMap.OTHER;
 }
 
 export const allCategories = Object.entries(categoryMap).map(([key, val]) => ({

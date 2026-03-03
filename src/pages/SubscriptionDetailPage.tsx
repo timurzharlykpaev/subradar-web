@@ -12,7 +12,12 @@ import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton';
 import { Category, BillingCycle } from '@/types';
 import { allCategories } from '@/components/shared/CategoryIcon';
 
-const billingCycles: BillingCycle[] = ['monthly', 'yearly', 'weekly', 'quarterly'];
+const billingCycles: { value: BillingCycle; label: string }[] = [
+  { value: 'MONTHLY', label: 'Monthly' },
+  { value: 'YEARLY', label: 'Yearly' },
+  { value: 'WEEKLY', label: 'Weekly' },
+  { value: 'QUARTERLY', label: 'Quarterly' },
+];
 
 export default function SubscriptionDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -32,10 +37,10 @@ export default function SubscriptionDetailPage() {
     if (!sub) return;
     setEditForm({
       name: sub.name,
-      plan: sub.plan,
+      plan: sub.currentPlan ?? '',
       amount: sub.amount.toString(),
       currency: sub.currency,
-      billingCycle: sub.billingCycle,
+      billingCycle: sub.billingPeriod ?? 'MONTHLY',
       category: sub.category,
       notes: sub.notes ?? '',
     });
@@ -47,7 +52,7 @@ export default function SubscriptionDetailPage() {
       await updateMutation.mutateAsync({
         ...editForm,
         amount: parseFloat(editForm.amount),
-        billingCycle: editForm.billingCycle as BillingCycle,
+        billingPeriod: editForm.billingCycle as BillingCycle,
         category: editForm.category as Category,
       });
       success('Subscription updated!');
@@ -124,7 +129,7 @@ export default function SubscriptionDetailPage() {
                 <CategoryIcon category={sub.category} size="lg" />
                 <div>
                   <h2 className="text-2xl font-bold">{sub.name}</h2>
-                  <p className="text-gray-400">{sub.plan}</p>
+                  <p className="text-gray-400">{sub.currentPlan ?? '—'}</p>
                 </div>
               </div>
               <StatusBadge status={sub.status} />
@@ -134,7 +139,7 @@ export default function SubscriptionDetailPage() {
               <div className="bg-white/5 rounded-xl p-4">
                 <p className="text-xs text-gray-400 mb-1">Amount</p>
                 <p className="text-2xl font-bold text-purple-400">{formatCurrency(sub.amount, sub.currency)}</p>
-                <p className="text-xs text-gray-500">per {sub.billingCycle}</p>
+                <p className="text-xs text-gray-500">per {sub.billingPeriod?.toLowerCase() ?? '—'}</p>
               </div>
               <div className="bg-white/5 rounded-xl p-4">
                 <p className="text-xs text-gray-400 mb-1">Next Payment</p>
@@ -146,8 +151,8 @@ export default function SubscriptionDetailPage() {
               </div>
               <div className="bg-white/5 rounded-xl p-4">
                 <p className="text-xs text-gray-400 mb-1">Payment Card</p>
-                {sub.card ? (
-                  <CardBrandBadge brand={sub.card.brand} last4={sub.card.last4} />
+                {sub.paymentCard ? (
+                  <CardBrandBadge brand={sub.paymentCard.brand} last4={sub.paymentCard.last4} />
                 ) : (
                   <p className="text-sm text-gray-500">No card linked</p>
                 )}
@@ -167,21 +172,21 @@ export default function SubscriptionDetailPage() {
                 <Edit3 className="w-4 h-4" />
                 Edit
               </button>
-              {sub.status === 'active' && (
+              {sub.status === 'ACTIVE' && (
                 <button onClick={() => handleStatusChange('paused')} disabled={updateMutation.isPending}
                   className="flex items-center gap-2 px-4 py-3 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                   <Pause className="w-4 h-4" />
                   Pause
                 </button>
               )}
-              {sub.status === 'paused' && (
+              {sub.status === 'PAUSED' && (
                 <button onClick={() => handleStatusChange('active')} disabled={updateMutation.isPending}
                   className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-500/10 hover:bg-green-500/20 text-green-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                   <Play className="w-4 h-4" />
                   Resume
                 </button>
               )}
-              {sub.status !== 'cancelled' && (
+              {sub.status !== 'CANCELLED' && (
                 <button onClick={() => handleStatusChange('cancelled')} disabled={updateMutation.isPending}
                   className="flex items-center gap-2 px-4 py-3 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                   <X className="w-4 h-4" />
@@ -225,7 +230,7 @@ export default function SubscriptionDetailPage() {
                 <label className="text-xs text-gray-400 mb-1 block">Billing Cycle</label>
                 <select value={editForm.billingCycle} onChange={(e) => setEditForm({ ...editForm, billingCycle: e.target.value })}
                   className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
-                  {billingCycles.map((c) => <option key={c} value={c}>{c}</option>)}
+                  {billingCycles.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
               <div className="col-span-2">

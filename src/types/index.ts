@@ -1,15 +1,15 @@
-export type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'trial';
-export type BillingCycle = 'monthly' | 'yearly' | 'weekly' | 'quarterly';
+export type SubscriptionStatus = 'ACTIVE' | 'PAUSED' | 'CANCELLED' | 'TRIAL';
+export type BillingCycle = 'MONTHLY' | 'YEARLY' | 'WEEKLY' | 'QUARTERLY' | 'LIFETIME' | 'ONE_TIME';
 export type Category =
-  | 'streaming'
-  | 'ai'
-  | 'infra'
-  | 'music'
-  | 'gaming'
-  | 'productivity'
-  | 'fitness'
-  | 'news'
-  | 'other';
+  | 'STREAMING'
+  | 'AI_SERVICES'
+  | 'INFRASTRUCTURE'
+  | 'MUSIC'
+  | 'GAMING'
+  | 'PRODUCTIVITY'
+  | 'HEALTH'
+  | 'NEWS'
+  | 'OTHER';
 
 export type CardBrand = 'visa' | 'mastercard' | 'amex' | 'mir' | 'other';
 
@@ -26,17 +26,17 @@ export interface PaymentCard {
 export interface Subscription {
   id: string;
   name: string;
-  plan: string;
+  currentPlan?: string;
   amount: number;
   currency: string;
-  billingCycle: BillingCycle;
+  billingPeriod: BillingCycle;
   category: Category;
   status: SubscriptionStatus;
-  nextPaymentDate: string;
-  startDate: string;
-  cardId?: string;
-  card?: PaymentCard;
-  logoUrl?: string;
+  nextPaymentDate?: string;
+  startDate?: string;
+  paymentCardId?: string;
+  paymentCard?: PaymentCard;
+  iconUrl?: string;
   notes?: string;
   receipts?: Receipt[];
 }

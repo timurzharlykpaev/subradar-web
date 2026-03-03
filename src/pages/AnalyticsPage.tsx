@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
   const { data: subscriptions } = useSubscriptions();
 
   const topExpensive = (subscriptions ?? [])
-    .filter((s) => s.status === 'active')
+    .filter((s) => s.status === 'ACTIVE')
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 5);
 
@@ -117,13 +117,13 @@ export default function AnalyticsPage() {
                 <CategoryIcon category={sub.category} size="sm" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{sub.name}</p>
-                  <p className="text-xs text-gray-600">{sub.plan} · {sub.billingCycle}</p>
+                  <p className="text-xs text-gray-600">{sub.currentPlan ?? ''} · {sub.billingPeriod}</p>
                 </div>
                 <div className="flex flex-col items-end gap-0.5">
                   <span className="text-sm font-bold text-purple-300 flex-shrink-0">
                     {formatCurrency(sub.amount, sub.currency)}
                   </span>
-                  <span className="text-[10px] text-gray-600">/{sub.billingCycle}</span>
+                  <span className="text-[10px] text-gray-600">/{sub.billingPeriod}</span>
                 </div>
               </div>
             ))}

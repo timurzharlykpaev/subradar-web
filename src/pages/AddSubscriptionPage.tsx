@@ -8,7 +8,14 @@ import { useLookupService, useParseScreenshot, ServiceLookupResult } from '@/hoo
 import { Category, BillingCycle } from '@/types';
 import { useToast } from '@/providers/ToastProvider';
 
-const billingCycles: BillingCycle[] = ['monthly', 'yearly', 'weekly', 'quarterly'];
+const billingCycles: { value: BillingCycle; label: string }[] = [
+  { value: 'MONTHLY', label: 'Monthly' },
+  { value: 'YEARLY', label: 'Yearly' },
+  { value: 'WEEKLY', label: 'Weekly' },
+  { value: 'QUARTERLY', label: 'Quarterly' },
+  { value: 'LIFETIME', label: 'Lifetime' },
+  { value: 'ONE_TIME', label: 'One Time' },
+];
 const currencies = ['USD', 'EUR', 'GBP', 'KZT', 'RUB', 'AED'];
 
 type Step = 1 | 2 | 3;
@@ -21,7 +28,6 @@ interface FormState {
   billingCycle: BillingCycle;
   category: Category;
   cardId: string;
-  nextPaymentDate: string;
   startDate: string;
   notes: string;
   logoUrl: string;
@@ -32,10 +38,9 @@ const defaultForm: FormState = {
   plan: '',
   amount: '',
   currency: 'USD',
-  billingCycle: 'monthly',
-  category: 'other',
+  billingCycle: 'MONTHLY',
+  category: 'OTHER',
   cardId: '',
-  nextPaymentDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
   startDate: new Date().toISOString().split('T')[0],
   notes: '',
   logoUrl: '',
@@ -66,11 +71,11 @@ export default function AddSubscriptionPage() {
         ...f,
         name: result.name,
         logoUrl: result.logoUrl ?? '',
-        category: (result.category as Category) || 'other',
+        category: ((result.category as string)?.toUpperCase() as Category) || 'OTHER',
         plan: firstPlan?.name ?? '',
         amount: firstPlan?.amount?.toString() ?? '',
         currency: firstPlan?.currency ?? 'USD',
-        billingCycle: (firstPlan?.billingCycle as BillingCycle) ?? 'monthly',
+        billingCycle: ((firstPlan?.billingCycle as string)?.toUpperCase() as BillingCycle) ?? 'MONTHLY',
       }));
     } catch {
       error('Service not found. Please enter details manually.');
@@ -90,7 +95,7 @@ export default function AddSubscriptionPage() {
         name: result.name ?? f.name,
         amount: result.amount?.toString() ?? f.amount,
         currency: result.currency ?? f.currency,
-        billingCycle: result.billingCycle ?? f.billingCycle,
+        billingCycle: (result.billingPeriod as BillingCycle) ?? f.billingCycle,
         category: result.category ?? f.category,
       }));
       success('Receipt scanned! Form pre-filled.');
@@ -103,9 +108,16 @@ export default function AddSubscriptionPage() {
   const handleSubmit = async () => {
     try {
       await createMutation.mutateAsync({
-        ...form,
+        name: form.name,
+        currentPlan: form.plan || undefined,
         amount: parseFloat(form.amount),
-        cardId: form.cardId || undefined,
+        currency: form.currency,
+        billingPeriod: form.billingCycle,
+        category: form.category,
+        startDate: form.startDate || undefined,
+        notes: form.notes || undefined,
+        iconUrl: form.logoUrl || undefined,
+        paymentCardId: form.cardId || undefined,
       });
       success('Subscription added!');
       navigate('/app/subscriptions');
@@ -274,17 +286,8 @@ export default function AddSubscriptionPage() {
                 onChange={(e) => setForm({ ...form, billingCycle: e.target.value as BillingCycle })}
                 className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500"
               >
-                {billingCycles.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+                {billingCycles.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
-            </div>
-            <div>
-              <label className="text-xs text-gray-400 mb-1 block">Next Payment</label>
-              <input
-                type="date"
-                value={form.nextPaymentDate}
-                onChange={(e) => setForm({ ...form, nextPaymentDate: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500"
-              />
             </div>
             <div>
               <label className="text-xs text-gray-400 mb-1 block">Start Date</label>
@@ -343,9 +346,9 @@ export default function AddSubscriptionPage() {
               {[
                 { label: 'Service', value: form.name },
                 { label: 'Plan', value: form.plan || '—' },
-                { label: 'Amount', value: `${form.amount} ${form.currency} / ${form.billingCycle}` },
-                { label: 'Category', value: form.category },
-                { label: 'Next Payment', value: form.nextPaymentDate },
+                { label: 'Amount', value: `${form.amount} ${form.currency} / ${form.billingCycle.toLowerCase()}` },
+                { label: 'Category', value: form.category.replace('_', ' ').toLowerCase().replace(/^\w/, (c) => c.toUpperCase()) },
+                { label: 'Start Date', value: form.startDate },
                 { label: 'Card', value: form.cardId ? cards?.find((c) => c.id === form.cardId)?.nickname ?? '—' : 'None' },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between text-sm">

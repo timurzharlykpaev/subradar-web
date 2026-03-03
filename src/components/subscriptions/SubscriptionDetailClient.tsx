@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit3, Trash2 } from 'lucide-react';
@@ -37,7 +36,6 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => router(-1)}
@@ -48,14 +46,13 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
         <h1 className="text-xl font-bold">Subscription Details</h1>
       </div>
 
-      {/* Main card */}
       <div className="glass-card rounded-2xl p-6">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center gap-4">
             <CategoryIcon category={sub.category} size="lg" />
             <div>
               <h2 className="text-2xl font-bold">{sub.name}</h2>
-              <p className="text-gray-400">{sub.plan}</p>
+              <p className="text-gray-400">{sub.currentPlan ?? '—'}</p>
             </div>
           </div>
           <StatusBadge status={sub.status} />
@@ -67,20 +64,20 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
             <p className="text-2xl font-bold text-purple-400">
               {formatCurrency(sub.amount, sub.currency)}
             </p>
-            <p className="text-xs text-gray-500">per {sub.billingCycle}</p>
+            <p className="text-xs text-gray-500">per {sub.billingPeriod?.toLowerCase() ?? '—'}</p>
           </div>
           <div className="bg-white/5 rounded-xl p-4">
             <p className="text-xs text-gray-400 mb-1">Next Payment</p>
-            <p className="text-lg font-semibold">{formatDate(sub.nextPaymentDate)}</p>
+            <p className="text-lg font-semibold">{sub.nextPaymentDate ? formatDate(sub.nextPaymentDate) : '—'}</p>
           </div>
           <div className="bg-white/5 rounded-xl p-4">
             <p className="text-xs text-gray-400 mb-1">Started</p>
-            <p className="text-sm font-medium">{formatDate(sub.startDate)}</p>
+            <p className="text-sm font-medium">{sub.startDate ? formatDate(sub.startDate) : '—'}</p>
           </div>
           <div className="bg-white/5 rounded-xl p-4">
             <p className="text-xs text-gray-400 mb-1">Payment Card</p>
-            {sub.card ? (
-              <CardBrandBadge brand={sub.card.brand} last4={sub.card.last4} />
+            {sub.paymentCard ? (
+              <CardBrandBadge brand={sub.paymentCard.brand} last4={sub.paymentCard.last4} />
             ) : (
               <p className="text-sm text-gray-500">No card linked</p>
             )}
@@ -106,7 +103,6 @@ export function SubscriptionDetailClient({ id }: { id: string }) {
         </div>
       </div>
 
-      {/* Receipts */}
       <div className="glass-card rounded-2xl p-6">
         <h3 className="font-semibold mb-4">Receipts</h3>
         <ReceiptUploader subscriptionId={sub.id} />

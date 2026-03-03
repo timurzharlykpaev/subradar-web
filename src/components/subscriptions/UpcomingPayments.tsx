@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Subscription } from '@/types';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
@@ -11,10 +10,11 @@ interface UpcomingPaymentsProps {
 
 export function UpcomingPayments({ subscriptions }: UpcomingPaymentsProps) {
   const upcoming = subscriptions
-    .filter((s) => s.status === 'active' || s.status === 'trial')
+    .filter((s) => s.status === 'ACTIVE' || s.status === 'TRIAL')
+    .filter((s) => s.nextPaymentDate)
     .sort(
       (a, b) =>
-        new Date(a.nextPaymentDate).getTime() - new Date(b.nextPaymentDate).getTime()
+        new Date(a.nextPaymentDate!).getTime() - new Date(b.nextPaymentDate!).getTime()
     )
     .slice(0, 5);
 
@@ -40,7 +40,7 @@ export function UpcomingPayments({ subscriptions }: UpcomingPaymentsProps) {
       ) : (
         <div className="space-y-1">
           {upcoming.map((sub, i) => {
-            const days = daysUntil(sub.nextPaymentDate);
+            const days = daysUntil(sub.nextPaymentDate) ?? 0;
             const isUrgent = days <= 3 && days >= 0;
             const isToday = days === 0;
 
