@@ -1,5 +1,4 @@
 import { useEffect, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2, Radar } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
@@ -53,14 +52,13 @@ function AuthCallbackContent() {
       </div>
       <div className="flex items-center gap-3 text-gray-300">
         <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-        <span>{t('auth.signing_in')}</span>
+        <span>Signing you in...</span>
       </div>
     </div>
   );
 }
 
 export default function AuthCallbackPage() {
-  const { t } = useTranslation();
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center"

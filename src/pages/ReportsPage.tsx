@@ -9,13 +9,8 @@ import { Skeleton } from '@/components/ui/Skeleton';
 type ReportType = 'summary' | 'detailed' | 'tax';
 type ReportFormat = 'pdf' | 'csv';
 
-const reportTypes = [
-  { id: 'summary' as ReportType, label: t('reports.summary_label'), desc: t('reports.summary_desc') },
-  { id: 'detailed' as ReportType, label: t('reports.detailed_label'), desc: t('reports.detailed_desc') },
-  { id: 'tax' as ReportType, label: t('reports.tax_label'), desc: t('reports.tax_desc') },
-];
-
 function ReportStatusBadge({ status }: { status: Report['status'] }) {
+  const { t } = useTranslation();
   const map = {
     pending: { icon: Clock, color: 'text-yellow-400', label: t('reports.status_pending') },
     processing: { icon: Loader2, color: 'text-blue-400', label: t('reports.status_processing') },
@@ -33,6 +28,11 @@ function ReportStatusBadge({ status }: { status: Report['status'] }) {
 
 export default function ReportsPage() {
   const { t } = useTranslation();
+  const reportTypes = [
+    { id: 'summary' as ReportType, label: t('reports.summary_label'), desc: t('reports.summary_desc') },
+    { id: 'detailed' as ReportType, label: t('reports.detailed_label'), desc: t('reports.detailed_desc') },
+    { id: 'tax' as ReportType, label: t('reports.tax_label'), desc: t('reports.tax_desc') },
+  ];
   const { success, error } = useToast();
   const [type, setType] = useState<ReportType>('summary');
   const [format, setFormat] = useState<ReportFormat>('pdf');
