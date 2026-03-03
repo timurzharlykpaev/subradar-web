@@ -114,12 +114,14 @@ export default function ReportsPage() {
           <div>
             <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_from')}</label>
             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-gray-200 focus:outline-none focus:border-purple-500"
+              style={{ minHeight: '44px', colorScheme: 'dark' }} />
           </div>
           <div>
             <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_to')}</label>
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-gray-200 focus:outline-none focus:border-purple-500"
+              style={{ minHeight: '44px', colorScheme: 'dark' }} />
           </div>
         </div>
       </div>
