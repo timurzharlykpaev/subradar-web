@@ -22,7 +22,8 @@
     "optional": "Необязательно",
     "required": "Обязательно",
     "success": "Успешно",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "view_all": "Все"
   },
   "nav": {
     "dashboard": "Главная",
@@ -36,7 +37,7 @@
   "dashboard": {
     "title": "Главная",
     "subtitle": "Обзор подписок",
-    "monthly_spend": "Расходы в месяц",
+    "monthly_spend": "В месяц",
     "yearly_total": "Расходы в год",
     "renewals_soon": "Скоро продление",
     "savings_possible": "Можно сэкономить",
@@ -44,10 +45,14 @@
     "projected_annual": "Прогноз на год",
     "within_7_days": "В ближайшие 7 дней",
     "unused_subscriptions": "Неиспользуемых подписок",
-    "monthly_trend": "Динамика расходов",
+    "monthly_trend": "Динамика",
     "by_category": "По категориям",
     "upcoming": "Предстоящие платежи",
-    "no_upcoming": "Нет платежей в ближайшие 7 дней"
+    "no_upcoming": "Нет платежей в ближайшие 7 дней",
+    "upcoming_payments": "Ближайшие платежи",
+    "due_today": "Сегодня",
+    "tomorrow": "Завтра",
+    "in_days": "Через {{count}} дн."
   },
   "subscriptions": {
     "title": "Подписки",
@@ -71,7 +76,9 @@
     "overdue": "Просрочена",
     "due_today": "Сегодня",
     "due_tomorrow": "Завтра",
-    "due_in_days": "Через {{days}} дн."
+    "due_in_days": "Через {{days}} дн.",
+    "status": "Статус",
+    "total": "подписок"
   },
   "add": {
     "title": "Добавить подписку",
@@ -213,7 +220,10 @@
     "saving": "Сохранение...",
     "danger_zone": "Опасная зона",
     "delete_account": "Удалить аккаунт",
-    "delete_confirm": "Это удалит ваш аккаунт и все данные."
+    "delete_confirm": "Это удалит ваш аккаунт и все данные.",
+    "theme_dark": "Тёмная",
+    "theme_light": "Светлая",
+    "theme_system": "Системная"
   },
   "auth": {
     "welcome": "С возвращением",
@@ -269,5 +279,8 @@
     "notes": "Заметки",
     "card": "Карта",
     "no_card": "Без карты"
+  },
+  "plan": {
+    "ai_requests": "AI запросы за месяц"
   }
 }

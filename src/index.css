@@ -120,6 +120,110 @@ body {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 
+
+/* Light mode full overrides */
+.light body {
+  background-color: #f4f4f8;
+  color: #0f0f13;
+}
+
+.light .page-title {
+  color: #0f0f13;
+}
+
+.light .page-subtitle {
+  color: #6b6b80;
+}
+
+.light .section-title {
+  color: #0f0f13;
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.07);
+  color: #0f0f13;
+}
+
+.light .sidebar-nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+.light .nav-link {
+  color: #6b6b80;
+}
+
+.light .nav-link:hover, .light .nav-link.active {
+  background: rgba(124, 58, 237, 0.08);
+  color: #7c3aed;
+}
+
+.light .bottom-nav {
+  background: rgba(255, 255, 255, 0.97);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light .input-base {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #0f0f13;
+}
+
+.light .input-base::placeholder {
+  color: #9090a8;
+}
+
+.light .text-gray-400, .light .text-gray-500 {
+  color: #6b6b80 !important;
+}
+
+.light .text-gray-600 {
+  color: #8080a0 !important;
+}
+
+.light .bg-white\/5 {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.light .bg-white\/8, .light .bg-white\/10 {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+.light .border-white\/8, .light .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light select, .light input[type="text"], .light input[type="email"], 
+.light input[type="number"], .light input[type="date"], .light textarea {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #0f0f13;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 640px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .glass-card {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+  
+  /* Prevent button overflow */
+  .flex.gap-2 > button, .flex.gap-3 > button {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  
+  /* Stack buttons on very small screens */
+  .btn-group-mobile {
+    flex-direction: column;
+  }
+}
+
 /* Stat card variant */
 .stat-card {
   position: relative;
@@ -201,7 +305,6 @@ body {
   font-size: 13px;
   font-weight: 600;
   color: rgba(255,255,255,0.5);
-  text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 12px;
 }

@@ -22,7 +22,8 @@
     "optional": "可选",
     "required": "必填",
     "success": "成功",
-    "close": "关闭"
+    "close": "关闭",
+    "view_all": "全部"
   },
   "nav": {
     "dashboard": "仪表板",
@@ -47,7 +48,11 @@
     "monthly_trend": "月度趋势",
     "by_category": "按类别",
     "upcoming": "即将到来的付款",
-    "no_upcoming": "未来7天内没有付款"
+    "no_upcoming": "未来7天无待付款",
+    "upcoming_payments": "即将到期",
+    "due_today": "今天到期",
+    "tomorrow": "明天",
+    "in_days": "{{count}}天后"
   },
   "subscriptions": {
     "title": "订阅",
@@ -71,7 +76,9 @@
     "overdue": "逾期",
     "due_today": "今天到期",
     "due_tomorrow": "明天到期",
-    "due_in_days": "{{days}}天后"
+    "due_in_days": "{{days}}天后",
+    "status": "状态",
+    "total": "个订阅"
   },
   "add": {
     "title": "添加订阅",
@@ -213,7 +220,10 @@
     "saving": "保存中...",
     "danger_zone": "危险区域",
     "delete_account": "删除账户",
-    "delete_confirm": "这将永久删除您的账户和所有数据。"
+    "delete_confirm": "这将永久删除您的账户和所有数据。",
+    "theme_dark": "深色",
+    "theme_light": "浅色",
+    "theme_system": "跟随系统"
   },
   "auth": {
     "welcome": "欢迎回来",
@@ -269,5 +279,8 @@
     "notes": "备注",
     "card": "卡片",
     "no_card": "无卡片"
+  },
+  "plan": {
+    "ai_requests": "本月AI请求"
   }
 }

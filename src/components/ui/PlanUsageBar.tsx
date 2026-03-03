@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { BillingInfo } from '@/types';
 
@@ -46,6 +47,7 @@ interface PlanUsageBarProps {
 }
 
 export function PlanUsageBar({ billing, onUpgradeClick }: PlanUsageBarProps) {
+  const { t } = useTranslation();
   const showSubLimit = billing.subscriptionLimit !== null;
   const showAiLimit = billing.aiRequestsLimit !== null;
 
@@ -55,7 +57,7 @@ export function PlanUsageBar({ billing, onUpgradeClick }: PlanUsageBarProps) {
     <div className="space-y-3">
       {showSubLimit && (
         <UsageBar
-          label="Subscriptions"
+          label={t('subscriptions.title')}
           used={billing.subscriptionCount}
           limit={billing.subscriptionLimit}
           onUpgradeClick={onUpgradeClick}
@@ -63,7 +65,7 @@ export function PlanUsageBar({ billing, onUpgradeClick }: PlanUsageBarProps) {
       )}
       {showAiLimit && (
         <UsageBar
-          label="AI requests this month"
+          label={t('plan.ai_requests')}
           used={billing.aiRequestsUsed}
           limit={billing.aiRequestsLimit}
           onUpgradeClick={onUpgradeClick}

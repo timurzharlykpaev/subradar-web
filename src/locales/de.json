@@ -22,7 +22,8 @@
     "optional": "Optional",
     "required": "Erforderlich",
     "success": "Erfolgreich",
-    "close": "Schließen"
+    "close": "Schließen",
+    "view_all": "Alle"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -47,7 +48,11 @@
     "monthly_trend": "Monatlicher Trend",
     "by_category": "Nach Kategorie",
     "upcoming": "Bevorstehende Zahlungen",
-    "no_upcoming": "Keine Zahlungen in den nächsten 7 Tagen"
+    "no_upcoming": "Keine Zahlungen in den nächsten 7 Tagen",
+    "upcoming_payments": "Bevorstehende Zahlungen",
+    "due_today": "Heute fällig",
+    "tomorrow": "Morgen",
+    "in_days": "In {{count}} Tagen"
   },
   "subscriptions": {
     "title": "Abonnements",
@@ -71,7 +76,9 @@
     "overdue": "Überfällig",
     "due_today": "Heute fällig",
     "due_tomorrow": "Morgen fällig",
-    "due_in_days": "In {{days}} Tagen"
+    "due_in_days": "In {{days}} Tagen",
+    "status": "Status",
+    "total": "Abonnements"
   },
   "add": {
     "title": "Abonnement hinzufügen",
@@ -213,7 +220,10 @@
     "saving": "Wird gespeichert...",
     "danger_zone": "Gefahrenzone",
     "delete_account": "Konto löschen",
-    "delete_confirm": "Dies löscht dauerhaft Ihr Konto und alle Daten."
+    "delete_confirm": "Dies löscht dauerhaft Ihr Konto und alle Daten.",
+    "theme_dark": "Dunkel",
+    "theme_light": "Hell",
+    "theme_system": "System"
   },
   "auth": {
     "welcome": "Willkommen zurück",
@@ -269,5 +279,8 @@
     "notes": "Notizen",
     "card": "Karte",
     "no_card": "Keine Karte"
+  },
+  "plan": {
+    "ai_requests": "KI-Anfragen diesen Monat"
   }
 }

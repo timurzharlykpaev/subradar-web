@@ -22,7 +22,8 @@
     "optional": "任意",
     "required": "必須",
     "success": "成功",
-    "close": "閉じる"
+    "close": "閉じる",
+    "view_all": "全て"
   },
   "nav": {
     "dashboard": "ダッシュボード",
@@ -47,7 +48,11 @@
     "monthly_trend": "月次トレンド",
     "by_category": "カテゴリ別",
     "upcoming": "今後の支払い",
-    "no_upcoming": "7日以内の支払いはありません"
+    "no_upcoming": "7日以内の支払いはありません",
+    "upcoming_payments": "支払い予定",
+    "due_today": "本日",
+    "tomorrow": "明日",
+    "in_days": "{{count}}日後"
   },
   "subscriptions": {
     "title": "サブスクリプション",
@@ -71,7 +76,9 @@
     "overdue": "延滞",
     "due_today": "本日期限",
     "due_tomorrow": "明日期限",
-    "due_in_days": "{{days}}日後"
+    "due_in_days": "{{days}}日後",
+    "status": "ステータス",
+    "total": "件"
   },
   "add": {
     "title": "サブスクリプションを追加",
@@ -213,7 +220,10 @@
     "saving": "保存中...",
     "danger_zone": "危険ゾーン",
     "delete_account": "アカウントを削除",
-    "delete_confirm": "アカウントとすべてのデータが完全に削除されます。"
+    "delete_confirm": "アカウントとすべてのデータが完全に削除されます。",
+    "theme_dark": "ダーク",
+    "theme_light": "ライト",
+    "theme_system": "システム"
   },
   "auth": {
     "welcome": "おかえりなさい",
@@ -269,5 +279,8 @@
     "notes": "メモ",
     "card": "カード",
     "no_card": "カードなし"
+  },
+  "plan": {
+    "ai_requests": "今月のAIリクエスト"
   }
 }

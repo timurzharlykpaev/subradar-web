@@ -64,7 +64,7 @@ export default function SubscriptionsPage() {
         <div>
           <h1 className="page-title">{t('subscriptions.title')}</h1>
           <p className="page-subtitle">
-            {isLoading ? '...' : `${filtered.length} subscriptions`}
+            {isLoading ? '...' : `${filtered.length} ${t('subscriptions.total')}`}
           </p>
         </div>
         {isAtSubLimit ? (
@@ -133,7 +133,7 @@ export default function SubscriptionsPage() {
         <div className="glass-card rounded-2xl p-4 animate-fade-in">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
-              <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wide">Category</label>
+              <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wide">{t('add.category')}</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -148,7 +148,7 @@ export default function SubscriptionsPage() {
               </select>
             </div>
             <div className="flex-1">
-              <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wide">Status</label>
+              <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wide">{t('subscriptions.status')}</label>
               <div className="flex flex-wrap gap-2">
                 {statuses.map((s) => (
                   <button

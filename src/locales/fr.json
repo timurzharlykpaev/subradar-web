@@ -22,7 +22,8 @@
     "optional": "Optionnel",
     "required": "Requis",
     "success": "Succès",
-    "close": "Fermer"
+    "close": "Fermer",
+    "view_all": "Tout voir"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -47,7 +48,11 @@
     "monthly_trend": "Tendance mensuelle",
     "by_category": "Par catégorie",
     "upcoming": "Paiements à venir",
-    "no_upcoming": "Aucun paiement dans les 7 prochains jours"
+    "no_upcoming": "Aucun paiement dans les 7 prochains jours",
+    "upcoming_payments": "Paiements à venir",
+    "due_today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "in_days": "Dans {{count}} jours"
   },
   "subscriptions": {
     "title": "Abonnements",
@@ -71,7 +76,9 @@
     "overdue": "En retard",
     "due_today": "Aujourd'hui",
     "due_tomorrow": "Demain",
-    "due_in_days": "Dans {{days}} jours"
+    "due_in_days": "Dans {{days}} jours",
+    "status": "Statut",
+    "total": "abonnements"
   },
   "add": {
     "title": "Ajouter un abonnement",
@@ -213,7 +220,10 @@
     "saving": "Enregistrement...",
     "danger_zone": "Zone dangereuse",
     "delete_account": "Supprimer le compte",
-    "delete_confirm": "Cela supprimera définitivement votre compte."
+    "delete_confirm": "Cela supprimera définitivement votre compte.",
+    "theme_dark": "Sombre",
+    "theme_light": "Clair",
+    "theme_system": "Système"
   },
   "auth": {
     "welcome": "Bon retour",
@@ -269,5 +279,8 @@
     "notes": "Notes",
     "card": "Carte",
     "no_card": "Sans carte"
+  },
+  "plan": {
+    "ai_requests": "Requêtes IA ce mois"
   }
 }

@@ -243,7 +243,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         style={{ minHeight: '100dvh' }}
       >
         {/* Mobile topbar */}
-        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-white/8 bg-[#0c0c14]/80 backdrop-blur-xl sticky top-0 z-10">
+        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-white/8 dark:bg-[#0c0c14]/80 bg-white/95 backdrop-blur-xl sticky top-0 z-10">
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="p-2 -ml-2 text-gray-400 hover:text-white transition-colors"
@@ -256,7 +256,13 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
             <span className="font-bold text-sm gradient-text">SubRadar</span>
           </Link>
-          <div className="w-9" /> {/* spacer */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 -mr-2 text-gray-400 hover:text-white transition-colors rounded-lg"
+            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
         </header>
 
         <main

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Subscription } from '@/types';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
@@ -9,6 +10,7 @@ interface UpcomingPaymentsProps {
 }
 
 export function UpcomingPayments({ subscriptions }: UpcomingPaymentsProps) {
+  const { t } = useTranslation();
   const upcoming = subscriptions
     .filter((s) => s.status === 'ACTIVE' || s.status === 'TRIAL')
     .filter((s) => s.nextPaymentDate)
@@ -21,12 +23,12 @@ export function UpcomingPayments({ subscriptions }: UpcomingPaymentsProps) {
   return (
     <div className="glass-card rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
-        <p className="section-title mb-0">Upcoming Payments</p>
+        <p className="section-title mb-0">{t('dashboard.upcoming_payments')}</p>
         <Link
           to="/app/subscriptions"
           className="text-xs text-gray-500 hover:text-purple-400 transition-colors flex items-center gap-1"
         >
-          View all <ArrowRight className="w-3 h-3" />
+          {t('common.view_all')} <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
 
@@ -35,7 +37,7 @@ export function UpcomingPayments({ subscriptions }: UpcomingPaymentsProps) {
           <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/8 flex items-center justify-center mb-3">
             <Calendar className="w-5 h-5 text-gray-600" />
           </div>
-          <p className="text-sm text-gray-500">No upcoming payments in the next 7 days</p>
+          <p className="text-sm text-gray-500">{t('dashboard.no_upcoming')}</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -60,10 +62,10 @@ export function UpcomingPayments({ subscriptions }: UpcomingPaymentsProps) {
                     isToday ? 'text-orange-400' : isUrgent ? 'text-yellow-500' : 'text-gray-600'
                   }`}>
                     {isToday
-                      ? 'Due today'
+                      ? t('dashboard.due_today')
                       : days === 1
                       ? 'Tomorrow'
-                      : `In ${days} days`}
+                      : `${t('dashboard.in_days', { count: days })}`}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

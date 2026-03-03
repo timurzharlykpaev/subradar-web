@@ -22,7 +22,8 @@
     "optional": "Optional",
     "required": "Required",
     "success": "Success",
-    "close": "Close"
+    "close": "Close",
+    "view_all": "View all"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -36,7 +37,7 @@
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Your subscription overview",
-    "monthly_spend": "Monthly Spend",
+    "monthly_spend": "Monthly spend",
     "yearly_total": "Yearly Total",
     "renewals_soon": "Renewals Soon",
     "savings_possible": "Savings Possible",
@@ -44,10 +45,14 @@
     "projected_annual": "Projected annual spend",
     "within_7_days": "Within next 7 days",
     "unused_subscriptions": "Unused subscriptions",
-    "monthly_trend": "Monthly Spend Trend",
-    "by_category": "Spend by Category",
+    "monthly_trend": "Monthly Trend",
+    "by_category": "By Category",
     "upcoming": "Upcoming Payments",
-    "no_upcoming": "No upcoming payments in the next 7 days"
+    "no_upcoming": "No upcoming payments in the next 7 days",
+    "upcoming_payments": "Upcoming Payments",
+    "due_today": "Due today",
+    "tomorrow": "Tomorrow",
+    "in_days": "In {{count}} days"
   },
   "subscriptions": {
     "title": "Subscriptions",
@@ -71,7 +76,9 @@
     "overdue": "Overdue",
     "due_today": "Due today",
     "due_tomorrow": "Due tomorrow",
-    "due_in_days": "Due in {{days}}d"
+    "due_in_days": "Due in {{days}}d",
+    "status": "Status",
+    "total": "subscriptions"
   },
   "add": {
     "title": "Add Subscription",
@@ -213,7 +220,10 @@
     "saving": "Saving...",
     "danger_zone": "Danger Zone",
     "delete_account": "Delete Account",
-    "delete_confirm": "This will permanently delete your account and all data."
+    "delete_confirm": "This will permanently delete your account and all data.",
+    "theme_dark": "Dark",
+    "theme_light": "Light",
+    "theme_system": "System"
   },
   "auth": {
     "welcome": "Welcome back",
@@ -269,5 +279,8 @@
     "notes": "Notes",
     "card": "Payment Card",
     "no_card": "No card"
+  },
+  "plan": {
+    "ai_requests": "AI requests this month"
   }
 }

@@ -22,7 +22,8 @@
     "optional": "Opcional",
     "required": "Obrigatório",
     "success": "Sucesso",
-    "close": "Fechar"
+    "close": "Fechar",
+    "view_all": "Ver tudo"
   },
   "nav": {
     "dashboard": "Painel",
@@ -47,7 +48,11 @@
     "monthly_trend": "Tendência mensal",
     "by_category": "Por categoria",
     "upcoming": "Próximos pagamentos",
-    "no_upcoming": "Sem pagamentos nos próximos 7 dias"
+    "no_upcoming": "Sem pagamentos nos próximos 7 dias",
+    "upcoming_payments": "Próximos pagamentos",
+    "due_today": "Hoje",
+    "tomorrow": "Amanhã",
+    "in_days": "Em {{count}} dias"
   },
   "subscriptions": {
     "title": "Assinaturas",
@@ -71,7 +76,9 @@
     "overdue": "Vencida",
     "due_today": "Hoje",
     "due_tomorrow": "Amanhã",
-    "due_in_days": "Em {{days}} dias"
+    "due_in_days": "Em {{days}} dias",
+    "status": "Status",
+    "total": "assinaturas"
   },
   "add": {
     "title": "Adicionar assinatura",
@@ -213,7 +220,10 @@
     "saving": "Salvando...",
     "danger_zone": "Zona de perigo",
     "delete_account": "Excluir conta",
-    "delete_confirm": "Isso excluirá permanentemente sua conta."
+    "delete_confirm": "Isso excluirá permanentemente sua conta.",
+    "theme_dark": "Escuro",
+    "theme_light": "Claro",
+    "theme_system": "Sistema"
   },
   "auth": {
     "welcome": "Bem-vindo de volta",
@@ -269,5 +279,8 @@
     "notes": "Notas",
     "card": "Cartão",
     "no_card": "Sem cartão"
+  },
+  "plan": {
+    "ai_requests": "Solicitações AI este mês"
   }
 }
