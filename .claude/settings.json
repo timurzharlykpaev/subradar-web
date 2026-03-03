@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://api.expo.dev/v2/versions/latest\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); ios=d.get\\(''data'',d\\).get\\(''iosClientUrl'',''''\\); print\\(ios\\)\")"
+    ]
+  }
+}
