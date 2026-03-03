@@ -110,7 +110,7 @@ export default function ReportsPage() {
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-3">
           <div>
             <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_from')}</label>
             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
