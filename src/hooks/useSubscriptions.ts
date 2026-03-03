@@ -58,10 +58,62 @@ export function useDeleteSubscription() {
   });
 }
 
+/** POST /subscriptions/:id/cancel — устанавливает статус 'cancelled' */
+export function useCancelSubscription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await api.post<Subscription>(`/subscriptions/${id}/cancel`);
+      return data;
+    },
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: ['subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['subscriptions', id] });
+    },
+  });
+}
+
+/** PATCH /subscriptions/:id { status: 'paused' } */
+export function usePauseSubscription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'paused' });
+      return data;
+    },
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: ['subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['subscriptions', id] });
+    },
+  });
+}
+
+/** PATCH /subscriptions/:id { status: 'active' } — восстановление из паузы */
+export function useRestoreSubscription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'active' });
+      return data;
+    },
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: ['subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['subscriptions', id] });
+    },
+  });
+}
+
+/** POST /ai/parse-screenshot (multipart) — AI парсинг скриншота чека */
 export function useAIParseSubscription() {
   return useMutation({
-    mutationFn: async (payload: { text?: string; imageBase64?: string }) => {
-      const { data } = await api.post<Partial<Subscription>>('/subscriptions/ai-parse', payload);
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<Partial<Subscription>>(
+        '/ai/parse-screenshot',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
       return data;
     },
   });

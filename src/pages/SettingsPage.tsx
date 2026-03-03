@@ -47,7 +47,7 @@ export default function SettingsPage() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (payload: { name: string; email: string; currency?: string; locale?: string }) => {
-      const { data } = await api.patch<UserType>('/auth/me', payload);
+      const { data } = await api.patch<UserType>('/users/me', payload);
       return data;
     },
     onSuccess: (data) => {

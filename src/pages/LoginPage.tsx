@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { Radar, Mail, ArrowRight } from 'lucide-react';
+import { Radar, Mail, ArrowRight, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGoogleLogin } from '@react-oauth/google';
 import api from '@/lib/api';
@@ -22,6 +22,8 @@ function LoginContent() {
   const [sent, setSent] = useState(false);
   const [tab, setTab] = useState<'google' | 'email'>('google');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
 
   const redirectTo = searchParams.get('redirect') || '/app/dashboard';
@@ -32,7 +34,6 @@ function LoginContent() {
       setLoading(true);
       setErrorMsg('');
       try {
-        // Получаем id_token через userinfo (access_token flow)
         const { data } = await api.post('/auth/google/token', {
           accessToken: tokenResponse.access_token,
         });
@@ -48,12 +49,16 @@ function LoginContent() {
     onError: () => setErrorMsg('Google sign-in failed. Please try again.'),
   });
 
+  const sendMagicLink = async (targetEmail: string) => {
+    await api.post('/auth/magic-link', { email: targetEmail });
+  };
+
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
     try {
-      await api.post('/auth/magic-link', { email });
+      await sendMagicLink(email);
       setSent(true);
     } catch {
       setErrorMsg('Failed to send magic link. Please try again.');
@@ -62,42 +67,70 @@ function LoginContent() {
     }
   };
 
+  const handleResend = async () => {
+    if (resendCooldown > 0) return;
+    setResending(true);
+    setErrorMsg('');
+    try {
+      await sendMagicLink(email);
+      // start 60s cooldown
+      setResendCooldown(60);
+      const interval = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) { clearInterval(interval); return 0; }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch {
+      setErrorMsg('Failed to resend. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <div
       style={{
         minHeight: '100dvh',
-        background: 'radial-gradient(ellipse 80% 50% at 50% -10%, #3b0764 0%, #0f0f13 60%)',
+        background: 'radial-gradient(ellipse 100% 60% at 50% -5%, rgba(109,40,217,0.35) 0%, #080810 55%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px 16px',
       }}
     >
-      <div style={{ width: '100%', maxWidth: '400px' }}>
+      {/* Background grid */}
+      <div
+        style={{
+          position: 'fixed', inset: 0, zIndex: 0, opacity: 0.04,
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div style={{ width: '100%', maxWidth: '400px', position: 'relative', zIndex: 1 }}>
 
         {/* Logo + title */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <Link to="/">
             <div
               style={{
-                width: '72px',
-                height: '72px',
-                borderRadius: '20px',
+                width: '68px', height: '68px',
+                borderRadius: '18px',
                 background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
-                boxShadow: '0 8px 32px rgba(124,58,237,0.45)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                boxShadow: '0 8px 40px rgba(124,58,237,0.5), 0 0 0 1px rgba(139,92,246,0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 margin: '0 auto 20px',
               }}
             >
-              <Radar size={36} color="white" />
+              <Radar size={32} color="white" />
             </div>
           </Link>
-          <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#fff', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
             {t('auth.welcome')}
           </h1>
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
             {t('auth.sign_in')}
           </p>
         </div>
@@ -105,38 +138,37 @@ function LoginContent() {
         {/* Card */}
         <div
           style={{
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '24px',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '20px',
             padding: '24px',
-            backdropFilter: 'blur(20px)',
+            backdropFilter: 'blur(24px)',
+            boxShadow: '0 4px 40px rgba(0,0,0,0.4)',
           }}
         >
           {/* Tabs */}
           <div
             style={{
               display: 'flex',
-              background: 'rgba(255,255,255,0.05)',
+              background: 'rgba(0,0,0,0.3)',
               borderRadius: '12px',
-              padding: '4px',
+              padding: '3px',
               marginBottom: '20px',
+              gap: '2px',
             }}
           >
             {(['google', 'email'] as const).map((id) => (
               <button
                 key={id}
-                onClick={() => setTab(id)}
+                onClick={() => { setTab(id); setSent(false); setErrorMsg(''); }}
                 style={{
-                  flex: 1,
-                  padding: '8px 12px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 500,
+                  flex: 1, padding: '8px 12px',
+                  borderRadius: '9px', border: 'none', cursor: 'pointer',
+                  fontSize: '13px', fontWeight: 500,
                   transition: 'all 0.2s',
-                  background: tab === id ? 'rgba(124,58,237,0.75)' : 'transparent',
-                  color: tab === id ? '#fff' : 'rgba(255,255,255,0.4)',
+                  background: tab === id ? 'rgba(124,58,237,0.8)' : 'transparent',
+                  color: tab === id ? '#fff' : 'rgba(255,255,255,0.35)',
+                  boxShadow: tab === id ? '0 2px 8px rgba(124,58,237,0.4)' : 'none',
                 }}
               >
                 {id === 'google' ? 'Google' : 'Magic Link'}
@@ -144,37 +176,57 @@ function LoginContent() {
             ))}
           </div>
 
+          {/* Google */}
           {tab === 'google' && (
-            <button
-              onClick={() => handleGoogle()}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '10px',
-                padding: '14px',
-                borderRadius: '16px',
-                background: '#fff',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '15px',
-                fontWeight: 600,
-                color: '#111',
-                boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
-              }}
-            >
-              <GoogleIcon />
-              {t('auth.google')}
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                onClick={() => handleGoogle()}
+                disabled={loading}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: '10px', padding: '13px', borderRadius: '14px',
+                  background: '#fff', border: '1px solid rgba(0,0,0,0.1)',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  fontSize: '14px', fontWeight: 600, color: '#111',
+                  boxShadow: '0 2px 16px rgba(0,0,0,0.25)',
+                  opacity: loading ? 0.7 : 1,
+                  transition: 'all 0.15s',
+                }}
+              >
+                <GoogleIcon />
+                {loading ? 'Signing in...' : t('auth.google')}
+              </button>
+              {errorMsg && (
+                <p style={{ fontSize: '12px', color: '#f87171', textAlign: 'center', margin: 0 }}>{errorMsg}</p>
+              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '4px 0' }}>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>or continue with</span>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+              </div>
+              <button
+                onClick={() => setTab('email')}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: '8px', padding: '13px', borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                  cursor: 'pointer', fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.7)',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <Mail size={16} />
+                Magic Link (Email)
+              </button>
+            </div>
           )}
 
+          {/* Email form */}
           {tab === 'email' && !sent && (
-            <form onSubmit={handleMagicLink} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <form onSubmit={handleMagicLink} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ position: 'relative' }}>
                 <Mail
-                  size={16}
-                  color="rgba(255,255,255,0.4)"
+                  size={15}
+                  color="rgba(255,255,255,0.3)"
                   style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
                 />
                 <input
@@ -184,16 +236,15 @@ function LoginContent() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('auth.email_placeholder')}
                   style={{
-                    width: '100%',
-                    padding: '14px 14px 14px 42px',
-                    borderRadius: '16px',
-                    background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    color: '#fff',
-                    fontSize: '14px',
-                    outline: 'none',
-                    boxSizing: 'border-box',
+                    width: '100%', padding: '13px 14px 13px 40px',
+                    borderRadius: '14px',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: '#fff', fontSize: '14px', outline: 'none',
+                    boxSizing: 'border-box', transition: 'border-color 0.2s',
                   }}
+                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(139,92,246,0.6)'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
                 />
               </div>
               {errorMsg && (
@@ -203,74 +254,114 @@ function LoginContent() {
                 type="submit"
                 disabled={loading}
                 style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  padding: '14px',
-                  borderRadius: '16px',
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: '8px', padding: '13px', borderRadius: '14px',
                   background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                  border: 'none',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  color: '#fff',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  opacity: loading ? 0.6 : 1,
+                  border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+                  color: '#fff', fontSize: '14px', fontWeight: 600,
+                  opacity: loading ? 0.7 : 1,
+                  boxShadow: '0 4px 16px rgba(124,58,237,0.4)',
+                  transition: 'all 0.15s',
                 }}
               >
                 {loading ? (
-                  <span
-                    style={{
-                      width: '16px', height: '16px',
-                      border: '2px solid rgba(255,255,255,0.3)',
-                      borderTopColor: '#fff',
-                      borderRadius: '50%',
-                      display: 'inline-block',
-                      animation: 'spin 0.8s linear infinite',
-                    }}
-                  />
+                  <span style={{
+                    width: '16px', height: '16px',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTopColor: '#fff', borderRadius: '50%',
+                    display: 'inline-block', animation: 'spin 0.8s linear infinite',
+                  }} />
                 ) : (
                   <>
                     {t('auth.send_link')}
-                    <ArrowRight size={16} />
+                    <ArrowRight size={15} />
                   </>
                 )}
               </button>
             </form>
           )}
 
+          {/* Sent state */}
           {tab === 'email' && sent && (
-            <div style={{ textAlign: 'center', padding: '12px 0' }}>
+            <div style={{ textAlign: 'center', padding: '8px 0' }}>
               <div
                 style={{
-                  width: '56px', height: '56px',
-                  borderRadius: '50%',
-                  background: 'rgba(34,197,94,0.15)',
+                  width: '56px', height: '56px', borderRadius: '50%',
+                  background: 'rgba(34,197,94,0.12)',
+                  border: '1px solid rgba(34,197,94,0.25)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 12px',
+                  margin: '0 auto 14px',
                 }}
               >
-                <Mail size={28} color="#4ade80" />
+                <CheckCircle2 size={28} color="#4ade80" />
               </div>
-              <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 4px' }}>{t('auth.sent')}</p>
-              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-                {t('auth.sent_sub')} <span style={{ color: '#a78bfa' }}>{email}</span>
+              <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 6px', fontSize: '15px' }}>
+                {t('auth.sent')}
               </p>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', margin: '0 0 20px' }}>
+                {t('auth.sent_sub')}{' '}
+                <span style={{ color: '#a78bfa', fontWeight: 500 }}>{email}</span>
+              </p>
+
+              {/* Resend button */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: '16px' }}>
+                <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginBottom: '10px' }}>
+                  Didn't receive the email? Check spam or resend.
+                </p>
+                <button
+                  onClick={handleResend}
+                  disabled={resending || resendCooldown > 0}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    padding: '9px 18px', borderRadius: '12px',
+                    background: resendCooldown > 0 ? 'rgba(255,255,255,0.04)' : 'rgba(139,92,246,0.15)',
+                    border: `1px solid ${resendCooldown > 0 ? 'rgba(255,255,255,0.07)' : 'rgba(139,92,246,0.3)'}`,
+                    color: resendCooldown > 0 ? 'rgba(255,255,255,0.25)' : '#a78bfa',
+                    fontSize: '13px', fontWeight: 500,
+                    cursor: resendCooldown > 0 || resending ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <RefreshCw size={13} className={resending ? 'animate-spin' : ''} />
+                  {resendCooldown > 0
+                    ? `Resend in ${resendCooldown}s`
+                    : resending
+                    ? 'Sending...'
+                    : 'Resend email'}
+                </button>
+              </div>
+
+              {errorMsg && (
+                <p style={{ fontSize: '12px', color: '#f87171', marginTop: '10px' }}>{errorMsg}</p>
+              )}
+
+              <button
+                onClick={() => { setSent(false); setResendCooldown(0); }}
+                style={{
+                  marginTop: '10px', background: 'none', border: 'none',
+                  color: 'rgba(255,255,255,0.3)', fontSize: '12px', cursor: 'pointer',
+                  textDecoration: 'underline',
+                }}
+              >
+                Use a different email
+              </button>
             </div>
           )}
         </div>
 
         {/* Legal */}
-        <p style={{ textAlign: 'center', fontSize: '12px', color: 'rgba(255,255,255,0.25)', marginTop: '20px' }}>
+        <p style={{ textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,0.2)', marginTop: '18px' }}>
           By signing in, you agree to our{' '}
-          <a href="/legal/terms" style={{ color: '#a78bfa' }}>Terms</a>{' '}
+          <a href="/legal/terms" style={{ color: 'rgba(167,139,250,0.7)' }}>Terms</a>{' '}
           and{' '}
-          <a href="/legal/privacy" style={{ color: '#a78bfa' }}>Privacy Policy</a>
+          <a href="/legal/privacy" style={{ color: 'rgba(167,139,250,0.7)' }}>Privacy Policy</a>
         </p>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 0.8s linear infinite; }
+      `}</style>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { CategoryIcon } from '@/components/shared/CategoryIcon';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
 import { formatCurrency, formatDate, daysUntil } from '@/lib/utils';
+import { ChevronRight, Clock } from 'lucide-react';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -14,42 +15,59 @@ interface SubscriptionCardProps {
 export function SubscriptionCard({ subscription, onClick }: SubscriptionCardProps) {
   const days = daysUntil(subscription.nextPaymentDate);
   const isUrgent = days <= 3 && days >= 0;
+  const isOverdue = days < 0;
+
+  const dueBadgeColor = isOverdue
+    ? 'text-red-400 bg-red-500/10 border-red-500/20'
+    : isUrgent
+    ? 'text-orange-400 bg-orange-500/10 border-orange-500/20'
+    : 'text-gray-500 bg-white/4 border-white/8';
+
+  const dueText = isOverdue
+    ? 'Overdue'
+    : days === 0
+    ? 'Due today'
+    : days === 1
+    ? 'Due tomorrow'
+    : `Due in ${days}d`;
 
   return (
-    <Link to={`/app/subscriptions/${subscription.id}`} onClick={onClick}>
-      <div className="glass-card rounded-2xl p-4 hover:border-purple-500/40 transition-all cursor-pointer group">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <CategoryIcon category={subscription.category} size="md" />
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold text-sm truncate">{subscription.name}</h3>
-                <StatusBadge status={subscription.status} />
-              </div>
-              <p className="text-xs text-gray-400 mt-0.5">{subscription.plan}</p>
+    <Link to={`/app/subscriptions/${subscription.id}`} onClick={onClick} className="block group">
+      <div className="glass-card rounded-2xl px-4 py-3.5 hover:border-purple-500/25 transition-all duration-150 group-hover:shadow-lg group-hover:shadow-purple-500/5">
+        <div className="flex items-center gap-3">
+          {/* Icon */}
+          <CategoryIcon category={subscription.category} size="md" />
+
+          {/* Name + plan */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap mb-0.5">
+              <span className="font-semibold text-sm leading-tight truncate">{subscription.name}</span>
+              <StatusBadge status={subscription.status} />
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              {subscription.plan && <span className="truncate max-w-[120px]">{subscription.plan}</span>}
+              {subscription.card && (
+                <>
+                  <span className="text-gray-700">·</span>
+                  <CardBrandBadge brand={subscription.card.brand} last4={subscription.card.last4} />
+                </>
+              )}
             </div>
           </div>
-          <div className="text-right flex-shrink-0">
-            <p className="font-bold text-sm text-purple-400">
-              {formatCurrency(subscription.amount, subscription.currency)}
-            </p>
-            <p className="text-xs text-gray-500">/{subscription.billingCycle}</p>
-          </div>
-        </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-          <div className="flex items-center gap-2">
-            {subscription.card && (
-              <CardBrandBadge brand={subscription.card.brand} last4={subscription.card.last4} />
-            )}
+          {/* Amount + due date */}
+          <div className="text-right flex-shrink-0 flex flex-col items-end gap-1.5">
+            <p className="font-bold text-sm text-purple-300 leading-tight">
+              {formatCurrency(subscription.amount, subscription.currency)}
+              <span className="text-[11px] text-gray-600 font-normal">/{subscription.billingCycle}</span>
+            </p>
+            <span className={`inline-flex items-center gap-1 text-[11px] px-1.5 py-0.5 rounded-md border font-medium ${dueBadgeColor}`}>
+              <Clock className="w-2.5 h-2.5" />
+              {dueText}
+            </span>
           </div>
-          <div className={`text-xs ${isUrgent ? 'text-red-400 font-medium' : 'text-gray-400'}`}>
-            {days < 0
-              ? 'Overdue'
-              : days === 0
-              ? 'Due today'
-              : `Due in ${days}d — ${formatDate(subscription.nextPaymentDate)}`}
-          </div>
+
+          <ChevronRight className="w-4 h-4 text-gray-700 group-hover:text-gray-400 transition-colors flex-shrink-0 ml-0.5" />
         </div>
       </div>
     </Link>

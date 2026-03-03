@@ -7,6 +7,7 @@ import { useAnalyticsSummary, useAnalyticsMonthly, useAnalyticsByCategory, useAn
 import { useSubscriptions } from '@/hooks/useSubscriptions';
 import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton';
 import { Category } from '@/types';
+import { TrendingUp, CreditCard, Layers } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const { data: summary, isLoading: loadingSummary } = useAnalyticsSummary();
@@ -20,34 +21,62 @@ export default function AnalyticsPage() {
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 5);
 
+  const summaryItems = [
+    {
+      label: 'Monthly',
+      value: formatCurrency(summary?.totalMonthly ?? 0),
+      icon: TrendingUp,
+      color: '#8b5cf6',
+      bg: 'rgba(139,92,246,0.12)',
+    },
+    {
+      label: 'Yearly',
+      value: formatCurrency(summary?.totalYearly ?? 0),
+      icon: CreditCard,
+      color: '#10b981',
+      bg: 'rgba(16,185,129,0.12)',
+    },
+    {
+      label: 'Active',
+      value: (summary?.activeCount ?? 0).toString(),
+      icon: Layers,
+      color: '#3b82f6',
+      bg: 'rgba(59,130,246,0.12)',
+    },
+  ];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold">Analytics</h1>
-        <p className="text-gray-400 text-sm mt-1">Deep dive into your subscription spending</p>
+        <h1 className="page-title">Analytics</h1>
+        <p className="page-subtitle">Deep dive into your subscription spending</p>
       </div>
 
+      {/* Summary cards */}
       {loadingSummary ? (
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="grid grid-cols-3 gap-3">
           {[0, 1, 2].map((i) => <SkeletonCard key={i} />)}
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
-          {[
-            { label: 'Monthly', value: formatCurrency(summary?.totalMonthly ?? 0) },
-            { label: 'Yearly', value: formatCurrency(summary?.totalYearly ?? 0) },
-            { label: 'Active', value: (summary?.activeCount ?? 0).toString() },
-          ].map(({ label, value }) => (
-            <div key={label} className="glass-card rounded-2xl p-3 sm:p-4 text-center">
-              <p className="text-xs text-gray-400 mb-1">{label}</p>
-              <p className="text-base sm:text-lg font-bold text-purple-400 truncate">{value}</p>
+        <div className="grid grid-cols-3 gap-3">
+          {summaryItems.map(({ label, value, icon: Icon, color, bg }) => (
+            <div key={label} className="glass-card stat-card rounded-2xl p-4">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                style={{ backgroundColor: bg }}
+              >
+                <Icon className="w-4 h-4" style={{ color }} />
+              </div>
+              <p className="text-lg sm:text-xl font-bold tracking-tight truncate">{value}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{label}</p>
             </div>
           ))}
         </div>
       )}
 
+      {/* Monthly trend */}
       <div className="glass-card rounded-2xl p-5">
-        <h3 className="font-semibold text-sm text-gray-300 mb-4">Monthly Spend Trend</h3>
+        <p className="section-title">Monthly Spend Trend</p>
         {loadingMonthly ? (
           <Skeleton className="h-48 w-full rounded-xl" />
         ) : (
@@ -55,9 +84,10 @@ export default function AnalyticsPage() {
         )}
       </div>
 
+      {/* Category + Card charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card rounded-2xl p-5">
-          <h3 className="font-semibold text-sm text-gray-300 mb-4">By Category</h3>
+          <p className="section-title">By Category</p>
           {loadingCategory ? (
             <Skeleton className="h-48 w-full rounded-xl" />
           ) : (
@@ -65,7 +95,7 @@ export default function AnalyticsPage() {
           )}
         </div>
         <div className="glass-card rounded-2xl p-5">
-          <h3 className="font-semibold text-sm text-gray-300 mb-4">By Card</h3>
+          <p className="section-title">By Card</p>
           {loadingByCard ? (
             <Skeleton className="h-48 w-full rounded-xl" />
           ) : (
@@ -74,23 +104,27 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
+      {/* Top 5 */}
       <div className="glass-card rounded-2xl p-5">
-        <h3 className="font-semibold text-sm text-gray-300 mb-4">Top 5 Most Expensive</h3>
+        <p className="section-title">Top 5 Most Expensive</p>
         {topExpensive.length === 0 ? (
-          <p className="text-sm text-gray-500 text-center py-4">No active subscriptions</p>
+          <p className="text-sm text-gray-600 text-center py-6">No active subscriptions</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-1">
             {topExpensive.map((sub, i) => (
-              <div key={sub.id} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-4">{i + 1}</span>
+              <div key={sub.id} className="flex items-center gap-3 py-2.5 border-b border-white/5 last:border-0">
+                <span className="text-xs font-bold text-gray-700 w-5 text-center">{i + 1}</span>
                 <CategoryIcon category={sub.category} size="sm" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{sub.name}</p>
-                  <p className="text-xs text-gray-500">{sub.plan} · {sub.billingCycle}</p>
+                  <p className="text-xs text-gray-600">{sub.plan} · {sub.billingCycle}</p>
                 </div>
-                <span className="text-sm font-bold text-purple-400 flex-shrink-0">
-                  {formatCurrency(sub.amount, sub.currency)}
-                </span>
+                <div className="flex flex-col items-end gap-0.5">
+                  <span className="text-sm font-bold text-purple-300 flex-shrink-0">
+                    {formatCurrency(sub.amount, sub.currency)}
+                  </span>
+                  <span className="text-[10px] text-gray-600">/{sub.billingCycle}</span>
+                </div>
               </div>
             ))}
           </div>

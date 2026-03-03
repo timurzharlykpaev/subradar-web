@@ -75,3 +75,27 @@ export interface ReportConfig {
   endDate: string;
   format: 'pdf' | 'csv';
 }
+
+export type WorkspaceMemberRole = 'OWNER' | 'ADMIN' | 'MEMBER';
+export type WorkspaceMemberStatus = 'PENDING' | 'ACTIVE';
+
+export interface WorkspaceMember {
+  id: string;
+  workspaceId: string;
+  userId?: string;
+  role: WorkspaceMemberRole;
+  inviteEmail?: string;
+  status: WorkspaceMemberStatus;
+  joinedAt: string;
+  user?: Pick<User, 'id' | 'name' | 'email' | 'avatarUrl'>;
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  ownerId: string;
+  plan: string;
+  maxMembers: number;
+  members: WorkspaceMember[];
+  createdAt: string;
+}

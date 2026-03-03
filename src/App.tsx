@@ -8,6 +8,7 @@ import AnalyticsPage from '@/pages/AnalyticsPage'
 import CardsPage from '@/pages/CardsPage'
 import ReportsPage from '@/pages/ReportsPage'
 import SettingsPage from '@/pages/SettingsPage'
+import WorkspacePage from '@/pages/WorkspacePage'
 import LoginPage from '@/pages/LoginPage'
 import AuthCallbackPage from '@/pages/AuthCallbackPage'
 import MagicLinkPage from '@/pages/MagicLinkPage'
@@ -46,6 +47,7 @@ export default function App() {
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="cards" element={<CardsPage />} />
                 <Route path="reports" element={<ReportsPage />} />
+                <Route path="workspace" element={<WorkspacePage />} />
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="dashboard" replace />} />
               </Routes>

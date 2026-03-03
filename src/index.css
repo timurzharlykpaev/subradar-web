@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #8b5cf6;
+  --background: #f4f4f8;
+  --foreground: #0f0f13;
+  --primary: #7c3aed;
   --primary-foreground: #ffffff;
   --accent: #10b981;
-  --card: #f9f9f9;
-  --card-foreground: #171717;
-  --border: #e5e7eb;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  --card: #ffffff;
+  --card-foreground: #0f0f13;
+  --border: #e2e2ec;
+  --muted: #f0f0f5;
+  --muted-foreground: #6b6b80;
 }
 
 .dark {
-  --background: #0f0f13;
-  --foreground: #f5f5f5;
-  --card: #1a1a24;
-  --card-foreground: #f5f5f5;
-  --border: #2a2a3a;
-  --muted: #1e1e2c;
-  --muted-foreground: #9ca3af;
+  --background: #080810;
+  --foreground: #f0f0f8;
+  --card: #0f0f1c;
+  --card-foreground: #f0f0f8;
+  --border: #1e1e30;
+  --muted: #13131f;
+  --muted-foreground: #7070a0;
 }
 
 body {
@@ -35,21 +35,25 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: rgba(255,255,255,0.1);
   border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
 }
 
 /* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -57,54 +61,156 @@ body {
   }
 }
 
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.25);
   }
   50% {
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+    box-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
   }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease forwards;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease forwards;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #8b5cf6, #10b981);
+  background: linear-gradient(135deg, #a78bfa, #818cf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* Glass cards - dark mode */
 .glass-card {
-  background: rgba(26, 26, 36, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(15, 15, 28, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Light mode glass */
 .light .glass-card {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 
-/* Bigger UI utility classes */
-.btn-primary {
-  @apply py-3.5 px-6 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base transition-all shadow-lg;
+/* Stat card variant */
+.stat-card {
+  position: relative;
+  overflow: hidden;
 }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Input base styles */
+.input-base {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: inherit;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.input-base:focus {
+  border-color: rgba(124, 58, 237, 0.5);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Buttons */
+.btn-primary {
+  @apply py-3 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-500/20;
+}
+
 .btn-secondary {
-  @apply py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-medium text-base transition-all border border-white/10;
+  @apply py-3 px-5 rounded-xl bg-white/6 hover:bg-white/10 text-gray-200 font-medium text-sm transition-all border border-white/8;
+}
+
+.btn-ghost {
+  @apply py-2 px-4 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-sm transition-all;
+}
+
+/* Pill badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Page header */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 4px;
+}
+
+/* Section title */
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
 }
 
 /* Mobile viewport fixes */
 .min-h-screen {
   min-height: 100dvh;
 }
+
 .h-screen {
   height: 100dvh;
 }
@@ -112,21 +218,47 @@ body {
 html {
   -webkit-text-size-adjust: 100%;
 }
+
 body {
   overscroll-behavior: none;
 }
+
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
 .safe-top {
   padding-top: env(safe-area-inset-top);
 }
 
-/* Responsive page padding already applied via AppLayout */
-select option {
-  background: #1a1a24;
-  color: #f5f5f5;
+/* Responsive grid helpers */
+@media (max-width: 480px) {
+  .xs-stack {
+    flex-direction: column !important;
+  }
+  .xs-full {
+    width: 100% !important;
+  }
 }
+
+/* Select styling */
+select option {
+  background: #0f0f1c;
+  color: #f0f0f8;
+}
+
 input::placeholder {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 0;
+}
+
+/* Transition for layout */
+* {
+  box-sizing: border-box;
 }

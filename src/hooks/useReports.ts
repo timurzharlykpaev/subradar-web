@@ -54,3 +54,25 @@ export function useReportStatus(id: string, enabled = false) {
     },
   });
 }
+
+/**
+ * GET /reports/:id/download — скачивает PDF/CSV как blob и триггерит браузерное скачивание.
+ * Возвращает мутацию, которую нужно вызвать с id отчёта.
+ */
+export function useDownloadReport() {
+  return useMutation({
+    mutationFn: async ({ id, filename }: { id: string; filename?: string }) => {
+      const response = await api.get(`/reports/${id}/download`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename ?? `report-${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+  });
+}

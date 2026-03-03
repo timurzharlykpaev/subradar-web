@@ -46,3 +46,22 @@ export function useAuth() {
 
   return { user, isLoading, logout, loginWithGoogle, loginWithMagicLink };
 }
+
+/**
+ * PATCH /users/me — обновление профиля пользователя.
+ * Используется на странице Settings.
+ */
+export function useUpdateProfile() {
+  const setUser = useAppStore((s) => s.setUser);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: Partial<{ name: string; currency: string; locale: string }>) => {
+      const { data } = await api.patch<User>('/users/me', payload);
+      return data;
+    },
+    onSuccess: (data) => {
+      setUser(data);
+      queryClient.setQueryData(['auth', 'me'], data);
+    },
+  });
+}
