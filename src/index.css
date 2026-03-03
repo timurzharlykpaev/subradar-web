@@ -201,6 +201,14 @@ body {
   color: #0f0f13;
 }
 
+.light input::placeholder {
+  color: #9090a8 !important;
+}
+
+.light svg.text-gray-500, .light svg.text-gray-400 {
+  color: #9090a8;
+}
+
 /* Mobile responsive fixes */
 @media (max-width: 640px) {
   .page-title {
