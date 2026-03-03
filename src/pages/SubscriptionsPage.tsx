@@ -87,6 +87,13 @@ export default function SubscriptionsPage() {
       </div>
 
 
+      {/* Usage bar — only for free plan with limits */}
+      {billing && billing.subscriptionLimit !== null && (
+        <div className="glass-card rounded-xl p-4">
+          <PlanUsageBar billing={billing} onUpgradeClick={() => {}} />
+        </div>
+      )}
+
       {/* Search + filter bar */}
       <div className="flex gap-2">
         <div className="relative flex-1">
