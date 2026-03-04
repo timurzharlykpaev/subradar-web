@@ -12,5 +12,14 @@ export default defineConfig({
     sourcemap: false,
     target: 'es2019',
   },
-  server: { port: 3200 },
+  server: {
+    port: 3200,
+    proxy: {
+      '/api/v1': {
+        target: 'https://api.subradar.ai',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 })
