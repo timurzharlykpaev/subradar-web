@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, SlidersHorizontal, X } from 'lucide-react';
-import { PlanUsageBar } from '@/components/ui/PlanUsageBar';
+
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { SubscriptionStatus } from '@/types';
@@ -86,14 +86,6 @@ export default function SubscriptionsPage() {
           </Link>
         )}
       </div>
-
-
-      {/* Usage bar — only for free plan with limits */}
-      {billing && billing.subscriptionLimit !== null && (
-        <div className="glass-card rounded-xl p-4">
-          <PlanUsageBar billing={billing} onUpgradeClick={() => {}} />
-        </div>
-      )}
 
       {/* Search + filter bar */}
       <div className="flex gap-2">
