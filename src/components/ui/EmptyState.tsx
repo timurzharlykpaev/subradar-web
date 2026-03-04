@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, Inbox } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface EmptyStateProps {
@@ -14,22 +14,25 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ icon: Icon, illustration, title, description, action }: EmptyStateProps) {
+  const FallbackIcon = Icon || Inbox;
+
   return (
-    <div className="flex flex-col items-center justify-center py-14 px-4 text-center animate-fade-in">
+    <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in">
       {illustration ? (
         <img
           src={illustration}
           alt=""
-          className="w-40 h-40 object-contain mb-4 opacity-80"
+          className="w-40 h-40 object-contain mb-5 opacity-80"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
-      ) : Icon ? (
-        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center mb-4">
-          <Icon className="w-7 h-7 text-gray-500" />
+      ) : (
+        <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-5">
+          <FallbackIcon className="w-8 h-8 text-purple-400/70" />
         </div>
-      ) : null}
-      <p className="font-semibold text-gray-200 text-base">{title}</p>
+      )}
+      <p className="font-semibold text-[var(--foreground)] text-base">{title}</p>
       {description && (
-        <p className="text-sm text-gray-500 mt-1.5 max-w-xs leading-relaxed">{description}</p>
+        <p className="text-sm text-[var(--muted-foreground)] mt-1.5 max-w-xs leading-relaxed">{description}</p>
       )}
       {action && (
         action.href ? (

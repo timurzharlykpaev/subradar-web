@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Plus, Search, SlidersHorizontal, X, ChevronDown, Check, Layers } from 'lucide-react';
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
 import { allCategories } from '@/components/shared/CategoryIcon';
@@ -19,6 +20,13 @@ const statusColors: Record<SubscriptionStatus, string> = {
   PAUSED: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/25',
   TRIAL: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
   CANCELLED: 'bg-gray-500/15 text-gray-400 border-gray-500/20',
+};
+
+const statusI18nKeys: Record<SubscriptionStatus, string> = {
+  ACTIVE: 'subscriptions.active',
+  PAUSED: 'subscriptions.paused',
+  TRIAL: 'subscriptions.trial',
+  CANCELLED: 'subscriptions.cancelled',
 };
 
 export default function SubscriptionsPage() {
@@ -56,6 +64,8 @@ export default function SubscriptionsPage() {
       setUpgradeOpen(true);
     }
   };
+
+  const selectedCategory = allCategories.find(c => c.value === category);
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -114,7 +124,7 @@ export default function SubscriptionsPage() {
           }`}
         >
           <SlidersHorizontal className="w-4 h-4" />
-          <span className="hidden sm:inline">Filters</span>
+          <span className="hidden sm:inline">{t('common.filter')}</span>
           {hasFilters && (
             <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
           )}
@@ -125,35 +135,67 @@ export default function SubscriptionsPage() {
       {filtersOpen && (
         <div className="glass-card rounded-2xl p-4 animate-fade-in">
           <div className="flex flex-col sm:flex-row gap-3">
+            {/* Category dropdown (Headless UI Listbox) */}
             <div className="flex-1">
-              <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wide">{t('add.category')}</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/8 text-sm focus:outline-none focus:border-purple-500/60 transition-all"
-              >
-                <option value="">{t('subscriptions.all_categories')}</option>
-                {allCategories.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.icon} {c.label}
-                  </option>
-                ))}
-              </select>
+              <label className="text-xs text-[var(--muted-foreground)] mb-1.5 block font-medium uppercase tracking-wide">{t('add.category')}</label>
+              <Listbox value={category} onChange={setCategory}>
+                <div className="relative">
+                  <ListboxButton className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/5 border border-white/8 text-sm focus:outline-none focus:border-purple-500/60 transition-all cursor-pointer hover:bg-white/8">
+                    <span className="flex items-center gap-2 truncate">
+                      {selectedCategory ? (
+                        <>{selectedCategory.icon} {selectedCategory.label}</>
+                      ) : (
+                        t('subscriptions.all_categories')
+                      )}
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  </ListboxButton>
+                  <ListboxOptions className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-xl bg-[var(--card)] border border-[var(--border)] shadow-xl shadow-black/20 py-1 text-sm focus:outline-none">
+                    <ListboxOption
+                      value=""
+                      className="flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors data-[focus]:bg-purple-500/10 data-[selected]:text-purple-400"
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span className="w-5 flex-shrink-0">{selected && <Check className="w-4 h-4 text-purple-400" />}</span>
+                          <span>{t('subscriptions.all_categories')}</span>
+                        </>
+                      )}
+                    </ListboxOption>
+                    {allCategories.map((c) => (
+                      <ListboxOption
+                        key={c.value}
+                        value={c.value}
+                        className="flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors data-[focus]:bg-purple-500/10 data-[selected]:text-purple-400"
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span className="w-5 flex-shrink-0">{selected ? <Check className="w-4 h-4 text-purple-400" /> : c.icon}</span>
+                            <span>{c.label}</span>
+                          </>
+                        )}
+                      </ListboxOption>
+                    ))}
+                  </ListboxOptions>
+                </div>
+              </Listbox>
             </div>
+
+            {/* Status toggle buttons */}
             <div className="flex-1">
-              <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wide">{t('subscriptions.status')}</label>
+              <label className="text-xs text-[var(--muted-foreground)] mb-1.5 block font-medium uppercase tracking-wide">{t('subscriptions.status')}</label>
               <div className="flex flex-wrap gap-2">
                 {statuses.map((s) => (
                   <button
                     key={s}
                     onClick={() => setStatus(status === s ? '' : s)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all capitalize ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                       status === s
                         ? statusColors[s]
                         : 'bg-white/4 border-white/8 text-gray-500 hover:text-gray-300'
                     }`}
                   >
-                    {s}
+                    {t(statusI18nKeys[s])}
                   </button>
                 ))}
               </div>
@@ -163,7 +205,7 @@ export default function SubscriptionsPage() {
                 onClick={clearFilters}
                 className="self-end px-3 py-2.5 text-sm text-gray-500 hover:text-gray-200 transition-colors whitespace-nowrap"
               >
-                Clear filters
+                {t('common.filter')} ✕
               </button>
             )}
           </div>
@@ -175,13 +217,13 @@ export default function SubscriptionsPage() {
         <div className="flex items-center gap-2 flex-wrap">
           {category && (
             <span className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-purple-600/15 border border-purple-500/25 text-purple-300">
-              {allCategories.find(c => c.value === category)?.label ?? category}
+              {selectedCategory?.icon} {selectedCategory?.label ?? category}
               <button onClick={() => setCategory('')}><X className="w-3 h-3" /></button>
             </span>
           )}
           {status && (
-            <span className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg border capitalize ${statusColors[status as SubscriptionStatus]}`}>
-              {status}
+            <span className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg border ${statusColors[status as SubscriptionStatus]}`}>
+              {t(statusI18nKeys[status as SubscriptionStatus])}
               <button onClick={() => setStatus('')}><X className="w-3 h-3" /></button>
             </span>
           )}
@@ -193,7 +235,7 @@ export default function SubscriptionsPage() {
         <SkeletonList count={5} />
       ) : filtered.length === 0 ? (
         <EmptyState
-          illustration="/empty-subscriptions.png"
+          icon={Layers}
           title={t('subscriptions.empty')}
           description={t('subscriptions.empty_sub')}
           action={
