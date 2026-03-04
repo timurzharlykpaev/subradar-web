@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Radar } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'en', label: 'English', flag: '🇺🇸' },
@@ -49,9 +50,9 @@ export default function LanguageSelectPage() {
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 16px',
-            fontSize: '28px',
+            boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)',
           }}>
-            📡
+            <Radar style={{ width: '28px', height: '28px', color: '#fff' }} />
           </div>
           <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>
             SubRadar
