@@ -1,102 +1,166 @@
-# SubRadar Web — Claude Code Guide
+# CLAUDE.md — subradar-web
 
-## Язык
-**Всегда отвечай на русском языке.**
+## Контекст проекта
+React SPA — веб-версия Subradar (AI-трекер подписок).
+**Prod:** `https://app.subradar.ai` → `/var/www/app.subradar.ai`
+**Dev:** `https://app-dev.subradar.ai` → `/var/www/app-dev.subradar.ai`
+**API:** `https://api.subradar.ai/api/v1`
 
-## Проект
-SubRadar AI — веб-приложение для отслеживания и анализа подписок.
-
-**Стек:** React 18 + Vite, TypeScript (strict), TailwindCSS 4, Zustand, TanStack Query v5, react-i18next, Axios, React Router v6.
-
-**Смежные репозитории:**
-- `subradar-backend` — NestJS API (порт 3100 prod / 3101 dev)
-- `subradar-mobile` — React Native (Expo)
-- `subradar-landing` — лендинг subradar.io
+## Стек
+- React 18 + Vite + TypeScript (strict)
+- TanStack Query (server state)
+- Zustand (client state)
+- Tailwind CSS
+- react-i18next (9 языков)
+- react-router-dom v6
+- @react-oauth/google (`useGoogleLogin`, access_token flow)
+- recharts (графики)
+- axios
 
 ## Структура
 ```
 src/
-├── components/
-│   ├── charts/          # Recharts компоненты (MonthlyBarChart, CategoryDonutChart, CardBreakdownChart)
-│   ├── layout/          # AppLayout (sidebar + mobile nav)
-│   ├── shared/          # CategoryIcon, StatusBadge, CardBrandBadge
-│   ├── subscriptions/   # SubscriptionCard, UpcomingPayments, AddSubscriptionModal, ReceiptUploader
-│   └── ui/              # EmptyState, Skeleton, Toast
-├── hooks/               # TanStack Query хуки (useSubscriptions, useAnalytics, useAuth…)
-├── lib/                 # api.ts (axios), utils.ts, i18n.ts
-├── locales/             # en.json, ru.json, es.json, de.json, fr.pt.zh.ja.ko.json
-├── pages/               # Страницы приложения
-├── providers/           # QueryClientProvider, ToastProvider, GoogleOAuthProvider
-├── store/               # Zustand: useAppStore, authStore
-└── types/               # index.ts — все TS-типы
+  components/
+    cards/        # Карточки (SubscriptionCard и др.)
+    charts/       # Графики (recharts)
+    layout/       # AppLayout, Sidebar, TopBar
+    shared/       # Переиспользуемые компоненты
+    subscriptions/ # Компоненты подписок
+    ui/           # Базовые UI компоненты
+  hooks/          # Кастомные хуки (useSubscriptions, useAnalytics и др.)
+  lib/
+    api.ts        # Axios instance (baseURL = VITE_API_URL || 'https://api.subradar.ai/api/v1')
+    utils.ts      # Утилиты (daysUntil, formatCurrency и др.)
+    i18n.ts       # i18n конфиг
+  locales/        # Файлы переводов (9 языков)
+  pages/
+    DashboardPage.tsx
+    SubscriptionsPage.tsx
+    AnalyticsPage.tsx
+    ReportsPage.tsx
+    CardsPage.tsx
+    SettingsPage.tsx
+    LoginPage.tsx
+    LanguageSelectPage.tsx
+    MagicLinkPage.tsx
+    AuthCallbackPage.tsx
+    legal/
+  providers/
+    ThemeProvider.tsx   # dark/light класс на <html>
+  store/
+    useAppStore.ts      # theme, toggleTheme, setTheme
+    authStore.ts        # auth_token, refresh_token
+  types/
+    index.ts            # Все TypeScript типы
 ```
 
-## Критичные правила
+## Правила кода
+
+### Типы (КРИТИЧНО — не менять без синхронизации с бэком)
+```ts
+// Все энумы UPPERCASE
+type BillingCycle = 'MONTHLY' | 'YEARLY' | 'WEEKLY' | 'QUARTERLY' | 'LIFETIME' | 'ONE_TIME'
+type SubscriptionStatus = 'ACTIVE' | 'PAUSED' | 'CANCELLED' | 'TRIAL'
+type Category = 'STREAMING' | 'AI_SERVICES' | 'INFRASTRUCTURE' | 'MUSIC' |
+                'GAMING' | 'PRODUCTIVITY' | 'HEALTH' | 'NEWS' | 'OTHER'
+
+// Subscription interface — поля как на бэке:
+interface Subscription {
+  billingPeriod: BillingCycle   // НЕ period
+  paymentCardId: string         // НЕ cardId
+  paymentCard?: PaymentCard
+  iconUrl?: string              // НЕ logoUrl
+  nextPaymentDate?: string
+  currentPlan?: string
+}
+```
+
+### Токены
+```ts
+// Хранятся в localStorage:
+localStorage.getItem('auth_token')     // access token
+localStorage.getItem('refresh_token')  // refresh token
+```
+
+### Тема
+```ts
+// useAppStore: theme, toggleTheme, setTheme
+// ThemeProvider применяет класс 'dark'/'light' к <html>
+// Ключ в localStorage: 'subradar-theme'
+// Default: dark
+```
+
+### i18n
+- 9 языков: en, ru, es, de, fr, pt, zh, ja, ko
+- Локальные файлы: `src/locales/*.json`
+- **t() ТОЛЬКО внутри компонентов** (не на уровне модуля — это Fatal crash!)
+- Ключ языка: `subradar-language`
+- Флаг выбора: `subradar_lang_chosen`
+
+### Роутинг
+```tsx
+// App.tsx: / → проверяет subradar_lang_chosen
+//   если не выбран → <LanguageSelectPage />
+//   если выбран → /login
+// /language → всегда LanguageSelectPage
+// /auth/magic → MagicLinkPage (magic link callback)
+```
+
+### Google OAuth
+```ts
+// useGoogleLogin (access_token flow)
+// После получения access_token → POST /auth/google/token { accessToken }
+// НЕ использовать GoogleLogin компонент (id_token flow)
+```
 
 ### API
-- **Все API-вызовы** только через хуки из `src/hooks/`. Не вызывать `api.*` напрямую в компонентах.
-- Базовый URL: `VITE_API_URL` (по умолчанию `https://api.subradar.ai/api/v1`).
-- Профиль обновляется через `PATCH /users/me` (не `/auth/me`).
-- Скачивание отчётов — `useDownloadReport()`, не прямая ссылка.
-- Отмена подписки — `useCancelSubscription()` → `POST /subscriptions/:id/cancel`.
-
-### Типы
-- **Никогда не использовать `any`**. Все типы в `src/types/index.ts`.
-- `BillingCycle` = `'monthly' | 'yearly' | 'weekly' | 'quarterly'`.
-- `SubscriptionStatus` = `'active' | 'paused' | 'cancelled' | 'trial'`.
-- `Category` = `'streaming' | 'ai' | 'infra' | 'music' | 'gaming' | 'productivity' | 'fitness' | 'news' | 'other'`.
-
-### Стейт
-- **Zustand** `useAppStore` — theme, currency, language, user.
-- **Zustand** `authStore` — accessToken, isAuthenticated, logout.
-- **TanStack Query** — все серверные данные (подписки, аналитика, карты, отчёты).
-- Токены хранятся в `localStorage` (`auth_token`, `refresh_token`).
-- Авторефреш токена реализован в `src/lib/api.ts` (interceptor).
-
-### Стилизация
-- Tailwind CSS 4, кастомные CSS-переменные в `src/index.css`.
-- `glass-card` — базовый класс для карточек.
-- `page-title`, `page-subtitle`, `section-title` — классы заголовков.
-- `stat-card` — карточки со статистикой (с `::before` градиентом).
-- Тема переключается через `.dark` класс на `<html>`.
-- Все иконки — **Lucide React**.
-
-### Переводы (i18n)
-- `useTranslation()` из `react-i18next`.
-- Ключи: `src/locales/en.json` (основной) + 8 языков.
-- При добавлении нового ключа — добавлять во **все** файлы локализации.
-- Программно: `const { t } = useTranslation(); t('key')`.
-
-### Код
-- **Без лишних комментариев** — код самодокументируемый.
-- Сначала ищи существующий компонент в `components/ui/` или `components/shared/`.
-- Новый компонент создавать только если подходящего нет.
-- `cn()` из `src/lib/utils.ts` для условных классов.
-
-## Команды
-```bash
-npm run dev       # Дев-сервер (порт 5173)
-npm run build     # Сборка в dist/
-npm run preview   # Превью сборки
-npm run lint      # ESLint
+```ts
+// src/lib/api.ts:
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://api.subradar.ai/api/v1'
+// ВСЕГДА включать /api/v1 в baseURL — иначе 404 в проде
 ```
 
-## Git
-- Основная ветка: `main`.
-- Фичи: ветки от `main`, PR-ы через GitHub.
-- Последний деплой: DigitalOcean → `app.subradar.io`.
+### Утилиты
+```ts
+// daysUntil(date) → number | null (null если дата невалидна/отсутствует)
+// НЕ использовать напрямую без null-check
+```
 
-## Детальная документация
-Перед началом работы читай релевантные файлы из `agent_docs/`:
+### Safari iOS
+- Date inputs: `style={{ colorScheme: 'dark', minHeight: '44px' }}`
+- Flex layouts для дат вместо grid (предотвращает overlap)
 
-| Файл | Когда читать |
-|------|-------------|
-| `agent_docs/architecture.md` | Стейт, API-паттерны, авторизация, роутинг |
-| `agent_docs/api-contracts.md` | Все эндпоинты, соответствие хуков и бэкенда |
-| `agent_docs/design-system.md` | CSS-токены, компоненты, иконки, Tailwind |
-| `agent_docs/i18n.md` | Переводы, ключи, добавление нового языка |
-| `agent_docs/types.md` | TypeScript типы, модели данных |
-| `agent_docs/deployment.md` | Docker, переменные окружения, CI/CD |
+## Git workflow
+```bash
+git checkout dev && git pull
+git checkout -b feat/xxx
+# ... работа ...
+git checkout dev && git merge feat/xxx
+git push origin dev
+git branch -d feat/xxx && git push origin --delete feat/xxx
+# main → prod (только по запросу)
+```
 
-## TZ (Техническое Задание)
-Полное ТЗ: `subradar-backend/TZ.md` — данные модели, API, монетизация, инфраструктура.
+## Деплой
+```bash
+npm run build
+# Dev:
+rsync -az --delete -e "ssh -i ~/.ssh/id_steptogoal" dist/ root@46.101.197.19:/var/www/app-dev.subradar.ai/
+# Prod (только по запросу!):
+rsync -az --delete -e "ssh -i ~/.ssh/id_steptogoal" dist/ root@46.101.197.19:/var/www/app.subradar.ai/
+```
+
+## Тесты
+- Vitest + @testing-library/react
+- `npx tsc --noEmit` перед коммитом
+- `npm run build` должен проходить без ошибок
+
+## ⛔ НЕ ТРОГАТЬ без явного запроса
+- Enum значения (UPPERCASE) — бэк и мобилка завязаны
+- Ключи localStorage (`auth_token`, `refresh_token`, `subradar-theme`, `subradar-language`)
+- `src/lib/api.ts` baseURL — обязательно `/api/v1` на конце
+- Существующие ключи i18n (только добавлять, не переименовывать)
+- `t()` на уровне модуля — **Fatal crash при инициализации**
+
+## Прогресс
+См. `PROGRESS.md` в корне репозитория.
