@@ -4,6 +4,7 @@ import { Radar, Mail, ArrowRight, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGoogleLogin } from '@react-oauth/google';
 import api from '@/lib/api';
+import axios from 'axios';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -40,14 +41,26 @@ function LoginContent() {
         localStorage.setItem('auth_token', data.accessToken);
         if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
         navigate(redirectTo);
-      } catch {
-        setErrorMsg('Google sign-in failed. Please try again.');
+      } catch (err) {
+        setErrorMsg(getErrorMessage(err));
       } finally {
         setLoading(false);
       }
     },
     onError: () => setErrorMsg('Google sign-in failed. Please try again.'),
   });
+
+  const getErrorMessage = (err: unknown): string => {
+    if (axios.isAxiosError(err)) {
+      const status = err.response?.status;
+      const msg = err.response?.data?.message || err.response?.data?.error;
+      if (msg) return String(msg);
+      if (status === 429) return t('common.error') + ': Rate limit. Try again later.';
+      if (status === 500) return t('common.error') + ': Server error (500)';
+      if (!err.response) return t('common.error') + ': Network error';
+    }
+    return t('common.error');
+  };
 
   const sendMagicLink = async (targetEmail: string) => {
     await api.post('/auth/magic-link', { email: targetEmail });
@@ -60,8 +73,8 @@ function LoginContent() {
     try {
       await sendMagicLink(email);
       setSent(true);
-    } catch {
-      setErrorMsg('Failed to send magic link. Please try again.');
+    } catch (err) {
+      setErrorMsg(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -81,8 +94,8 @@ function LoginContent() {
           return prev - 1;
         });
       }, 1000);
-    } catch {
-      setErrorMsg('Failed to resend. Please try again.');
+    } catch (err) {
+      setErrorMsg(getErrorMessage(err));
     } finally {
       setResending(false);
     }

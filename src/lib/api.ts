@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// Dev server: proxy через Vite (/api/v1 → target по mode)
+// Prod build: прямой URL из .env.production
 const BASE_URL = import.meta.env.DEV
   ? '/api/v1'
   : (import.meta.env.VITE_API_URL || 'https://api.subradar.ai/api/v1');
