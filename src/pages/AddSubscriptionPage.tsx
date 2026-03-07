@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, Scan, Check, Loader2 } from 'lucide-react';
+import VoiceSearchButton from '@/components/shared/VoiceSearchButton';
 import { allCategories } from '@/components/shared/CategoryIcon';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
 import { useCreateSubscription } from '@/hooks/useSubscriptions';
@@ -158,12 +159,19 @@ export default function AddSubscriptionPage() {
               Find a Service
             </h2>
             <form onSubmit={handleLookup} className="space-y-3">
-              <input
-                value={aiQuery}
-                onChange={(e) => setAiQuery(e.target.value)}
-                placeholder="e.g. Netflix, Spotify, GitHub..."
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500"
-              />
+              <div className="relative flex items-center gap-2">
+                <input
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  placeholder="e.g. Netflix, Spotify, GitHub..."
+                  className="w-full px-4 py-3 pr-14 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500"
+                />
+                <div className="absolute right-2">
+                  <VoiceSearchButton
+                    onResult={(text) => setAiQuery(text)}
+                  />
+                </div>
+              </div>
               <button
                 type="submit"
                 disabled={lookupMutation.isPending || !aiQuery.trim()}
