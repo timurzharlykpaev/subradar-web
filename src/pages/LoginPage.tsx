@@ -105,7 +105,7 @@ function LoginContent() {
     <div
       style={{
         minHeight: '100dvh',
-        background: 'radial-gradient(ellipse 100% 60% at 50% -5%, rgba(109,40,217,0.35) 0%, #080810 55%)',
+        background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(109,40,217,0.12) 0%, #080810 50%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
