@@ -80,7 +80,7 @@ export default function SettingsPage() {
 
   const handleUpgrade = async () => {
     try {
-      const result = await checkoutMutation.mutateAsync('pro-monthly');
+      const result = await checkoutMutation.mutateAsync('pro');
       window.location.href = result.url;
     } catch {
       error(t('settings.checkout_failed'));

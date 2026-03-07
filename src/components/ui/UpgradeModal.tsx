@@ -10,15 +10,30 @@ interface UpgradeModalProps {
   trigger?: 'subscription-limit' | 'ai-limit' | 'manual';
 }
 
+// Declare LemonSqueezy overlay API (injected by lemon.js)
+declare global {
+  interface Window {
+    createLemonSqueezy?: () => void;
+    LemonSqueezy?: {
+      Setup: (opts: { eventHandler: (event: { event: string }) => void }) => void;
+      Url: {
+        Open: (url: string) => void;
+        Close: () => void;
+      };
+    };
+  }
+}
+
 const PRO_FEATURES = [
   'Unlimited subscriptions',
   '200 AI requests per month',
   'Internet search for services',
   'Advanced analytics & reports',
   '1 invite slot (For You + One)',
+  '7-day free trial',
 ];
 
-const ORG_FEATURES = [
+const TEAM_FEATURES = [
   'Everything in Pro',
   'Unlimited AI requests',
   'Create organization',
@@ -50,15 +65,31 @@ export function UpgradeModal({ isOpen, onClose, billing, trigger }: UpgradeModal
   const handleCheckout = async (planId: string) => {
     try {
       const result = await checkoutMutation.mutateAsync(planId);
-      window.location.href = result.url;
+      const url = result.url;
+
+      // Use Lemon Squeezy overlay if available
+      if (window.LemonSqueezy?.Url?.Open) {
+        window.LemonSqueezy.Setup({
+          eventHandler: ({ event }) => {
+            if (event === 'Checkout.Success') {
+              onClose();
+              success('Payment successful! Your plan has been upgraded.');
+            }
+          },
+        });
+        window.LemonSqueezy.Url.Open(url + (url.includes('?') ? '&' : '?') + 'embed=1');
+      } else {
+        // Fallback: open in new tab
+        window.open(url, '_blank');
+      }
     } catch {
       error('Failed to start checkout. Please try again.');
     }
   };
 
   const triggerMessage = {
-    'subscription-limit': 'You\'ve reached the 3-subscription limit on Free.',
-    'ai-limit': 'You\'ve used all AI requests for this month.',
+    'subscription-limit': "You've reached the 3-subscription limit on Free.",
+    'ai-limit': "You've used all AI requests for this month.",
     'manual': null,
   }[trigger ?? 'manual'];
 
@@ -87,13 +118,14 @@ export function UpgradeModal({ isOpen, onClose, billing, trigger }: UpgradeModal
           <div className="rounded-2xl border border-purple-500/40 bg-purple-500/5 p-5 flex flex-col">
             <div className="flex items-center gap-2 mb-1">
               <Zap className="w-5 h-5 text-yellow-400" />
-              <h3 className="font-bold text-lg">Pro</h3>
-              <span className="ml-auto text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">Popular</span>
+              <h3 className="font-bold text-lg">SubRadar Pro</h3>
+              <span className="ml-auto text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
+                Popular
+              </span>
             </div>
             <div className="mb-4">
               <span className="text-3xl font-bold">$2.99</span>
               <span className="text-gray-400 text-sm"> / month</span>
-              <p className="text-xs text-gray-500 mt-0.5">or $24.99/year (30% off)</p>
             </div>
             <ul className="space-y-2 mb-5 flex-1">
               {PRO_FEATURES.map((f) => (
@@ -114,7 +146,7 @@ export function UpgradeModal({ isOpen, onClose, billing, trigger }: UpgradeModal
               </button>
             ) : (
               <button
-                onClick={() => handleCheckout('pro-monthly')}
+                onClick={() => handleCheckout('pro')}
                 disabled={checkoutMutation.isPending}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white text-sm font-bold transition-all disabled:opacity-60"
               >
@@ -124,19 +156,18 @@ export function UpgradeModal({ isOpen, onClose, billing, trigger }: UpgradeModal
             )}
           </div>
 
-          {/* Organization Plan */}
-          <div className="rounded-2xl border border-white/10 bg-white/3 p-5 flex flex-col">
+          {/* Team Plan */}
+          <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 flex flex-col">
             <div className="flex items-center gap-2 mb-1">
               <Building2 className="w-5 h-5 text-blue-400" />
-              <h3 className="font-bold text-lg">Organization</h3>
+              <h3 className="font-bold text-lg">SubRadar Team</h3>
             </div>
             <div className="mb-4">
               <span className="text-3xl font-bold">$9.99</span>
               <span className="text-gray-400 text-sm"> / month</span>
-              <p className="text-xs text-gray-500 mt-0.5">or $99.99/year</p>
             </div>
             <ul className="space-y-2 mb-5 flex-1">
-              {ORG_FEATURES.map((f) => (
+              {TEAM_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm text-gray-300">
                   <Check className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
                   {f}
@@ -144,17 +175,26 @@ export function UpgradeModal({ isOpen, onClose, billing, trigger }: UpgradeModal
               ))}
             </ul>
             <button
-              onClick={() => handleCheckout('org-monthly')}
+              onClick={() => handleCheckout('organization')}
               disabled={checkoutMutation.isPending}
-              className="w-full py-3 rounded-xl border border-blue-500/40 hover:bg-blue-500/10 text-blue-300 text-sm font-medium transition-all disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-blue-500/40 hover:bg-blue-500/10 text-blue-300 text-sm font-medium transition-all disabled:opacity-60"
             >
-              Upgrade to Organization
+              {checkoutMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              Upgrade to Team
             </button>
           </div>
         </div>
 
         <p className="text-center text-xs text-gray-500 mt-4">
-          Cancel anytime. No hidden fees. Secure payment via Lemon Squeezy.
+          Cancel anytime · No hidden fees · Secure payment via{' '}
+          <a
+            href="https://lemonsqueezy.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-400 hover:underline"
+          >
+            Lemon Squeezy
+          </a>
         </p>
       </div>
     </div>
