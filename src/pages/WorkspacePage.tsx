@@ -133,7 +133,7 @@ export default function WorkspacePage() {
         </div>
 
         {/* Workspace stats */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="glass-card rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold">{activeMembers.length}</p>
             <p className="text-xs text-gray-400 mt-0.5">{t('subscriptions.active')}</p>

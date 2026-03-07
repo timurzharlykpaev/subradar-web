@@ -296,7 +296,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 )}
               >
                 <Icon className="w-5 h-5" />
-                <span className="text-[9px] font-medium tracking-wide">{label}</span>
+                <span className="text-[10px] font-medium tracking-wide">{label}</span>
               </Link>
             );
           })}

@@ -251,7 +251,7 @@ export default function AddSubscriptionPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
               onClick={() => setStep(2)}
               className="glass-card rounded-2xl p-4 hover:border-purple-500/40 transition-all text-sm font-medium text-center"
@@ -305,8 +305,8 @@ export default function AddSubscriptionPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="sm:col-span-2">
               <label className="text-xs text-gray-400 mb-1 block">{t('add.name')} *</label>
               <input
                 required
@@ -380,7 +380,7 @@ export default function AddSubscriptionPage() {
               />
             </div>
             {cards && cards.length > 0 && (
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <label className="text-xs text-gray-400 mb-1 block">{t('add.card')}</label>
                 <select
                   value={form.cardId}
@@ -394,7 +394,7 @@ export default function AddSubscriptionPage() {
                 </select>
               </div>
             )}
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="text-xs text-gray-400 mb-1 block">{t('add.notes')}</label>
               <textarea
                 value={form.notes}

@@ -159,7 +159,7 @@ export default function DashboardPage() {
               <BarChart3 className="w-4 h-4 text-purple-400" />
               {t('dashboard.forecast_title')}
             </p>
-            <div className="grid grid-cols-3 gap-3 mt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
               <div className="p-3 rounded-xl bg-white/5">
                 <p className="text-xs text-gray-500">{t('dashboard.forecast_30d')}</p>
                 <p className="text-lg font-bold">{formatCurrency(forecast.forecast30d, forecast.currency)}</p>

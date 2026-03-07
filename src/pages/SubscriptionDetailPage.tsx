@@ -163,7 +163,7 @@ export default function SubscriptionDetailPage() {
               <StatusBadge status={sub.status} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div className="bg-white/5 rounded-xl p-4">
                 <p className="text-xs text-gray-400 mb-1">Amount</p>
                 <p className="text-2xl font-bold text-purple-400">{formatCurrency(sub.amount, sub.currency)}</p>
@@ -243,8 +243,8 @@ export default function SubscriptionDetailPage() {
         ) : (
           <div className="space-y-4">
             <h3 className="font-semibold">Edit Subscription</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
                 <label className="text-xs text-gray-400 mb-1 block">Name</label>
                 <input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
@@ -273,7 +273,7 @@ export default function SubscriptionDetailPage() {
                   {billingCycles.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <label className="text-xs text-gray-400 mb-1 block">Notes</label>
                 <textarea value={editForm.notes} onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })} rows={2}
                   className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500 resize-none" />
