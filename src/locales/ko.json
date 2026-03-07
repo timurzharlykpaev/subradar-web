@@ -281,6 +281,15 @@
     "card": "카드",
     "no_card": "카드 없음"
   },
+  "trials": {
+    "title": "활성 체험판",
+    "days_left": "{{count}}일 남음",
+    "ends_today": "오늘 종료!",
+    "ends_tomorrow": "내일 종료",
+    "expired": "체험 기간 만료",
+    "cancel": "취소",
+    "then": "이후"
+  },
   "plan": {
     "ai_requests": "이번 달 AI 요청"
   }

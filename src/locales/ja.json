@@ -281,6 +281,15 @@
     "card": "カード",
     "no_card": "カードなし"
   },
+  "trials": {
+    "title": "アクティブなトライアル",
+    "days_left": "残り{{count}}日",
+    "ends_today": "本日終了！",
+    "ends_tomorrow": "明日終了",
+    "expired": "トライアル期限切れ",
+    "cancel": "キャンセル",
+    "then": "その後"
+  },
   "plan": {
     "ai_requests": "今月のAIリクエスト"
   }

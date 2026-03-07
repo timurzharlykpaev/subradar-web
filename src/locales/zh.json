@@ -281,6 +281,15 @@
     "card": "卡片",
     "no_card": "无卡片"
   },
+  "trials": {
+    "title": "活跃试用",
+    "days_left": "剩余{{count}}天",
+    "ends_today": "今天到期！",
+    "ends_tomorrow": "明天到期",
+    "expired": "试用已过期",
+    "cancel": "取消",
+    "then": "之后"
+  },
   "plan": {
     "ai_requests": "本月AI请求"
   }

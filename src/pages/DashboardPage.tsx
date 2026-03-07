@@ -5,7 +5,8 @@ import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { UpcomingPayments } from '@/components/subscriptions/UpcomingPayments';
 import { formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useAnalyticsSummary, useAnalyticsMonthly, useAnalyticsByCategory, useUpcoming } from '@/hooks/useAnalytics';
+import { useAnalyticsSummary, useAnalyticsMonthly, useAnalyticsByCategory, useUpcoming, useTrials } from '@/hooks/useAnalytics';
+import { TrialTracker } from '@/components/subscriptions/TrialTracker';
 import { SkeletonCard, SkeletonList, Skeleton } from '@/components/ui/Skeleton';
 
 export default function DashboardPage() {
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const { data: monthly, isLoading: loadingMonthly } = useAnalyticsMonthly();
   const { data: byCategory, isLoading: loadingCategory } = useAnalyticsByCategory();
   const { data: upcoming, isLoading: loadingUpcoming } = useUpcoming(7);
+  const { data: trials } = useTrials();
 
   const renewalCount = upcoming ? upcoming.filter((s) => {
     const diff = new Date(s.nextPaymentDate).getTime() - new Date().setHours(0, 0, 0, 0);
@@ -102,6 +104,9 @@ export default function DashboardPage() {
           ))}
         </div>
       )}
+
+      {/* Trial tracker */}
+      {trials && trials.length > 0 && <TrialTracker trials={trials} />}
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

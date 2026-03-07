@@ -281,6 +281,15 @@
     "card": "Payment Card",
     "no_card": "No card"
   },
+  "trials": {
+    "title": "Active Trials",
+    "days_left": "{{count}} days left",
+    "ends_today": "Ends today!",
+    "ends_tomorrow": "Ends tomorrow",
+    "expired": "Trial expired",
+    "cancel": "Cancel",
+    "then": "then"
+  },
   "plan": {
     "ai_requests": "AI requests this month"
   }

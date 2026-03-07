@@ -281,6 +281,15 @@
     "card": "Carte",
     "no_card": "Sans carte"
   },
+  "trials": {
+    "title": "Essais actifs",
+    "days_left": "{{count}} jours restants",
+    "ends_today": "Se termine aujourd'hui !",
+    "ends_tomorrow": "Se termine demain",
+    "expired": "Essai expiré",
+    "cancel": "Annuler",
+    "then": "puis"
+  },
   "plan": {
     "ai_requests": "Requêtes IA ce mois"
   }

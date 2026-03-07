@@ -99,6 +99,29 @@ export function useUpcoming(days = 7) {
   });
 }
 
+export interface TrialSubscription {
+  id: string;
+  name: string;
+  amount: number;
+  currency: string;
+  iconUrl?: string;
+  cancelUrl?: string;
+  trialEndDate?: string;
+  daysUntilTrialEnd: number | null;
+  isExpiringSoon: boolean;
+  isExpired: boolean;
+}
+
+export function useTrials() {
+  return useQuery<TrialSubscription[]>({
+    queryKey: ['analytics', 'trials'],
+    queryFn: async () => {
+      const { data } = await api.get<TrialSubscription[]>('/analytics/trials');
+      return data;
+    },
+  });
+}
+
 // Legacy hook for backward compat
 export function useAnalytics() {
   return useQuery({

@@ -39,6 +39,8 @@ export interface Subscription {
   iconUrl?: string;
   notes?: string;
   receipts?: Receipt[];
+  trialEndDate?: string;
+  cancelUrl?: string;
 }
 
 export interface Receipt {

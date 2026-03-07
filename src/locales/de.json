@@ -281,6 +281,15 @@
     "card": "Karte",
     "no_card": "Keine Karte"
   },
+  "trials": {
+    "title": "Aktive Testphasen",
+    "days_left": "Noch {{count}} Tage",
+    "ends_today": "Endet heute!",
+    "ends_tomorrow": "Endet morgen",
+    "expired": "Testphase abgelaufen",
+    "cancel": "Kündigen",
+    "then": "dann"
+  },
   "plan": {
     "ai_requests": "KI-Anfragen diesen Monat"
   }

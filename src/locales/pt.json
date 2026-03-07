@@ -281,6 +281,15 @@
     "card": "Cartão",
     "no_card": "Sem cartão"
   },
+  "trials": {
+    "title": "Testes ativos",
+    "days_left": "{{count}} dias restantes",
+    "ends_today": "Termina hoje!",
+    "ends_tomorrow": "Termina amanhã",
+    "expired": "Teste expirado",
+    "cancel": "Cancelar",
+    "then": "depois"
+  },
   "plan": {
     "ai_requests": "Solicitações AI este mês"
   }
