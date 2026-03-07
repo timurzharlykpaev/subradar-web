@@ -13,15 +13,31 @@ interface AppState {
   toggleTheme: () => void;
 }
 
+const getStored = (key: string, fallback: string) =>
+  typeof window !== 'undefined' ? (localStorage.getItem(key) || fallback) : fallback;
+
 export const useAppStore = create<AppState>((set) => ({
   user: null,
-  theme: 'dark',
-  currency: 'USD',
-  language: 'en',
+  theme: getStored('subradar-theme', 'dark') as 'dark' | 'light',
+  currency: getStored('subradar-currency', 'USD'),
+  language: getStored('subradar-language', 'en'),
   setUser: (user) => set({ user }),
-  setTheme: (theme) => set({ theme }),
-  setCurrency: (currency) => set({ currency }),
-  setLanguage: (language) => set({ language }),
+  setTheme: (theme) => {
+    localStorage.setItem('subradar-theme', theme);
+    set({ theme });
+  },
+  setCurrency: (currency) => {
+    localStorage.setItem('subradar-currency', currency);
+    set({ currency });
+  },
+  setLanguage: (language) => {
+    localStorage.setItem('subradar-language', language);
+    set({ language });
+  },
   toggleTheme: () =>
-    set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
+    set((state) => {
+      const next = state.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('subradar-theme', next);
+      return { theme: next };
+    }),
 }));

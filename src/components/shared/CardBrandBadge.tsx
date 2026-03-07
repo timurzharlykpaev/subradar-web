@@ -1,11 +1,11 @@
 import { CardBrand } from '@/types';
 
 const brandConfig: Record<CardBrand, { label: string; color: string; bg: string }> = {
-  visa: { label: 'VISA', color: '#1A1F71', bg: '#EEF2FF' },
-  mastercard: { label: 'MC', color: '#EB001B', bg: '#FFF1F2' },
-  amex: { label: 'AMEX', color: '#007BC1', bg: '#EFF6FF' },
-  mir: { label: 'МИР', color: '#00B956', bg: '#F0FDF4' },
-  other: { label: 'CARD', color: '#6B7280', bg: '#F3F4F6' },
+  VISA: { label: 'VISA', color: '#1A1F71', bg: '#EEF2FF' },
+  MC: { label: 'MC', color: '#EB001B', bg: '#FFF1F2' },
+  AMEX: { label: 'AMEX', color: '#007BC1', bg: '#EFF6FF' },
+  MIR: { label: 'MIR', color: '#00B956', bg: '#F0FDF4' },
+  OTHER: { label: 'CARD', color: '#6B7280', bg: '#F3F4F6' },
 };
 
 interface CardBrandBadgeProps {
@@ -14,7 +14,7 @@ interface CardBrandBadgeProps {
 }
 
 export function CardBrandBadge({ brand, last4 }: CardBrandBadgeProps) {
-  const { label, color, bg } = brandConfig[brand] || brandConfig.other;
+  const { label, color, bg } = brandConfig[brand] || brandConfig.OTHER;
 
   return (
     <div className="flex items-center gap-1.5">

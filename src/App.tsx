@@ -19,7 +19,7 @@ import TermsPage from '@/pages/legal/TermsPage'
 import CookiesPage from '@/pages/legal/CookiesPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const token = localStorage.getItem('access_token') || localStorage.getItem('auth_token')
+  const token = localStorage.getItem('auth_token')
   if (!token) return <Navigate to="/login" replace />
   return <>{children}</>
 }

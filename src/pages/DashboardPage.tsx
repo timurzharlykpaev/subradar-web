@@ -1,22 +1,26 @@
 import { Link } from 'react-router-dom';
-import { TrendingUp, CreditCard, AlertCircle, Zap, Plus, ArrowUpRight } from 'lucide-react';
+import { TrendingUp, CreditCard, AlertCircle, Zap, Plus, ArrowUpRight, RefreshCw, BarChart3, AlertTriangle } from 'lucide-react';
 import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart';
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { UpcomingPayments } from '@/components/subscriptions/UpcomingPayments';
 import { formatCurrency } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useAnalyticsSummary, useAnalyticsMonthly, useAnalyticsByCategory, useUpcoming, useTrials } from '@/hooks/useAnalytics';
+import { useAnalyticsSummary, useAnalyticsMonthly, useAnalyticsByCategory, useUpcoming, useTrials, useForecast, useSavings } from '@/hooks/useAnalytics';
 import { TrialTracker } from '@/components/subscriptions/TrialTracker';
 import { SkeletonCard, SkeletonList, Skeleton } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { FeatureGate } from '@/components/shared/FeatureGate';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
 
-  const { data: summary, isLoading: loadingSummary } = useAnalyticsSummary();
+  const { data: summary, isLoading: loadingSummary, isError: errorSummary, refetch: refetchSummary } = useAnalyticsSummary();
   const { data: monthly, isLoading: loadingMonthly } = useAnalyticsMonthly();
   const { data: byCategory, isLoading: loadingCategory } = useAnalyticsByCategory();
   const { data: upcoming, isLoading: loadingUpcoming } = useUpcoming(7);
   const { data: trials } = useTrials();
+  const { data: forecast } = useForecast();
+  const { data: savings } = useSavings();
 
   const renewalCount = upcoming ? upcoming.filter((s) => {
     const diff = new Date(s.nextPaymentDate).getTime() - new Date().setHours(0, 0, 0, 0);
@@ -58,6 +62,48 @@ export default function DashboardPage() {
       bg: 'rgba(239,68,68,0.12)',
     },
   ];
+
+  // Empty state: 0 subscriptions
+  if (!loadingSummary && summary && summary.activeCount === 0 && (summary.pausedCount ?? 0) === 0 && (summary.trialCount ?? 0) === 0) {
+    return (
+      <div className="space-y-5 animate-fade-in">
+        <div>
+          <h1 className="page-title">{t('dashboard.title')}</h1>
+          <p className="page-subtitle">{t('dashboard.subtitle')}</p>
+        </div>
+        <EmptyState
+          icon={Plus}
+          title={t('dashboard.empty_title')}
+          description={t('dashboard.empty_description')}
+          actions={[
+            { label: t('dashboard.empty_add_manual'), href: '/app/subscriptions/add' },
+            { label: t('dashboard.empty_add_ai'), href: '/app/subscriptions/add?mode=text' },
+            { label: t('dashboard.empty_add_photo'), href: '/app/subscriptions/add?mode=photo' },
+          ]}
+        />
+      </div>
+    );
+  }
+
+  // Error state
+  if (errorSummary) {
+    return (
+      <div className="space-y-5 animate-fade-in">
+        <div>
+          <h1 className="page-title">{t('dashboard.title')}</h1>
+          <p className="page-subtitle">{t('dashboard.subtitle')}</p>
+        </div>
+        <div className="glass-card rounded-2xl p-8 text-center">
+          <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
+          <p className="text-sm text-gray-300 mb-4">{t('common.error_loading')}</p>
+          <button onClick={() => refetchSummary()} className="flex items-center gap-2 mx-auto px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all">
+            <RefreshCw className="w-4 h-4" />
+            {t('common.retry')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -104,6 +150,56 @@ export default function DashboardPage() {
           ))}
         </div>
       )}
+
+      {/* Forecast (Pro-gated) */}
+      <FeatureGate feature="forecast" fallback={null}>
+        {forecast && (
+          <div className="glass-card rounded-2xl p-5">
+            <p className="section-title flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-purple-400" />
+              {t('dashboard.forecast_title')}
+            </p>
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              <div className="p-3 rounded-xl bg-white/5">
+                <p className="text-xs text-gray-500">{t('dashboard.forecast_30d')}</p>
+                <p className="text-lg font-bold">{formatCurrency(forecast.forecast30d, forecast.currency)}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-white/5">
+                <p className="text-xs text-gray-500">{t('dashboard.forecast_6mo')}</p>
+                <p className="text-lg font-bold">{formatCurrency(forecast.forecast6mo, forecast.currency)}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-white/5">
+                <p className="text-xs text-gray-500">{t('dashboard.forecast_12mo')}</p>
+                <p className="text-lg font-bold">{formatCurrency(forecast.forecast12mo, forecast.currency)}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </FeatureGate>
+
+      {/* Savings/Duplicates (Pro-gated) */}
+      <FeatureGate feature="advanced-analytics" fallback={null}>
+        {savings && savings.estimatedMonthlySavings > 0 && (
+          <div className="glass-card rounded-2xl p-5 border border-green-500/20">
+            <p className="section-title flex items-center gap-2">
+              <Zap className="w-4 h-4 text-green-400" />
+              {t('dashboard.savings_title')}
+            </p>
+            <p className="text-2xl font-bold text-green-400 mt-2">
+              {formatCurrency(savings.estimatedMonthlySavings)}/{t('common.month')}
+            </p>
+            {savings.duplicates.length > 0 && (
+              <div className="mt-3 space-y-1">
+                {savings.duplicates.map((d, i) => (
+                  <p key={i} className="text-xs text-gray-400">
+                    {t('dashboard.duplicate_found')}: {d.name} — {formatCurrency(d.potentialSavings)}/{t('common.month')}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </FeatureGate>
 
       {/* Trial tracker */}
       {trials && trials.length > 0 && <TrialTracker trials={trials} />}

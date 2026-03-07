@@ -23,7 +23,13 @@
     "required": "必須",
     "success": "成功",
     "close": "閉じる",
-    "view_all": "全て"
+    "view_all": "全て",
+    "retry": "再試行",
+    "error_loading": "読み込みに失敗",
+    "go_back": "戻る",
+    "download": "ダウンロード",
+    "month": "月",
+    "pro_required": "Proプランが必要です"
   },
   "nav": {
     "dashboard": "ダッシュボード",
@@ -52,7 +58,18 @@
     "upcoming_payments": "支払い予定",
     "due_today": "本日",
     "tomorrow": "明日",
-    "in_days": "{{count}}日後"
+    "in_days": "{{count}}日後",
+    "empty_title": "サブスクリプションがありません",
+    "empty_description": "サブスクリプションの追跡を開始",
+    "empty_add_manual": "手動で追加",
+    "empty_add_ai": "AIで説明",
+    "empty_add_photo": "レシートをスキャン",
+    "forecast_title": "支出予測",
+    "forecast_30d": "30日",
+    "forecast_6mo": "6ヶ月",
+    "forecast_12mo": "12ヶ月",
+    "savings_title": "潜在的な節約",
+    "duplicate_found": "重複が見つかりました"
   },
   "subscriptions": {
     "title": "サブスクリプション",
@@ -79,7 +96,17 @@
     "due_in_days": "{{days}}日後",
     "status": "ステータス",
     "total": "件",
-    "total_one": "件"
+    "total_one": "件",
+    "sort_date_asc": "次の支払い(近い順)",
+    "sort_date_desc": "次の支払い(遠い順)",
+    "sort_amount_desc": "金額(高い順)",
+    "sort_amount_asc": "金額(低い順)",
+    "sort_name": "名前(A-Z)",
+    "sort_newest": "最近追加",
+    "upgrade_to_add": "追加するにはアップグレード",
+    "no_match": "一致する結果なし",
+    "no_match_sub": "フィルターを変更してみてください",
+    "reset_filters": "フィルターをリセット"
   },
   "add": {
     "title": "サブスクリプションを追加",
@@ -163,7 +190,11 @@
     "active_label": "アクティブ",
     "spend_trend": "月次トレンド",
     "top5": "高額トップ5",
-    "no_active": "アクティブなサブスクリプションなし"
+    "no_active": "アクティブなサブスクリプションなし",
+    "forecast_title": "支出予測",
+    "savings_title": "潜在的な節約",
+    "empty_title": "データがありません",
+    "empty_description": "分析を見るにはサブスクリプションを追加"
   },
   "reports": {
     "title": "レポート",
@@ -199,7 +230,10 @@
     "status_pending": "保留中",
     "status_processing": "処理中",
     "status_ready": "準備完了",
-    "status_failed": "失敗"
+    "status_failed": "失敗",
+    "audit_label": "AI監査",
+    "audit_desc": "月次AI分析",
+    "period": "期間"
   },
   "settings": {
     "title": "設定",
@@ -292,5 +326,22 @@
   },
   "plan": {
     "ai_requests": "今月のAIリクエスト"
+  },
+  "detail": {
+    "title": "サブスクリプション詳細",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "cancel_trial": "トライアルをキャンセル",
+    "restore": "復元",
+    "archive": "アーカイブ",
+    "paused": "サブスクリプションを一時停止しました",
+    "resumed": "サブスクリプションを再開しました",
+    "cancelled": "サブスクリプションをキャンセルしました",
+    "archived": "サブスクリプションをアーカイブしました",
+    "not_found": "サブスクリプションが見つかりません",
+    "cancel_confirm": "このサブスクリプションをキャンセルしますか？",
+    "archive_confirm": "このサブスクリプションをアーカイブしますか？",
+    "delete_confirm": "このサブスクリプションを削除しますか？"
   }
 }

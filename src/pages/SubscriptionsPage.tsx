@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, SlidersHorizontal, X, ChevronDown, Check, Layers } from 'lucide-react';
+import { Plus, Search, SlidersHorizontal, X, ChevronDown, Check, Layers, ArrowUpDown, RefreshCw, AlertTriangle } from 'lucide-react';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 
 import { SubscriptionCard } from '@/components/subscriptions/SubscriptionCard';
@@ -35,17 +35,25 @@ export default function SubscriptionsPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
+  const [sort, setSort] = useState('nextBillingDate');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
-  const { data: subscriptions, isLoading } = useSubscriptions(
-    category || status ? { category: category || undefined, status: status || undefined } : undefined
+  const filters = useMemo(() => ({
+    category: category || undefined,
+    status: status || undefined,
+    search: search || undefined,
+    sort: sort || undefined,
+    order,
+  }), [category, status, search, sort, order]);
+
+  const { data: subscriptions, isLoading, isError, refetch } = useSubscriptions(
+    (category || status || search) ? filters : { sort, order }
   );
   const { data: billing } = useBillingMe();
 
-  const filtered = (subscriptions ?? []).filter((s) => {
-    return !search || s.name.toLowerCase().includes(search.toLowerCase());
-  });
+  const filtered = subscriptions ?? [];
 
   const hasFilters = !!category || !!status;
   const isAtSubLimit =
@@ -83,7 +91,7 @@ export default function SubscriptionsPage() {
             className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/15 hover:bg-yellow-500/25 text-yellow-400 border border-yellow-500/30 text-sm font-semibold transition-all flex-shrink-0"
           >
             <Plus className="w-4 h-4" />
-            <span>Add (Upgrade)</span>
+            <span>{t('subscriptions.upgrade_to_add')}</span>
           </button>
         ) : (
           <Link
@@ -114,6 +122,23 @@ export default function SubscriptionsPage() {
             </button>
           )}
         </div>
+
+        <select
+          value={`${sort}-${order}`}
+          onChange={(e) => {
+            const [s, o] = e.target.value.split('-');
+            setSort(s);
+            setOrder(o as 'asc' | 'desc');
+          }}
+          className="hidden sm:block px-3 py-2.5 rounded-xl bg-white/5 border border-white/8 text-sm text-gray-400 focus:outline-none focus:border-purple-500/60 transition-all"
+        >
+          <option value="nextBillingDate-asc">{t('subscriptions.sort_date_asc')}</option>
+          <option value="nextBillingDate-desc">{t('subscriptions.sort_date_desc')}</option>
+          <option value="amount-desc">{t('subscriptions.sort_amount_desc')}</option>
+          <option value="amount-asc">{t('subscriptions.sort_amount_asc')}</option>
+          <option value="name-asc">{t('subscriptions.sort_name')}</option>
+          <option value="createdAt-desc">{t('subscriptions.sort_newest')}</option>
+        </select>
 
         <button
           onClick={() => setFiltersOpen(!filtersOpen)}
@@ -231,17 +256,28 @@ export default function SubscriptionsPage() {
       )}
 
       {/* List */}
-      {isLoading ? (
+      {isError ? (
+        <div className="glass-card rounded-2xl p-8 text-center">
+          <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
+          <p className="text-sm text-gray-300 mb-4">{t('common.error_loading')}</p>
+          <button onClick={() => refetch()} className="flex items-center gap-2 mx-auto px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all">
+            <RefreshCw className="w-4 h-4" />
+            {t('common.retry')}
+          </button>
+        </div>
+      ) : isLoading ? (
         <SkeletonList count={5} />
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={Layers}
-          title={t('subscriptions.empty')}
-          description={t('subscriptions.empty_sub')}
+          title={hasFilters ? t('subscriptions.no_match') : t('subscriptions.empty')}
+          description={hasFilters ? t('subscriptions.no_match_sub') : t('subscriptions.empty_sub')}
           action={
-            isAtSubLimit
-              ? { label: 'Upgrade to add more', href: '/app/settings' }
-              : { label: `+ ${t('subscriptions.add')}`, href: '/app/subscriptions/add' }
+            hasFilters
+              ? { label: t('subscriptions.reset_filters'), onClick: clearFilters }
+              : isAtSubLimit
+                ? { label: t('subscriptions.upgrade_to_add'), href: '/app/settings' }
+                : { label: `+ ${t('subscriptions.add')}`, href: '/app/subscriptions/add' }
           }
         />
       ) : (

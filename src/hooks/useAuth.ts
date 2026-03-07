@@ -65,3 +65,25 @@ export function useUpdateProfile() {
     },
   });
 }
+
+/** PATCH /users/preferences — обновление настроек */
+export function useUpdatePreferences() {
+  const setUser = useAppStore((s) => s.setUser);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: Partial<{
+      timezone: string;
+      dateFormat: string;
+      notificationsEnabled: boolean;
+      currency: string;
+      locale: string;
+    }>) => {
+      const { data } = await api.patch<User>('/users/preferences', payload);
+      return data;
+    },
+    onSuccess: (data) => {
+      setUser(data);
+      queryClient.setQueryData(['auth', 'me'], data);
+    },
+  });
+}

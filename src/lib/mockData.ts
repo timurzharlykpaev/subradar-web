@@ -1,9 +1,9 @@
 import { Subscription, PaymentCard, AnalyticsData } from '@/types';
 
 export const mockCards: PaymentCard[] = [
-  { id: '1', nickname: 'Main Card', last4: '4242', brand: 'visa', color: '#7C3AED', expiryMonth: 12, expiryYear: 2027 },
-  { id: '2', nickname: 'Business', last4: '5353', brand: 'mastercard', color: '#0EA5E9', expiryMonth: 6, expiryYear: 2026 },
-  { id: '3', nickname: 'Savings', last4: '1111', brand: 'amex', color: '#10B981', expiryMonth: 3, expiryYear: 2028 },
+  { id: '1', nickname: 'Main Card', last4: '4242', brand: 'VISA', color: '#7C3AED', isDefault: true },
+  { id: '2', nickname: 'Business', last4: '5353', brand: 'MC', color: '#0EA5E9', isDefault: false },
+  { id: '3', nickname: 'Savings', last4: '1111', brand: 'AMEX', color: '#10B981', isDefault: false },
 ];
 
 export const mockSubscriptions: Subscription[] = [

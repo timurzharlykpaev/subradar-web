@@ -122,6 +122,43 @@ export function useTrials() {
   });
 }
 
+export interface ForecastData {
+  forecast30d: number;
+  forecast6mo: number;
+  forecast12mo: number;
+  currency: string;
+}
+
+export interface SavingsData {
+  estimatedMonthlySavings: number;
+  duplicates: { subscriptionIds: string[]; name: string; potentialSavings: number }[];
+  insights: { type: string; message: string }[];
+}
+
+/** GET /analytics/forecast — прогноз расходов */
+export function useForecast() {
+  return useQuery<ForecastData>({
+    queryKey: ['analytics', 'forecast'],
+    queryFn: async () => {
+      const { data } = await api.get<ForecastData>('/analytics/forecast');
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+/** GET /analytics/savings — потенциальная экономия и дубликаты */
+export function useSavings() {
+  return useQuery<SavingsData>({
+    queryKey: ['analytics', 'savings'],
+    queryFn: async () => {
+      const { data } = await api.get<SavingsData>('/analytics/savings');
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 // Legacy hook for backward compat
 export function useAnalytics() {
   return useQuery({

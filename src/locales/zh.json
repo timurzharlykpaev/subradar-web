@@ -23,7 +23,13 @@
     "required": "必填",
     "success": "成功",
     "close": "关闭",
-    "view_all": "全部"
+    "view_all": "全部",
+    "retry": "重试",
+    "error_loading": "加载失败",
+    "go_back": "返回",
+    "download": "下载",
+    "month": "月",
+    "pro_required": "需要Pro计划"
   },
   "nav": {
     "dashboard": "仪表板",
@@ -52,7 +58,18 @@
     "upcoming_payments": "即将到期",
     "due_today": "今天到期",
     "tomorrow": "明天",
-    "in_days": "{{count}}天后"
+    "in_days": "{{count}}天后",
+    "empty_title": "暂无订阅",
+    "empty_description": "开始跟踪您的订阅",
+    "empty_add_manual": "手动添加",
+    "empty_add_ai": "AI描述",
+    "empty_add_photo": "扫描收据",
+    "forecast_title": "支出预测",
+    "forecast_30d": "30天",
+    "forecast_6mo": "6个月",
+    "forecast_12mo": "12个月",
+    "savings_title": "潜在节省",
+    "duplicate_found": "发现重复"
   },
   "subscriptions": {
     "title": "订阅",
@@ -79,7 +96,17 @@
     "due_in_days": "{{days}}天后",
     "status": "状态",
     "total": "个订阅",
-    "total_one": "个订阅"
+    "total_one": "个订阅",
+    "sort_date_asc": "下次付款(最近)",
+    "sort_date_desc": "下次付款(最远)",
+    "sort_amount_desc": "金额(从高到低)",
+    "sort_amount_asc": "金额(从低到高)",
+    "sort_name": "名称(A-Z)",
+    "sort_newest": "最近添加",
+    "upgrade_to_add": "升级以添加更多",
+    "no_match": "无匹配结果",
+    "no_match_sub": "尝试更改筛选条件",
+    "reset_filters": "重置筛选"
   },
   "add": {
     "title": "添加订阅",
@@ -163,7 +190,11 @@
     "active_label": "活跃",
     "spend_trend": "月度趋势",
     "top5": "最贵的5个",
-    "no_active": "无活跃订阅"
+    "no_active": "无活跃订阅",
+    "forecast_title": "支出预测",
+    "savings_title": "潜在节省",
+    "empty_title": "暂无数据",
+    "empty_description": "添加订阅以查看分析"
   },
   "reports": {
     "title": "报告",
@@ -199,7 +230,10 @@
     "status_pending": "待处理",
     "status_processing": "处理中",
     "status_ready": "就绪",
-    "status_failed": "失败"
+    "status_failed": "失败",
+    "audit_label": "AI审计",
+    "audit_desc": "每月AI分析",
+    "period": "期间"
   },
   "settings": {
     "title": "设置",
@@ -292,5 +326,22 @@
   },
   "plan": {
     "ai_requests": "本月AI请求"
+  },
+  "detail": {
+    "title": "订阅详情",
+    "pause": "暂停",
+    "resume": "恢复",
+    "cancel": "取消",
+    "cancel_trial": "取消试用",
+    "restore": "恢复",
+    "archive": "归档",
+    "paused": "订阅已暂停",
+    "resumed": "订阅已恢复",
+    "cancelled": "订阅已取消",
+    "archived": "订阅已归档",
+    "not_found": "未找到订阅",
+    "cancel_confirm": "确定取消此订阅？",
+    "archive_confirm": "确定归档此订阅？",
+    "delete_confirm": "确定删除此订阅？"
   }
 }

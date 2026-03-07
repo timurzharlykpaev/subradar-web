@@ -1,19 +1,23 @@
 import { LucideIcon, Inbox } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface EmptyStateProps {
-  icon?: LucideIcon;
-  illustration?: string; // path to image in /public
-  title: string;
-  description?: string;
-  action?: {
-    label: string;
-    href?: string;
-    onClick?: () => void;
-  };
+interface ActionItem {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary';
 }
 
-export function EmptyState({ icon: Icon, illustration, title, description, action }: EmptyStateProps) {
+interface EmptyStateProps {
+  icon?: LucideIcon;
+  illustration?: string;
+  title: string;
+  description?: string;
+  action?: ActionItem;
+  actions?: ActionItem[];
+}
+
+export function EmptyState({ icon: Icon, illustration, title, description, action, actions }: EmptyStateProps) {
   const FallbackIcon = Icon || Inbox;
 
   return (
@@ -50,6 +54,21 @@ export function EmptyState({ icon: Icon, illustration, title, description, actio
             {action.label}
           </button>
         )
+      )}
+      {actions && actions.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-2 justify-center">
+          {actions.map((a, i) => {
+            const isPrimary = (a.variant ?? (i === 0 ? 'primary' : 'secondary')) === 'primary';
+            const cls = isPrimary
+              ? 'px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all shadow-lg shadow-purple-500/20'
+              : 'px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition-all';
+            return a.href ? (
+              <Link key={i} to={a.href} className={cls}>{a.label}</Link>
+            ) : (
+              <button key={i} onClick={a.onClick} className={cls}>{a.label}</button>
+            );
+          })}
+        </div>
       )}
     </div>
   );

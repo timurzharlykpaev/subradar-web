@@ -23,7 +23,13 @@
     "required": "Erforderlich",
     "success": "Erfolgreich",
     "close": "Schließen",
-    "view_all": "Alle"
+    "view_all": "Alle",
+    "retry": "Wiederholen",
+    "error_loading": "Laden fehlgeschlagen",
+    "go_back": "Zurück",
+    "download": "Herunterladen",
+    "month": "Mo",
+    "pro_required": "Pro-Plan erforderlich"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -52,7 +58,18 @@
     "upcoming_payments": "Bevorstehende Zahlungen",
     "due_today": "Heute fällig",
     "tomorrow": "Morgen",
-    "in_days": "In {{count}} Tagen"
+    "in_days": "In {{count}} Tagen",
+    "empty_title": "Noch keine Abonnements",
+    "empty_description": "Beginnen Sie mit der Verfolgung Ihrer Abonnements",
+    "empty_add_manual": "Manuell hinzufügen",
+    "empty_add_ai": "Mit AI beschreiben",
+    "empty_add_photo": "Beleg scannen",
+    "forecast_title": "Ausgabenprognose",
+    "forecast_30d": "30 Tage",
+    "forecast_6mo": "6 Monate",
+    "forecast_12mo": "12 Monate",
+    "savings_title": "Mögliche Einsparungen",
+    "duplicate_found": "Duplikat gefunden"
   },
   "subscriptions": {
     "title": "Abonnements",
@@ -79,7 +96,17 @@
     "due_in_days": "In {{days}} Tagen",
     "status": "Status",
     "total": "Abonnements",
-    "total_one": "Abonnement"
+    "total_one": "Abonnement",
+    "sort_date_asc": "Nächste Zahlung (früheste)",
+    "sort_date_desc": "Nächste Zahlung (späteste)",
+    "sort_amount_desc": "Betrag (höchste)",
+    "sort_amount_asc": "Betrag (niedrigste)",
+    "sort_name": "Name (A-Z)",
+    "sort_newest": "Kürzlich hinzugefügt",
+    "upgrade_to_add": "Upgraden zum Hinzufügen",
+    "no_match": "Keine Übereinstimmungen",
+    "no_match_sub": "Versuchen Sie die Filter zu ändern",
+    "reset_filters": "Filter zurücksetzen"
   },
   "add": {
     "title": "Abonnement hinzufügen",
@@ -163,7 +190,11 @@
     "active_label": "Aktiv",
     "spend_trend": "Monatliche Ausgaben",
     "top5": "Top 5 teuerste",
-    "no_active": "Keine aktiven Abonnements"
+    "no_active": "Keine aktiven Abonnements",
+    "forecast_title": "Ausgabenprognose",
+    "savings_title": "Mögliche Einsparungen",
+    "empty_title": "Noch keine Daten",
+    "empty_description": "Fügen Sie Abonnements hinzu"
   },
   "reports": {
     "title": "Berichte",
@@ -199,7 +230,10 @@
     "status_pending": "Ausstehend",
     "status_processing": "Wird verarbeitet",
     "status_ready": "Bereit",
-    "status_failed": "Fehler"
+    "status_failed": "Fehler",
+    "audit_label": "AI-Audit",
+    "audit_desc": "Monatliche AI-Analyse",
+    "period": "Zeitraum"
   },
   "settings": {
     "title": "Einstellungen",
@@ -292,5 +326,22 @@
   },
   "plan": {
     "ai_requests": "KI-Anfragen diesen Monat"
+  },
+  "detail": {
+    "title": "Abonnement-Details",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "cancel": "Kündigen",
+    "cancel_trial": "Testversion kündigen",
+    "restore": "Wiederherstellen",
+    "archive": "Archivieren",
+    "paused": "Abonnement pausiert",
+    "resumed": "Abonnement fortgesetzt",
+    "cancelled": "Abonnement gekündigt",
+    "archived": "Abonnement archiviert",
+    "not_found": "Abonnement nicht gefunden",
+    "cancel_confirm": "Dieses Abonnement kündigen?",
+    "archive_confirm": "Dieses Abonnement archivieren?",
+    "delete_confirm": "Dieses Abonnement löschen?"
   }
 }

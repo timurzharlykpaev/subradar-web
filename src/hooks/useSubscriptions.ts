@@ -2,7 +2,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { Subscription } from '@/types';
 
-export function useSubscriptions(filters?: { category?: string; status?: string }) {
+export interface SubscriptionFilters {
+  category?: string;
+  status?: string;
+  search?: string;
+  sort?: string;
+  order?: 'asc' | 'desc';
+  billingPeriod?: string;
+  paymentCardId?: string;
+}
+
+export function useSubscriptions(filters?: SubscriptionFilters) {
   return useQuery({
     queryKey: ['subscriptions', filters],
     queryFn: async () => {
@@ -78,7 +88,7 @@ export function usePauseSubscription() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'paused' });
+      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'PAUSED' });
       return data;
     },
     onSuccess: (_data, id) => {
@@ -93,7 +103,22 @@ export function useRestoreSubscription() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'active' });
+      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'ACTIVE' });
+      return data;
+    },
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: ['subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['subscriptions', id] });
+    },
+  });
+}
+
+/** POST /subscriptions/:id/archive */
+export function useArchiveSubscription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await api.post<Subscription>(`/subscriptions/${id}/archive`);
       return data;
     },
     onSuccess: (_data, id) => {

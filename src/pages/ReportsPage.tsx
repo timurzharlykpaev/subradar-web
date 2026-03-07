@@ -6,21 +6,22 @@ import { useToast } from '@/providers/ToastProvider';
 import { formatDate } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-type ReportType = 'summary' | 'detailed' | 'tax';
+import type { ReportType } from '@/types';
 type ReportFormat = 'pdf' | 'csv';
 
 function ReportStatusBadge({ status }: { status: Report['status'] }) {
   const { t } = useTranslation();
-  const map = {
-    pending: { icon: Clock, color: 'text-yellow-400', label: t('reports.status_pending') },
-    processing: { icon: Loader2, color: 'text-blue-400', label: t('reports.status_processing') },
-    completed: { icon: CheckCircle, color: 'text-green-400', label: t('reports.status_ready') },
-    failed: { icon: FileText, color: 'text-red-400', label: t('reports.status_failed') },
+  const map: Record<Report['status'], { icon: typeof Clock; color: string; label: string }> = {
+    PENDING: { icon: Clock, color: 'text-yellow-400', label: t('reports.status_pending') },
+    GENERATING: { icon: Loader2, color: 'text-blue-400', label: t('reports.status_processing') },
+    READY: { icon: CheckCircle, color: 'text-green-400', label: t('reports.status_ready') },
+    FAILED: { icon: FileText, color: 'text-red-400', label: t('reports.status_failed') },
   };
-  const { icon: Icon, color, label } = map[status];
+  const entry = map[status] || map.PENDING;
+  const { icon: Icon, color, label } = entry;
   return (
     <span className={`flex items-center gap-1 text-xs ${color}`}>
-      <Icon className={`w-3.5 h-3.5 ${status === 'processing' ? 'animate-spin' : ''}`} />
+      <Icon className={`w-3.5 h-3.5 ${status === 'GENERATING' ? 'animate-spin' : ''}`} />
       {label}
     </span>
   );
@@ -28,38 +29,38 @@ function ReportStatusBadge({ status }: { status: Report['status'] }) {
 
 export default function ReportsPage() {
   const { t } = useTranslation();
-  const reportTypes = [
-    { id: 'summary' as ReportType, label: t('reports.summary_label'), desc: t('reports.summary_desc') },
-    { id: 'detailed' as ReportType, label: t('reports.detailed_label'), desc: t('reports.detailed_desc') },
-    { id: 'tax' as ReportType, label: t('reports.tax_label'), desc: t('reports.tax_desc') },
+  const reportTypes: { id: ReportType; label: string; desc: string }[] = [
+    { id: 'SUMMARY', label: t('reports.summary_label'), desc: t('reports.summary_desc') },
+    { id: 'DETAILED', label: t('reports.detailed_label'), desc: t('reports.detailed_desc') },
+    { id: 'AUDIT', label: t('reports.audit_label'), desc: t('reports.audit_desc') },
+    { id: 'TAX', label: t('reports.tax_label'), desc: t('reports.tax_desc') },
   ];
   const { success, error } = useToast();
-  const [type, setType] = useState<ReportType>('summary');
+  const [type, setType] = useState<ReportType>('SUMMARY');
   const [format, setFormat] = useState<ReportFormat>('pdf');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [period, setPeriod] = useState('');
   const [pendingReportId, setPendingReportId] = useState<string | null>(null);
 
   const generateMutation = useGenerateReport();
   const { data: reports, isLoading: loadingReports, refetch } = useReports();
   const { data: pendingReport } = useReportStatus(pendingReportId ?? '', !!pendingReportId);
 
-  if (pendingReport?.status === 'completed' && pendingReport.downloadUrl) {
-    const url = pendingReport.downloadUrl;
+  if (pendingReport?.status === 'READY' && pendingReport.fileUrl) {
+    const url = pendingReport.fileUrl;
     setPendingReportId(null);
     window.open(url, '_blank');
     refetch();
   }
 
   const handleGenerate = async () => {
-    if (!startDate || !endDate) {
+    if (!period) {
       error(t('common.required'));
       return;
     }
     try {
-      const report = await generateMutation.mutateAsync({ type, format, startDate, endDate });
-      if (report.status === 'completed' && report.downloadUrl) {
-        window.open(report.downloadUrl, '_blank');
+      const report = await generateMutation.mutateAsync({ type, format, period });
+      if (report.status === 'READY' && report.fileUrl) {
+        window.open(report.fileUrl, '_blank');
         refetch();
       } else {
         setPendingReportId(report.id);
@@ -70,10 +71,11 @@ export default function ReportsPage() {
     }
   };
 
+  const now = new Date();
   const presets = [
-    { label: t('reports.this_month'), start: new Date(new Date().setDate(1)).toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] },
-    { label: t('reports.last_month'), start: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toISOString().split('T')[0], end: new Date(new Date().getFullYear(), new Date().getMonth(), 0).toISOString().split('T')[0] },
-    { label: t('reports.this_year'), start: `${new Date().getFullYear()}-01-01`, end: new Date().toISOString().split('T')[0] },
+    { label: t('reports.this_month'), value: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}` },
+    { label: t('reports.last_month'), value: `${now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear()}-${String(now.getMonth() === 0 ? 12 : now.getMonth()).padStart(2, '0')}` },
+    { label: t('reports.this_year'), value: `${now.getFullYear()}` },
   ];
 
   return (
@@ -104,25 +106,17 @@ export default function ReportsPage() {
         <div className="flex flex-wrap gap-2 mb-4">
           {presets.map((p) => (
             <button key={p.label}
-              onClick={() => { setStartDate(p.start); setEndDate(p.end); }}
-              className="px-3 py-1.5 rounded-lg text-xs bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all">
+              onClick={() => setPeriod(p.value)}
+              className={`px-3 py-1.5 rounded-lg text-xs border transition-all ${period === p.value ? 'border-purple-500 bg-purple-500/10 text-purple-400' : 'bg-white/5 border-white/10 hover:border-purple-500/50'}`}>
               {p.label}
             </button>
           ))}
         </div>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_from')}</label>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-gray-200 focus:outline-none focus:border-purple-500"
-              style={{ minHeight: '44px', colorScheme: 'dark' }} />
-          </div>
-          <div>
-            <label className="text-xs text-gray-400 mb-1 block">{t('reports.date_to')}</label>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-gray-200 focus:outline-none focus:border-purple-500"
-              style={{ minHeight: '44px', colorScheme: 'dark' }} />
-          </div>
+        <div>
+          <label className="text-xs text-gray-400 mb-1 block">{t('reports.period')}</label>
+          <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-gray-200 focus:outline-none focus:border-purple-500"
+            style={{ minHeight: '44px', colorScheme: 'dark' }} />
         </div>
       </div>
 
@@ -162,18 +156,18 @@ export default function ReportsPage() {
               <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
                 <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium capitalize">{r.type} {t('reports.report_label')}</p>
+                  <p className="text-sm font-medium capitalize">{r.type.toLowerCase()} {t('reports.report_label')}</p>
                   <p className="text-xs text-gray-400">
-                    {formatDate(r.startDate)} – {formatDate(r.endDate)} · .{r.format.toUpperCase()}
+                    {r.period} · .{r.format.toUpperCase()}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <ReportStatusBadge status={r.status} />
-                  {r.status === 'completed' && r.downloadUrl && (
-                    <a href={r.downloadUrl} target="_blank" rel="noopener noreferrer"
+                  {r.status === 'READY' && r.fileUrl && (
+                    <a href={r.fileUrl} target="_blank" rel="noopener noreferrer"
                       className="text-xs text-purple-400 hover:underline flex items-center gap-1">
                       <Download className="w-3.5 h-3.5" />
-                      Download
+                      {t('common.download')}
                     </a>
                   )}
                 </div>

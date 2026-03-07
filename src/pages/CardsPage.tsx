@@ -8,15 +8,13 @@ import { useToast } from '@/providers/ToastProvider';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 
 const CARD_COLORS = ['#7C3AED', '#0EA5E9', '#10B981', '#EF4444', '#F59E0B', '#EC4899'];
-const CARD_BRANDS: CardBrand[] = ['visa', 'mastercard', 'amex', 'mir', 'other'];
+const CARD_BRANDS: CardBrand[] = ['VISA', 'MC', 'AMEX', 'MIR', 'OTHER'];
 
 const emptyForm = {
   nickname: '',
   last4: '',
-  brand: 'visa' as CardBrand,
+  brand: 'VISA' as CardBrand,
   color: CARD_COLORS[0],
-  expiryMonth: '',
-  expiryYear: '',
 };
 
 interface CardFormProps {
@@ -53,20 +51,6 @@ function CardForm({ form, setForm, onSubmit, submitLabel, isPending, onCancel }:
             className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500">
             {CARD_BRANDS.map((b) => <option key={b} value={b}>{b.toUpperCase()}</option>)}
           </select>
-        </div>
-        <div>
-          <label className="text-xs text-gray-400 mb-1 block">{t('cards.expiry_month')}</label>
-          <input type="number" min="1" max="12" value={form.expiryMonth}
-            onChange={(e) => setForm({ ...form, expiryMonth: e.target.value })}
-            placeholder="12"
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
-        </div>
-        <div>
-          <label className="text-xs text-gray-400 mb-1 block">{t('cards.expiry_year')}</label>
-          <input type="number" min="2024" value={form.expiryYear}
-            onChange={(e) => setForm({ ...form, expiryYear: e.target.value })}
-            placeholder="2027"
-            className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-500" />
         </div>
         <div className="col-span-2">
           <label className="text-xs text-gray-400 mb-2 block">{t('cards.card_color')}</label>
@@ -116,8 +100,6 @@ export default function CardsPage() {
         last4: form.last4,
         brand: form.brand,
         color: form.color,
-        expiryMonth: parseInt(form.expiryMonth),
-        expiryYear: parseInt(form.expiryYear),
       });
       success(t('common.success'));
       setShowForm(false);
@@ -135,8 +117,6 @@ export default function CardsPage() {
         last4: form.last4,
         brand: form.brand,
         color: form.color,
-        expiryMonth: parseInt(form.expiryMonth),
-        expiryYear: parseInt(form.expiryYear),
       });
       success(t('common.success'));
       setEditingId(null);
@@ -153,8 +133,6 @@ export default function CardsPage() {
       last4: card.last4,
       brand: card.brand,
       color: card.color,
-      expiryMonth: card.expiryMonth.toString(),
-      expiryYear: card.expiryYear.toString(),
     });
     setShowForm(false);
   };
@@ -183,7 +161,7 @@ export default function CardsPage() {
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-all"
         >
           <Plus className="w-4 h-4" />
-          Add Card
+          {t('cards.add')}
         </button>
       </div>
 
@@ -202,7 +180,7 @@ export default function CardsPage() {
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-all"
           >
             <Plus className="w-4 h-4" />
-            Add First Card
+            {t('cards.add_first')}
           </button>
         </div>
       )}
@@ -229,9 +207,6 @@ export default function CardsPage() {
                 </div>
                 <div>
                   <p className="text-sm sm:text-base text-white font-mono tracking-widest">•••• •••• •••• {card.last4}</p>
-                  <p className="text-white/60 text-xs mt-1">
-                    {String(card.expiryMonth).padStart(2, '0')}/{card.expiryYear}
-                  </p>
                 </div>
               </div>
 
@@ -241,7 +216,7 @@ export default function CardsPage() {
                   className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-sm flex-1 justify-center transition-all"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
-                  Edit
+                  {t('common.edit')}
                 </button>
                 <button
                   onClick={() => handleDelete(card.id)}
@@ -249,7 +224,7 @@ export default function CardsPage() {
                   className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm flex-1 justify-center transition-all"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  Remove
+                  {t('common.delete')}
                 </button>
               </div>
             </div>

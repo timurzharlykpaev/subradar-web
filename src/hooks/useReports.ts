@@ -1,22 +1,21 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import api from '@/lib/api';
+import type { ReportType, ReportStatus } from '@/types';
 
 export interface Report {
   id: string;
-  type: 'summary' | 'detailed' | 'tax';
+  type: ReportType;
   format: 'pdf' | 'csv';
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  startDate: string;
-  endDate: string;
-  downloadUrl?: string;
+  status: ReportStatus;
+  period: string;
+  fileUrl?: string;
   createdAt: string;
 }
 
 export interface GenerateReportPayload {
-  type: 'summary' | 'detailed' | 'tax';
+  type: ReportType;
   format: 'pdf' | 'csv';
-  startDate: string;
-  endDate: string;
+  period: string;
 }
 
 export function useReports() {
@@ -49,7 +48,7 @@ export function useReportStatus(id: string, enabled = false) {
     refetchInterval: (query) => {
       const data = query.state.data;
       if (!data) return false;
-      if (data.status === 'pending' || data.status === 'processing') return 2000;
+      if (data.status === 'PENDING' || data.status === 'GENERATING') return 2000;
       return false;
     },
   });

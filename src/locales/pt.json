@@ -23,7 +23,13 @@
     "required": "Obrigatório",
     "success": "Sucesso",
     "close": "Fechar",
-    "view_all": "Ver tudo"
+    "view_all": "Ver tudo",
+    "retry": "Tentar novamente",
+    "error_loading": "Falha ao carregar",
+    "go_back": "Voltar",
+    "download": "Baixar",
+    "month": "mês",
+    "pro_required": "Plano Pro necessário"
   },
   "nav": {
     "dashboard": "Painel",
@@ -52,7 +58,18 @@
     "upcoming_payments": "Próximos pagamentos",
     "due_today": "Hoje",
     "tomorrow": "Amanhã",
-    "in_days": "Em {{count}} dias"
+    "in_days": "Em {{count}} dias",
+    "empty_title": "Nenhuma assinatura",
+    "empty_description": "Comece a rastrear suas assinaturas",
+    "empty_add_manual": "Adicionar manualmente",
+    "empty_add_ai": "Descrever com AI",
+    "empty_add_photo": "Escanear recibo",
+    "forecast_title": "Previsão de gastos",
+    "forecast_30d": "30 dias",
+    "forecast_6mo": "6 meses",
+    "forecast_12mo": "12 meses",
+    "savings_title": "Economia possível",
+    "duplicate_found": "Duplicata encontrada"
   },
   "subscriptions": {
     "title": "Assinaturas",
@@ -79,7 +96,17 @@
     "due_in_days": "Em {{days}} dias",
     "status": "Status",
     "total": "assinaturas",
-    "total_one": "assinatura"
+    "total_one": "assinatura",
+    "sort_date_asc": "Próximo pagamento (mais perto)",
+    "sort_date_desc": "Próximo pagamento (mais longe)",
+    "sort_amount_desc": "Valor (maior)",
+    "sort_amount_asc": "Valor (menor)",
+    "sort_name": "Nome (A-Z)",
+    "sort_newest": "Adicionados recentemente",
+    "upgrade_to_add": "Atualize para adicionar",
+    "no_match": "Nenhuma correspondência",
+    "no_match_sub": "Tente alterar os filtros",
+    "reset_filters": "Limpar filtros"
   },
   "add": {
     "title": "Adicionar assinatura",
@@ -163,7 +190,11 @@
     "active_label": "Ativas",
     "spend_trend": "Tendência mensal",
     "top5": "Top 5 mais caras",
-    "no_active": "Sem assinaturas ativas"
+    "no_active": "Sem assinaturas ativas",
+    "forecast_title": "Previsão de gastos",
+    "savings_title": "Economia possível",
+    "empty_title": "Sem dados",
+    "empty_description": "Adicione assinaturas para ver análises"
   },
   "reports": {
     "title": "Relatórios",
@@ -199,7 +230,10 @@
     "status_pending": "Pendente",
     "status_processing": "Processando",
     "status_ready": "Pronto",
-    "status_failed": "Erro"
+    "status_failed": "Erro",
+    "audit_label": "Auditoria AI",
+    "audit_desc": "Análise AI mensal",
+    "period": "Período"
   },
   "settings": {
     "title": "Configurações",
@@ -292,5 +326,22 @@
   },
   "plan": {
     "ai_requests": "Solicitações AI este mês"
+  },
+  "detail": {
+    "title": "Detalhes da assinatura",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "cancel": "Cancelar",
+    "cancel_trial": "Cancelar teste",
+    "restore": "Restaurar",
+    "archive": "Arquivar",
+    "paused": "Assinatura pausada",
+    "resumed": "Assinatura retomada",
+    "cancelled": "Assinatura cancelada",
+    "archived": "Assinatura arquivada",
+    "not_found": "Assinatura não encontrada",
+    "cancel_confirm": "Cancelar esta assinatura?",
+    "archive_confirm": "Arquivar esta assinatura?",
+    "delete_confirm": "Excluir esta assinatura?"
   }
 }

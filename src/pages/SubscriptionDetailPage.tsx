@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Edit3, Trash2, Pause, Play, X, Check, Loader2, Upload, FileText } from 'lucide-react';
+import { ArrowLeft, Edit3, Trash2, Pause, Play, X, Check, Loader2, Upload, FileText, Archive } from 'lucide-react';
 import { CategoryIcon } from '@/components/shared/CategoryIcon';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { CardBrandBadge } from '@/components/shared/CardBrandBadge';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { useSubscription, useUpdateSubscription, useDeleteSubscription } from '@/hooks/useSubscriptions';
+import { useSubscription, useUpdateSubscription, useDeleteSubscription, usePauseSubscription, useRestoreSubscription, useCancelSubscription, useArchiveSubscription } from '@/hooks/useSubscriptions';
 import { useReceipts, useUploadReceipt, useDeleteReceipt } from '@/hooks/useReceipts';
 import { useToast } from '@/providers/ToastProvider';
+import { useTranslation } from 'react-i18next';
 import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton';
 import { Category, BillingCycle } from '@/types';
 import { allCategories } from '@/components/shared/CategoryIcon';
@@ -22,6 +23,7 @@ const billingCycles: { value: BillingCycle; label: string }[] = [
 export default function SubscriptionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { success, error } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<Record<string, string>>({});
@@ -30,6 +32,10 @@ export default function SubscriptionDetailPage() {
   const { data: receipts, isLoading: loadingReceipts } = useReceipts(id!);
   const updateMutation = useUpdateSubscription(id!);
   const deleteMutation = useDeleteSubscription();
+  const pauseMutation = usePauseSubscription();
+  const restoreMutation = useRestoreSubscription();
+  const cancelMutation = useCancelSubscription();
+  const archiveMutation = useArchiveSubscription();
   const uploadMutation = useUploadReceipt(id!);
   const deleteReceiptMutation = useDeleteReceipt(id!);
 
@@ -55,31 +61,53 @@ export default function SubscriptionDetailPage() {
         billingPeriod: editForm.billingCycle as BillingCycle,
         category: editForm.category as Category,
       });
-      success('Subscription updated!');
+      success(t('common.success'));
       setIsEditing(false);
     } catch {
-      error('Failed to update subscription.');
+      error(t('common.error'));
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm('Delete this subscription?')) return;
+    if (!confirm(t('detail.delete_confirm'))) return;
     try {
       await deleteMutation.mutateAsync(id!);
-      success('Subscription deleted');
+      success(t('common.success'));
       navigate('/app/subscriptions');
     } catch {
-      error('Failed to delete subscription.');
+      error(t('common.error'));
     }
   };
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handlePause = async () => {
     try {
-      await updateMutation.mutateAsync({ status: newStatus as never });
-      success(`Subscription ${newStatus}`);
-    } catch {
-      error('Failed to update status.');
-    }
+      await pauseMutation.mutateAsync(id!);
+      success(t('detail.paused'));
+    } catch { error(t('common.error')); }
+  };
+
+  const handleResume = async () => {
+    try {
+      await restoreMutation.mutateAsync(id!);
+      success(t('detail.resumed'));
+    } catch { error(t('common.error')); }
+  };
+
+  const handleCancel = async () => {
+    if (!confirm(t('detail.cancel_confirm'))) return;
+    try {
+      await cancelMutation.mutateAsync(id!);
+      success(t('detail.cancelled'));
+    } catch { error(t('common.error')); }
+  };
+
+  const handleArchive = async () => {
+    if (!confirm(t('detail.archive_confirm'))) return;
+    try {
+      await archiveMutation.mutateAsync(id!);
+      success(t('detail.archived'));
+      navigate('/app/subscriptions');
+    } catch { error(t('common.error')); }
   };
 
   const handleReceiptUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,9 +115,9 @@ export default function SubscriptionDetailPage() {
     if (!file) return;
     try {
       await uploadMutation.mutateAsync(file);
-      success('Receipt uploaded!');
+      success(t('common.success'));
     } catch {
-      error('Failed to upload receipt.');
+      error(t('common.error'));
     }
   };
 
@@ -106,8 +134,8 @@ export default function SubscriptionDetailPage() {
   if (!sub) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-400">Subscription not found</p>
-        <button onClick={() => navigate(-1)} className="text-purple-400 mt-2">Go back</button>
+        <p className="text-gray-400">{t('detail.not_found')}</p>
+        <button onClick={() => navigate(-1)} className="text-purple-400 mt-2">{t('common.go_back')}</button>
       </div>
     );
   }
@@ -118,7 +146,7 @@ export default function SubscriptionDetailPage() {
         <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-white/5 transition-all">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-xl font-bold">Subscription Details</h1>
+        <h1 className="text-xl font-bold">{t('detail.title')}</h1>
       </div>
 
       <div className="glass-card rounded-2xl p-6">
@@ -170,33 +198,45 @@ export default function SubscriptionDetailPage() {
               <button onClick={handleEdit}
                 className="flex items-center gap-2 px-4 py-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                 <Edit3 className="w-4 h-4" />
-                Edit
+                {t('common.edit')}
               </button>
-              {sub.status === 'ACTIVE' && (
-                <button onClick={() => handleStatusChange('paused')} disabled={updateMutation.isPending}
+              {(sub.status === 'ACTIVE' || sub.status === 'TRIAL') && (
+                <button onClick={handlePause} disabled={pauseMutation.isPending}
                   className="flex items-center gap-2 px-4 py-3 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                   <Pause className="w-4 h-4" />
-                  Pause
+                  {t('detail.pause')}
                 </button>
               )}
               {sub.status === 'PAUSED' && (
-                <button onClick={() => handleStatusChange('active')} disabled={updateMutation.isPending}
+                <button onClick={handleResume} disabled={restoreMutation.isPending}
                   className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-500/10 hover:bg-green-500/20 text-green-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                   <Play className="w-4 h-4" />
-                  Resume
+                  {t('detail.resume')}
                 </button>
               )}
               {sub.status !== 'CANCELLED' && (
-                <button onClick={() => handleStatusChange('cancelled')} disabled={updateMutation.isPending}
+                <button onClick={handleCancel} disabled={cancelMutation.isPending}
                   className="flex items-center gap-2 px-4 py-3 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                   <X className="w-4 h-4" />
-                  Cancel
+                  {sub.status === 'TRIAL' ? t('detail.cancel_trial') : t('detail.cancel')}
                 </button>
               )}
+              {sub.status === 'CANCELLED' && (
+                <button onClick={handleResume} disabled={restoreMutation.isPending}
+                  className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-500/10 hover:bg-green-500/20 text-green-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
+                  <Play className="w-4 h-4" />
+                  {t('detail.restore')}
+                </button>
+              )}
+              <button onClick={handleArchive} disabled={archiveMutation.isPending}
+                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 text-gray-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
+                <Archive className="w-4 h-4" />
+                {t('detail.archive')}
+              </button>
               <button onClick={handleDelete} disabled={deleteMutation.isPending}
                 className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-semibold transition-all flex-1 justify-center min-w-[100px]">
                 <Trash2 className="w-4 h-4" />
-                Delete
+                {t('common.delete')}
               </button>
             </div>
           </>
@@ -273,11 +313,10 @@ export default function SubscriptionDetailPage() {
               <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
                 <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{formatDate(r.date)}</p>
-                  <p className="text-xs text-gray-400">{formatCurrency(r.amount, sub.currency)}</p>
+                  <p className="text-sm truncate">{formatDate(r.uploadedAt)}</p>
                 </div>
                 <div className="flex gap-2">
-                  <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400 hover:underline">View</a>
+                  <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400 hover:underline">View</a>
                   <button onClick={() => deleteReceiptMutation.mutate(r.id)} className="text-xs text-red-400 hover:underline">Delete</button>
                 </div>
               </div>

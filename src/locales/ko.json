@@ -23,7 +23,13 @@
     "required": "필수",
     "success": "성공",
     "close": "닫기",
-    "view_all": "전체"
+    "view_all": "전체",
+    "retry": "다시 시도",
+    "error_loading": "데이터 로드 실패",
+    "go_back": "돌아가기",
+    "download": "다운로드",
+    "month": "월",
+    "pro_required": "Pro 플랜이 필요합니다"
   },
   "nav": {
     "dashboard": "대시보드",
@@ -52,7 +58,18 @@
     "upcoming_payments": "예정된 결제",
     "due_today": "오늘",
     "tomorrow": "내일",
-    "in_days": "{{count}}일 후"
+    "in_days": "{{count}}일 후",
+    "empty_title": "구독이 없습니다",
+    "empty_description": "구독 추적을 시작하세요",
+    "empty_add_manual": "수동으로 추가",
+    "empty_add_ai": "AI로 설명",
+    "empty_add_photo": "영수증 스캔",
+    "forecast_title": "지출 예측",
+    "forecast_30d": "30일",
+    "forecast_6mo": "6개월",
+    "forecast_12mo": "12개월",
+    "savings_title": "잠재적 절약",
+    "duplicate_found": "중복 발견"
   },
   "subscriptions": {
     "title": "구독",
@@ -79,7 +96,17 @@
     "due_in_days": "{{days}}일 후",
     "status": "상태",
     "total": "개",
-    "total_one": "개"
+    "total_one": "개",
+    "sort_date_asc": "다음 결제(가까운 순)",
+    "sort_date_desc": "다음 결제(먼 순)",
+    "sort_amount_desc": "금액(높은 순)",
+    "sort_amount_asc": "금액(낮은 순)",
+    "sort_name": "이름(A-Z)",
+    "sort_newest": "최근 추가",
+    "upgrade_to_add": "추가하려면 업그레이드",
+    "no_match": "일치하는 결과 없음",
+    "no_match_sub": "필터를 변경해 보세요",
+    "reset_filters": "필터 초기화"
   },
   "add": {
     "title": "구독 추가",
@@ -163,7 +190,11 @@
     "active_label": "활성",
     "spend_trend": "월별 추세",
     "top5": "비싼 순위 5위",
-    "no_active": "활성 구독 없음"
+    "no_active": "활성 구독 없음",
+    "forecast_title": "지출 예측",
+    "savings_title": "잠재적 절약",
+    "empty_title": "데이터 없음",
+    "empty_description": "분석을 보려면 구독을 추가하세요"
   },
   "reports": {
     "title": "리포트",
@@ -199,7 +230,10 @@
     "status_pending": "대기중",
     "status_processing": "처리중",
     "status_ready": "준비됨",
-    "status_failed": "실패"
+    "status_failed": "실패",
+    "audit_label": "AI 감사",
+    "audit_desc": "월간 AI 분석",
+    "period": "기간"
   },
   "settings": {
     "title": "설정",
@@ -292,5 +326,22 @@
   },
   "plan": {
     "ai_requests": "이번 달 AI 요청"
+  },
+  "detail": {
+    "title": "구독 상세",
+    "pause": "일시중지",
+    "resume": "재개",
+    "cancel": "취소",
+    "cancel_trial": "체험 취소",
+    "restore": "복원",
+    "archive": "보관",
+    "paused": "구독이 일시중지되었습니다",
+    "resumed": "구독이 재개되었습니다",
+    "cancelled": "구독이 취소되었습니다",
+    "archived": "구독이 보관되었습니다",
+    "not_found": "구독을 찾을 수 없습니다",
+    "cancel_confirm": "이 구독을 취소하시겠습니까?",
+    "archive_confirm": "이 구독을 보관하시겠습니까?",
+    "delete_confirm": "이 구독을 삭제하시겠습니까?"
   }
 }

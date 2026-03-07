@@ -11,7 +11,10 @@ export type Category =
   | 'NEWS'
   | 'OTHER';
 
-export type CardBrand = 'visa' | 'mastercard' | 'amex' | 'mir' | 'other';
+export type CardBrand = 'VISA' | 'MC' | 'AMEX' | 'MIR' | 'OTHER';
+export type SourceType = 'MANUAL' | 'AI_VOICE' | 'AI_SCREENSHOT' | 'AI_TEXT';
+export type ReportType = 'SUMMARY' | 'DETAILED' | 'AUDIT' | 'TAX';
+export type ReportStatus = 'PENDING' | 'GENERATING' | 'READY' | 'FAILED';
 
 export interface PaymentCard {
   id: string;
@@ -19,8 +22,7 @@ export interface PaymentCard {
   last4: string;
   brand: CardBrand;
   color: string;
-  expiryMonth: number;
-  expiryYear: number;
+  isDefault: boolean;
 }
 
 export interface Subscription {
@@ -30,25 +32,40 @@ export interface Subscription {
   amount: number;
   currency: string;
   billingPeriod: BillingCycle;
+  billingDay?: number;
   category: Category;
   status: SubscriptionStatus;
   nextPaymentDate?: string;
   startDate?: string;
+  cancelledAt?: string;
   paymentCardId?: string;
   paymentCard?: PaymentCard;
   iconUrl?: string;
+  serviceUrl?: string;
+  cancelUrl?: string;
+  managePlanUrl?: string;
   notes?: string;
+  tags?: string[];
+  reminderEnabled?: boolean;
+  reminderDaysBefore?: number[];
+  isBusinessExpense?: boolean;
+  taxCategory?: string;
+  addedVia?: SourceType;
+  aiMetadata?: Record<string, unknown>;
+  aiConfidence?: number;
+  availablePlans?: { name: string; amount: number; currency: string; billingCycle: BillingCycle }[];
   receipts?: Receipt[];
   trialEndDate?: string;
-  cancelUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Receipt {
   id: string;
   subscriptionId: string;
-  url: string;
-  date: string;
-  amount: number;
+  fileUrl: string;
+  uploadedAt: string;
+  aiExtracted?: Record<string, unknown>;
 }
 
 export interface AnalyticsData {
@@ -69,10 +86,15 @@ export interface User {
   isPro: boolean;
   currency: string;
   locale: string;
+  timezone?: string;
+  dateFormat?: string;
+  country?: string;
+  onboardingCompleted?: boolean;
+  notificationsEnabled?: boolean;
 }
 
 export interface BillingInfo {
-  plan: 'free' | 'pro' | 'organization';
+  plan: 'free' | 'pro' | 'team';
   status: 'active' | 'cancelled' | 'trialing';
   currentPeriodEnd?: string | null;
   cancelAtPeriodEnd?: boolean;
@@ -82,13 +104,14 @@ export interface BillingInfo {
   subscriptionLimit: number | null;
   aiRequestsUsed: number;
   aiRequestsLimit: number | null;
+  reportsUsed?: number;
+  reportsLimit?: number | null;
   proInviteeEmail?: string | null;
 }
 
 export interface ReportConfig {
-  type: 'summary' | 'detailed' | 'tax';
-  startDate: string;
-  endDate: string;
+  type: ReportType;
+  period: string;
   format: 'pdf' | 'csv';
 }
 

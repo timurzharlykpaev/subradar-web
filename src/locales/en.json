@@ -23,7 +23,13 @@
     "required": "Required",
     "success": "Success",
     "close": "Close",
-    "view_all": "View all"
+    "view_all": "View all",
+    "retry": "Retry",
+    "error_loading": "Failed to load data",
+    "go_back": "Go back",
+    "download": "Download",
+    "month": "mo",
+    "pro_required": "Pro plan required to unlock this feature"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -52,7 +58,18 @@
     "upcoming_payments": "Upcoming Payments",
     "due_today": "Due today",
     "tomorrow": "Tomorrow",
-    "in_days": "In {{count}} days"
+    "in_days": "In {{count}} days",
+    "empty_title": "No subscriptions yet",
+    "empty_description": "Start tracking your subscriptions to see the full picture",
+    "empty_add_manual": "Add manually",
+    "empty_add_ai": "Describe with AI",
+    "empty_add_photo": "Scan receipt",
+    "forecast_title": "Spending Forecast",
+    "forecast_30d": "30 days",
+    "forecast_6mo": "6 months",
+    "forecast_12mo": "12 months",
+    "savings_title": "Potential Savings",
+    "duplicate_found": "Duplicate found"
   },
   "subscriptions": {
     "title": "Subscriptions",
@@ -79,7 +96,17 @@
     "due_in_days": "Due in {{days}}d",
     "status": "Status",
     "total": "subscriptions",
-    "total_one": "subscription"
+    "total_one": "subscription",
+    "sort_date_asc": "Next payment (soonest)",
+    "sort_date_desc": "Next payment (latest)",
+    "sort_amount_desc": "Amount (highest)",
+    "sort_amount_asc": "Amount (lowest)",
+    "sort_name": "Name (A-Z)",
+    "sort_newest": "Recently added",
+    "upgrade_to_add": "Upgrade to add more",
+    "no_match": "No subscriptions match filters",
+    "no_match_sub": "Try changing or clearing your filters",
+    "reset_filters": "Reset filters"
   },
   "add": {
     "title": "Add Subscription",
@@ -163,7 +190,11 @@
     "active_label": "Active",
     "spend_trend": "Monthly Spend Trend",
     "top5": "Top 5 Most Expensive",
-    "no_active": "No active subscriptions"
+    "no_active": "No active subscriptions",
+    "forecast_title": "Spending Forecast",
+    "savings_title": "Potential Savings",
+    "empty_title": "No data yet",
+    "empty_description": "Add subscriptions to see your analytics"
   },
   "reports": {
     "title": "Reports",
@@ -199,7 +230,10 @@
     "status_pending": "Pending",
     "status_processing": "Processing",
     "status_ready": "Ready",
-    "status_failed": "Failed"
+    "status_failed": "Failed",
+    "audit_label": "AI Audit",
+    "audit_desc": "Monthly AI analysis of your subscriptions",
+    "period": "Period"
   },
   "settings": {
     "title": "Settings",
@@ -224,7 +258,44 @@
     "delete_confirm": "This will permanently delete your account and all data.",
     "theme_dark": "Dark",
     "theme_light": "Light",
-    "theme_system": "System"
+    "theme_system": "System",
+    "manage_account": "Manage your account and preferences",
+    "profile_updated": "Profile updated!",
+    "profile_update_failed": "Failed to update profile",
+    "export_data": "Export My Data",
+    "plan_free": "Free",
+    "plan_pro": "Pro",
+    "plan_team": "Team",
+    "plan_renews": "Renews {{date}}",
+    "plan_trial_ends": "Trial ends {{date}}",
+    "plan_cancels_period_end": "Cancels at period end",
+    "cancel_subscription": "Cancel Pro Subscription",
+    "cancelling": "Cancelling...",
+    "cancel_confirm_billing": "Cancel your subscription? You will lose access to Pro features at the end of the billing period.",
+    "cancelled_success": "Subscription cancelled. You'll retain access until end of period.",
+    "cancel_failed": "Failed to cancel subscription",
+    "view_all_plans": "View all plans",
+    "upgrade_unlock": "Unlock unlimited subscriptions, AI features, PDF reports, and priority support.",
+    "per_month": "per month",
+    "per_year": "per year",
+    "year_discount": "30% off",
+    "start_trial": "Start 7-day free trial",
+    "trial_started": "7-day Pro trial started! Enjoy all features.",
+    "trial_failed": "Failed to start trial",
+    "upgrade_to_pro": "Upgrade to Pro",
+    "upgrade_directly": "Upgrade to Pro directly",
+    "checkout_failed": "Failed to start checkout. Please try again.",
+    "pro_invite_title": "Pro Invite — For You + One",
+    "pro_invite_hint": "Invite one person to share your Pro access. If you cancel, both lose Pro.",
+    "invite": "Invite",
+    "invite_sent": "Invite sent to {{email}}",
+    "invite_failed": "Failed to send invite",
+    "invite_removed": "Invite removed",
+    "invite_remove_confirm": "Remove invite? The invited user will lose Pro access.",
+    "invite_remove_failed": "Failed to remove invite",
+    "manage_workspace": "Manage your team workspace",
+    "trial_days_left": "Trial: {{days}}d left",
+    "notifications_label": "{{type}} notifications"
   },
   "auth": {
     "welcome": "Welcome back",
@@ -267,7 +338,7 @@
     "plan_required_sub": "Upgrade to Team plan to access workspace features",
     "upgrade": "Upgrade Plan"
   },
-  "subscription": {
+    "subscription": {
     "detail_title": "Subscription Details",
     "edit": "Edit",
     "delete": "Delete",
@@ -280,6 +351,23 @@
     "notes": "Notes",
     "card": "Payment Card",
     "no_card": "No card"
+  },
+  "detail": {
+    "title": "Subscription Details",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "cancel_trial": "Cancel Trial",
+    "restore": "Restore",
+    "archive": "Archive",
+    "paused": "Subscription paused",
+    "resumed": "Subscription resumed",
+    "cancelled": "Subscription cancelled",
+    "archived": "Subscription archived",
+    "not_found": "Subscription not found",
+    "cancel_confirm": "Are you sure you want to cancel this subscription?",
+    "archive_confirm": "Are you sure you want to archive this subscription?",
+    "delete_confirm": "Are you sure you want to delete this subscription?"
   },
   "trials": {
     "title": "Active Trials",
