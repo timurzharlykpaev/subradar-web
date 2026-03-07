@@ -67,11 +67,11 @@ export function useParseScreenshot() {
   });
 }
 
-/** POST /ai/parse-text-subscription — AI парсинг текста */
+/** POST /ai/parse-text — AI парсинг текста */
 export function useParseTextSubscription() {
   return useMutation({
     mutationFn: async (text: string) => {
-      const { data } = await api.post<TextParseResult>('/ai/parse-text-subscription', { text });
+      const { data } = await api.post<TextParseResult>('/ai/parse-text', { text });
       return data;
     },
   });

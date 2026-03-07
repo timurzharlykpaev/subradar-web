@@ -83,12 +83,12 @@ export function useCancelSubscription() {
   });
 }
 
-/** PATCH /subscriptions/:id { status: 'paused' } */
+/** POST /subscriptions/:id/pause */
 export function usePauseSubscription() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'PAUSED' });
+      const { data } = await api.post<Subscription>(`/subscriptions/${id}/pause`);
       return data;
     },
     onSuccess: (_data, id) => {
@@ -98,12 +98,12 @@ export function usePauseSubscription() {
   });
 }
 
-/** PATCH /subscriptions/:id { status: 'active' } — восстановление из паузы */
+/** POST /subscriptions/:id/restore */
 export function useRestoreSubscription() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await api.patch<Subscription>(`/subscriptions/${id}`, { status: 'ACTIVE' });
+      const { data } = await api.post<Subscription>(`/subscriptions/${id}/restore`);
       return data;
     },
     onSuccess: (_data, id) => {
