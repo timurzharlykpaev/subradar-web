@@ -21,10 +21,12 @@ jobs:
           if [ "${{ github.ref_name }}" = "main" ]; then
             echo "target=prod" >> $GITHUB_OUTPUT
             echo "api_url=https://api.subradar.ai/api/v1" >> $GITHUB_OUTPUT
+            echo "app_url=https://app.subradar.ai" >> $GITHUB_OUTPUT
             echo "web_dir=/var/www/app.subradar.ai" >> $GITHUB_OUTPUT
           else
             echo "target=dev" >> $GITHUB_OUTPUT
             echo "api_url=https://api-dev.subradar.ai/api/v1" >> $GITHUB_OUTPUT
+            echo "app_url=https://app-dev.subradar.ai" >> $GITHUB_OUTPUT
             echo "web_dir=/var/www/app-dev.subradar.ai" >> $GITHUB_OUTPUT
           fi
 
@@ -32,7 +34,13 @@ jobs:
         run: npm ci --legacy-peer-deps && npm run build
         env:
           VITE_API_URL: ${{ steps.env.outputs.api_url }}
+          VITE_APP_URL: ${{ steps.env.outputs.app_url }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          VITE_LEMON_SQUEEZY_STORE_ID: ${{ secrets.LEMON_SQUEEZY_STORE_ID }}
+          VITE_LEMON_SQUEEZY_PRO_MONTHLY_VARIANT_ID: ${{ secrets.LEMON_SQUEEZY_PRO_MONTHLY_VARIANT_ID }}
+          VITE_LEMON_SQUEEZY_PRO_YEARLY_VARIANT_ID: ${{ secrets.LEMON_SQUEEZY_PRO_YEARLY_VARIANT_ID }}
+          VITE_LEMON_SQUEEZY_TEAM_MONTHLY_VARIANT_ID: ${{ secrets.LEMON_SQUEEZY_TEAM_MONTHLY_VARIANT_ID }}
+          VITE_LEMON_SQUEEZY_TEAM_YEARLY_VARIANT_ID: ${{ secrets.LEMON_SQUEEZY_TEAM_YEARLY_VARIANT_ID }}
 
       - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
