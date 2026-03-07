@@ -201,11 +201,47 @@
 
 ---
 
+## New Analytics Endpoints (from updated spec — docs/API_CONTRACTS.md)
+
+Новая спецификация добавляет гранулярные аналитические эндпоинты:
+
+| Метод | Эндпоинт | Описание | Статус |
+|-------|---------|---------|--------|
+| `GET` | `/analytics/home` | Dashboard data (total, delta, summary) | Planned |
+| `GET` | `/analytics/trends` | Spending trends by month | Planned |
+| `GET` | `/analytics/categories` | Category distribution | Planned |
+| `GET` | `/analytics/upcoming` | Upcoming charges (30 days) | Planned |
+| `GET` | `/analytics/trials` | Trials ending soon | Planned |
+| `GET` | `/analytics/forecast` | Forecast (30d/6mo/12mo) | Planned |
+| `GET` | `/analytics/savings` | Potential savings, duplicates | Planned |
+
+> Эти эндпоинты заменяют текущие `/analytics/summary`, `/analytics/monthly`, `/analytics/by-category`, `/analytics/by-card`, `/analytics/upcoming`. Переход будет постепенным.
+
+## New AI Endpoints (from updated spec)
+
+| Метод | Эндпоинт | Описание | Статус |
+|-------|---------|---------|--------|
+| `POST` | `/ai/parse-text-subscription` | Parse from natural language text | Planned |
+| `POST` | `/ai/parse-subscription-image` | Parse from screenshot/photo | Planned |
+| `POST` | `/ai/match-service` | Match name to known services | Planned |
+| `GET` | `/ai/subscription-insights` | AI insights for user's subs | Planned |
+| `POST` | `/ai/run-audit` | Trigger monthly AI audit | Planned |
+
+## New Subscription Endpoints (from updated spec)
+
+| Метод | Эндпоинт | Описание | Статус |
+|-------|---------|---------|--------|
+| `POST` | `/subscriptions/:id/archive` | Archive subscription | Planned |
+| `POST` | `/subscriptions/:id/pause` | Pause subscription | Planned |
+| `POST` | `/subscriptions/:id/restore` | Restore subscription | Planned |
+
+---
+
 ## Мобильные-only эндпоинты (не использовать в вебе)
 
 - `POST /auth/apple` — Apple Sign In
 - `POST /auth/google/mobile` — мобильный Google
 - `POST /auth/verify` — мобильная верификация magic link
 - `POST /ai/voice`, `/ai/parse-audio`, `/ai/voice-to-subscription`
-- `POST /ai/search`, `/ai/parse-text`
-- `GET /receipts`, `POST /receipts` — standalone (веб использует вложенные `/subscriptions/:id/receipts`)
+
+> Полный список всех API эндпоинтов: `docs/API_CONTRACTS.md`

@@ -209,4 +209,22 @@ className="md:ml-[72px]"      // при свёрнутом
 
 Переключение: `useAppStore().toggleTheme()` в AppLayout.
 
-Persistance: `localStorage.getItem('theme')` читается при инициализации.
+Persistance: `localStorage.getItem('subradar-theme')` читается при инициализации.
+
+---
+
+## Empty State Philosophy
+
+Empty screens must never be "dead." Every empty state must sell the next action:
+
+| Screen | Empty state action |
+|--------|-------------------|
+| Dashboard | "Add your first subscription" with 3 CTAs (manual, AI, photo) |
+| Subscriptions | "No subscriptions yet" + Add button |
+| Analytics | "Add subscriptions to see analytics" |
+| Reports | "Generate your first report" |
+| Cards | "Add a payment card" |
+
+Use the `EmptyState` component with: illustration/icon, title, description, action button.
+
+See `docs/STATE_RULES.md` for full state handling rules across all screens.

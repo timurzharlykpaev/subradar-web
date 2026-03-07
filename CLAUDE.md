@@ -162,5 +162,36 @@ rsync -az --delete -e "ssh -i ~/.ssh/id_steptogoal" dist/ root@46.101.197.19:/va
 - Существующие ключи i18n (только добавлять, не переименовывать)
 - `t()` на уровне модуля — **Fatal crash при инициализации**
 
+## Документация
+
+Подробная спецификация продукта в папке `docs/`:
+- `docs/PRODUCT_OVERVIEW.md` — обзор продукта, принципы, аудитория, монетизация, MVP критерии
+- `docs/DOMAIN_MODEL.md` — все сущности и их поля, lifecycle статусов
+- `docs/API_CONTRACTS.md` — все API endpoints с примерами
+- `docs/BILLING_RULES.md` — тарифы Free/Pro/Team, логика триала
+- `docs/AI_BEHAVIOR.md` — правила поведения AI, confidence levels, fallback
+- `docs/STATE_RULES.md` — жизненный цикл подписки, empty states
+- `docs/WEB_SCREENS.md` — screen-by-screen PRD для веб-страниц
+
+Детальные agent guides в `agent_docs/`:
+- `agent_docs/architecture.md` — архитектура, стейт, роутинг
+- `agent_docs/types.md` — TypeScript типы и маппинг на бэкенд
+- `agent_docs/api-contracts.md` — API контракты Web <-> Backend
+- `agent_docs/design-system.md` — дизайн-система, компоненты, цвета
+- `agent_docs/deployment.md` — деплой, env переменные
+- `agent_docs/i18n.md` — интернационализация
+
+## Agent Rules
+1. Не ломать существующий Google auth
+2. Не добавлять новые библиотеки без явной причины
+3. Любая AI-фича должна иметь fallback UI
+4. Любой новый экран должен быть связан с docs/WEB_SCREENS.md
+5. Любой новый API endpoint должен быть отражён в agent_docs/api-contracts.md и docs/API_CONTRACTS.md
+6. Любая тяжёлая операция должна быть async
+7. Любые финансовые данные требуют user confirmation
+8. Любая новая сущность должна иметь status lifecycle
+9. Любая продуктовая фича должна иметь analytics events
+10. Не реализовывать Release 2/3 фичи, пока не стабилен MVP (Release 1)
+
 ## Прогресс
 См. `PROGRESS.md` в корне репозитория.

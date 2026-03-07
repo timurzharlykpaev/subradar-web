@@ -29,13 +29,13 @@ npm run lint      # ESLint проверка
 
 ## Инфраструктура
 
-**Домен:** `app.subradar.io`
+**Домен:** `app.subradar.ai`
 
 **Сервер:** DigitalOcean `46.101.197.19`
 
 **Бэкенд:**
-- Prod: `api.subradar.io` → порт 3100
-- Dev: `api-dev.subradar.io` → порт 3101
+- Prod: `api.subradar.ai` → порт 3100
+- Dev: `api-dev.subradar.ai` → порт 3101
 
 **DO Spaces:** хранение чеков и иконок (bucket: `subradar`)
 
@@ -76,7 +76,7 @@ server {
 
 - `main` — production ветка
 - Feature-ветки от `main`, PR через GitHub
-- После merge в `main` — деплой на `app.subradar.io`
+- После merge в `main` — деплой на `app.subradar.ai`
 
 ---
 

@@ -34,7 +34,7 @@ type BillingCycle = 'monthly' | 'yearly' | 'weekly' | 'quarterly'
 
 ### SubscriptionStatus
 ```ts
-type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'trial'
+type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'trial' | 'archived'
 ```
 
 Цвета статусов:
@@ -42,6 +42,7 @@ type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'trial'
 - `trial` → синий (`#3b82f6`)
 - `paused` → жёлтый (`#f59e0b`)
 - `cancelled` → серый (`#6b7280`)
+- `archived` → тёмно-серый (`#4b5563`)
 
 ### Category
 ```ts
@@ -182,6 +183,31 @@ interface BillingInfo {
 
 ---
 
+## New Fields (from updated spec — docs/DOMAIN_MODEL.md)
+
+These fields are defined in the new spec but may not yet be in the actual codebase:
+
+```ts
+// Source type — how subscription was added
+type SourceType = 'MANUAL' | 'AI_TEXT' | 'AI_PHOTO' | 'IMPORTED'
+
+// Additional Subscription fields
+interface SubscriptionExtended extends Subscription {
+  normalizedServiceId?: string   // links to known service DB
+  serviceUrl?: string            // service website
+  cancelUrl?: string             // direct cancel link
+  manageUrl?: string             // manage plan link
+  tags?: string[]                // custom tags
+  isBusinessExpense?: boolean    // business expense flag
+  reminderEnabled?: boolean
+  reminderOffsets?: number[]     // [1, 3, 7] days before billing
+  sourceType?: SourceType        // how it was added
+  aiConfidence?: number          // 0-1 AI parsing confidence
+  aiRawResult?: object           // raw AI response
+  trialEndDate?: string          // ISO date for trials
+}
+```
+
 ## Соответствие с бэкендом (TZ данные модели)
 
 | Web тип | Бэкенд поле | Примечание |
@@ -191,5 +217,11 @@ interface BillingInfo {
 | `category` | `category` (enum) | бэкенд: `STREAMING/AI_SERVICES/INFRASTRUCTURE` → веб: `streaming/ai/infra` |
 | `nextPaymentDate` | вычисляется из `billingDay + startDate` | бэкенд возвращает готовую дату |
 | `cardId` | `paymentCardId` | переименовано |
+| `logoUrl` | `iconUrl` | бэкенд использует `iconUrl` |
+| — | `sourceType` | Новое: как подписка была добавлена |
+| — | `aiConfidence` | Новое: уверенность AI парсинга |
+| — | `tags` | Новое: пользовательские теги |
+| — | `isBusinessExpense` | Новое: флаг бизнес-расхода |
 
 > При добавлении нового поля всегда сверяй с бэкенд DTO в `subradar-backend/src/subscriptions/dto/`.
+> Полная модель данных: `docs/DOMAIN_MODEL.md`

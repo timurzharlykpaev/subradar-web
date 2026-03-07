@@ -64,9 +64,33 @@ _(ничего активного)_
 
 ---
 
-## 📋 Бэклог
+## MVP Acceptance Criteria (из новой спецификации)
+
+- [x] Пользователь может войти через Google
+- [x] Пользователь видит список подписок
+- [x] Пользователь видит dashboard (базовый)
+- [x] Пользователь может сохранить card nickname + last4
+- [ ] Dashboard с upcoming charges и trials
+- [ ] Forecast (30d/6mo/12mo)
+- [ ] AI text add (web version)
+- [ ] AI screenshot add (web version)
+- [ ] AI review screen (confirm before save)
+- [ ] SubscriptionDetailPage
+- [ ] Free limits и Pro gating
+- [ ] Duplicate warning
+- [ ] Аналитика обновляется после добавления подписки
+- [ ] PDF report generation
+
+## Backlog
 
 - [ ] SubscriptionDetailPage (детальная страница подписки)
+- [ ] New analytics endpoints integration (home, trends, categories, upcoming, trials, forecast, savings)
+- [ ] AI text parsing integration (POST /ai/parse-text-subscription)
+- [ ] AI screenshot parsing integration (POST /ai/parse-subscription-image)
+- [ ] AI review screen (confirm AI result before saving)
+- [ ] Subscription archive/pause/restore actions
+- [ ] ARCHIVED status support in UI
+- [ ] Empty state components per screen (per docs/STATE_RULES.md)
 - [ ] Удалить PlanUsageBar прогресс-бары (бесполезны без данных)
 - [ ] Исправить русскую плюрализацию ("1 подписок" → "1 подписка")
 - [ ] Refresh token на httpOnly cookie

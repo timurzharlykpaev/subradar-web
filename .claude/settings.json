@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(curl -s \"https://api.expo.dev/v2/versions/latest\")",
-      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); ios=d.get\\(''data'',d\\).get\\(''iosClientUrl'',''''\\); print\\(ios\\)\")"
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); ios=d.get\\(''data'',d\\).get\\(''iosClientUrl'',''''\\); print\\(ios\\)\")",
+      "Bash(for f in PRODUCT_OVERVIEW.md DOMAIN_MODEL.md BILLING_RULES.md AI_BEHAVIOR.md STATE_RULES.md)",
+      "Bash(do cp \"/Users/timurzharlykpaev/Desktop/repositories/subradar-backend/docs/$f\" \"/Users/timurzharlykpaev/Desktop/repositories/subradar-mobile/docs/$f\")",
+      "Bash(for f in PRODUCT_OVERVIEW.md DOMAIN_MODEL.md API_CONTRACTS.md BILLING_RULES.md AI_BEHAVIOR.md STATE_RULES.md)",
+      "Bash(do cp \"/Users/timurzharlykpaev/Desktop/repositories/subradar-backend/docs/$f\" \"/Users/timurzharlykpaev/Desktop/repositories/subradar-web/docs/$f\")"
+    ],
+    "additionalDirectories": [
+      "/Users/timurzharlykpaev/Desktop/repositories/subradar-mobile/.claude",
+      "/Users/timurzharlykpaev/Desktop/repositories/subradar-web/.claude"
     ]
   }
 }
